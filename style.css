@@ -196,3 +196,66 @@ li button:hover {
 .box:has(.box-content.collapsed) {
     padding: 2px;
 }
+
+/* ============================= */
+/* RESPONSIVIDADE MOBILE */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+    body {
+        margin: 10px;
+    }
+
+    /* Grid vira 1 coluna no celular */
+    .listas {
+        grid-template-columns: 1fr;
+    }
+
+    /* Cards ocupam mais espaço */
+    .listas div {
+        border-radius: 4px;
+    }
+
+    /* Inputs e selects ocupam largura total */
+    select,
+    input,
+    button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Botões não ficam gigantes */
+    li button {
+        width: auto;
+    }
+
+    /* Lista fica mais compacta */
+    li {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    /* Ajusta título */
+    h1 {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+
+    h3 {
+        font-size: 15px;
+    }
+
+    /* Reduz padding nos boxes */
+    .box {
+        padding: 8px;
+    }
+
+    .box:has(.box-content.collapsed) {
+        padding: 4px;
+    }
+
+}
