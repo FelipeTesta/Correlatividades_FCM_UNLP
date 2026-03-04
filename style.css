@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 30px;
+    background-color: #f5f7fa;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+hr {
+    margin: 25px 0;
+}
+
+.top-bar {
+    margin-bottom: 10px;
+}
+
+select, input, button {
+    padding: 6px;
+    margin: 5px 5px 5px 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+.estado-panel {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-width: 500px;
+}
+
+.listas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.listas div {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+ul {
+    padding-left: 18px;
+}
+
+li {
+    margin-bottom: 4px;
+}
