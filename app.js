@@ -39,6 +39,11 @@ function guardarEstado() {
     render();
 }
 
+function guardarLocalYRender() {
+    localStorage.setItem("estados", JSON.stringify(estados));
+    render();
+}
+
 // ===============================
 // VERIFICACIONES
 // ===============================
@@ -68,22 +73,23 @@ function render() {
 
     limpiarListas();
 
+    if (!materias) return;
+
     materias.forEach(m => {
 
         const estado = estados[m.codigo];
 
         if (estado === "aprobada") {
-            agregar("aprobadas", m.nombre);
+            agregar("aprobadas", m.nombre, m.codigo);
             return;
         }
 
         if (estado === "regularizada") {
-            agregar("regularizadas", m.nombre);
 
             if (cumpleRequisitos(m.paraAprobar)) {
-                agregar("puedeFinal", m.nombre);
+                agregar("puedeFinal", m.nombre, m.codigo);
             } else {
-                agregar("noPuedeFinal", m.nombre);
+                agregar("noPuedeFinal", m.nombre, m.codigo);
             }
 
             return;
@@ -91,58 +97,94 @@ function render() {
 
         // SIN ESTADO
         if (cumpleRequisitos(m.paraCursar)) {
-            agregar("puedeCursar", m.nombre);
+            agregar("puedeCursar", m.nombre, m.codigo);
         } else {
-            agregar("noPuedeCursar", m.nombre);
+            agregar("noPuedeCursar", m.nombre, m.codigo);
         }
 
     });
-
 }
 
 // ===============================
 // UTILIDADES
 // ===============================
 
-function agregar(id, texto) {
+function agregar(id, texto, codigo = null) {
+
     const li = document.createElement("li");
-    li.innerText = texto;
+
+    const span = document.createElement("span");
+    span.innerText = texto;
+    li.appendChild(span);
+
+    // Se tiver código → adiciona botões de controle
+    if (codigo) {
+
+        const btnAprobada = document.createElement("button");
+        btnAprobada.innerText = "✅";
+        btnAprobada.onclick = () => {
+            estados[codigo] = "aprobada";
+            guardarLocalYRender();
+        };
+
+        const btnRegularizada = document.createElement("button");
+        btnRegularizada.innerText = "🟨";
+        btnRegularizada.onclick = () => {
+            estados[codigo] = "regularizada";
+            guardarLocalYRender();
+        };
+
+        const btnReset = document.createElement("button");
+        btnReset.innerText = "🔄";
+        btnReset.onclick = () => {
+            delete estados[codigo];
+            guardarLocalYRender();
+        };
+
+        li.appendChild(btnAprobada);
+        li.appendChild(btnRegularizada);
+        li.appendChild(btnReset);
+    }
+
     document.getElementById(id).appendChild(li);
 }
 
 function limpiarListas() {
+
     [
         "aprobadas",
-        "regularizadas",
         "puedeCursar",
         "noPuedeCursar",
         "puedeFinal",
         "noPuedeFinal"
     ].forEach(id => {
-        document.getElementById(id).innerHTML = "";
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = "";
     });
 }
 
 // ===============================
-// CARGAR SELECT
+// COLAPSAR BOXES
 // ===============================
 
-function cargarSelect() {
-    const select = document.getElementById("materiaSelect");
+function toggleBox(titleElement) {
 
-    materias
-        .sort((a,b) => a.anio - b.anio)
-        .forEach(m => {
-            const option = document.createElement("option");
-            option.value = m.codigo;
-            option.text = m.nombre;
-            select.appendChild(option);
-        });
+    const box = titleElement.closest(".box");
+    const content = box.querySelector(".box-content");
+
+    const isCollapsed = content.classList.contains("collapsed");
+
+    if (isCollapsed) {
+        content.classList.remove("collapsed");
+        titleElement.innerText = titleElement.innerText.replace("▸", "▾");
+    } else {
+        content.classList.add("collapsed");
+        titleElement.innerText = titleElement.innerText.replace("▾", "▸");
+    }
 }
 
 // ===============================
 // INICIALIZAR
 // ===============================
 
-cargarSelect();
 render();

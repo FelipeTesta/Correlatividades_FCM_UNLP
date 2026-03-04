@@ -1,59 +1,198 @@
+/* ============================= */
+/* TEMA PRETO PROFUNDO */
+/* ============================= */
+
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 30px;
-    background-color: #f5f7fa;
+    background-color: #000000;
+    color: #e5e5e5;
 }
 
+/* ============================= */
+/* TÍTULOS */
+/* ============================= */
+
 h1 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
 h2 {
     margin-top: 0;
 }
 
-hr {
-    margin: 25px 0;
-}
+/* ============================= */
+/* INPUTS */
+/* ============================= */
 
-.top-bar {
-    margin-bottom: 10px;
-}
-
-select, input, button {
-    padding: 6px;
-    margin: 5px 5px 5px 0;
+select,
+input {
+    padding: 6px 8px;
+    border: 1px solid #222;
+    background-color: #111;
+    color: white;
+    border-radius: 4px; /* menos arredondado */
+    outline: none;
 }
 
 button {
     cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 4px; /* menos arredondado */
+    border: 1px solid #222;
+    background-color: #111;
+    color: white;
+    transition: 0.15s ease;
 }
 
-.estado-panel {
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    max-width: 500px;
+button:hover {
+    background-color: #1c1c1c;
 }
+
+/* ============================= */
+/* LISTAS */
+/* ============================= */
 
 .listas {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 22px;
 }
 
 .listas div {
-    background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #0a0a0a;
+    border: 1px solid #111;
+    border-radius: 6px; /* menos arredondado */
 }
 
+/* ============================= */
+/* ITEMS */
+/* ============================= */
+
 ul {
-    padding-left: 18px;
+    padding-left: 8px;
 }
 
 li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
     margin-bottom: 4px;
+    padding: 2px;
+    border-radius: 4px;
+    background-color: #111;
+}
+
+/* Nome da matéria */
+li span {
+    flex: 1;
+}
+
+/* ============================= */
+/* BOTÕES DE ESTADO */
+/* ============================= */
+
+li button {
+    font-size: 12px;
+    padding: 4px 6px;
+    background-color: transparent;
+    border: none;
+}
+
+/* Aprovar */
+li button:nth-child(2) {
+    color: #22c55e;
+}
+
+/* Regularizar */
+li button:nth-child(3) {
+    color: #facc15;
+}
+
+/* Reset */
+li button:nth-child(4) {
+    color: #ef4444;
+}
+
+li button:hover {
+    background-color: #222;
+}
+
+/* ============================= */
+/* REGULARIZADAS SUBDIVISÕES */
+/* ============================= */
+
+.regularizadas-box {
+    background-color: #0a0a0a;
+    padding: 18px;
+    border: 1px solid #111;
+    border-radius: 6px;
+}
+
+/* Cada seção interna */
+.sub-section {
+    margin-top: 5px;
+}
+
+/* Título interno menor */
+.sub-section h4 {
+    margin-bottom: 8px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Esconde automaticamente quando vazio */
+.sub-section:has(ul:empty) {
+    display: none;
+}
+
+/* Remove espaço se estiver vazio */
+.sub-section ul:empty + * {
+    margin-top: 0;
+}
+
+/* ============================= */
+/* BOX COLAPSÁVEL AJUSTADO */
+/* ============================= */
+
+.box {
+    padding: 10px 14px;
+    border: 1px solid #111;
+    border-radius: 4px;
+    background-color: #0a0a0a;
+    transition: all 0.25s ease;
+}
+
+/* Quando o box estiver colapsado */
+.box:has(.box-content.collapsed) {
+    padding: 10px 10px;
+}
+
+.box h3 {
+    margin-left: 14px;
+}
+
+/* Conteúdo interno */
+.box-content {
+    overflow: hidden;
+    max-height: 1000px;
+    opacity: 1;
+    transition:
+        max-height 0.3s ease,
+        opacity 0.2s ease,
+        margin 0.25s ease;
+}
+
+/* Quando fechado */
+.box-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+/* 🔥 Reduz ainda mais o espaço quando fechado */
+.box:has(.box-content.collapsed) {
+    padding: 2px;
 }
