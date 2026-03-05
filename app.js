@@ -332,11 +332,12 @@ function agregar(id, texto, codigo = null, progreso = null) {
     
     li.appendChild(span);
 
-    // agregar año y categoria si existe
+    // Preparar infoSpan
+    let infoSpan = null;
     if (codigo) {
         const materia = materias.find(m => m.codigo === codigo);
         if (materia) {
-            const infoSpan = document.createElement("span");
+            infoSpan = document.createElement("span");
             let infoText = "";
             // agregar horas para optativas al principio
             if (materia.categoria === "optativa" && materia.horas) {
@@ -353,7 +354,8 @@ function agregar(id, texto, codigo = null, progreso = null) {
             if (infoText) {
                 infoSpan.innerText = infoText;
                 infoSpan.className = "anio-tag";
-                li.appendChild(infoSpan);
+            } else {
+                infoSpan = null;
             }
         }
     }
@@ -362,24 +364,25 @@ function agregar(id, texto, codigo = null, progreso = null) {
     const rightGroup = document.createElement("div");
     rightGroup.className = "right-group";
 
-    // indicador simples e contador
+    // Preparar elementos de progreso si aplica
+    let faltaSpan = null;
+    let emoji = null;
+    let progSpan = null;
+    
     if (progreso && (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-"))) {
         const { cumplidos, total, faltante } = progreso;
         if (faltante) {
-            const faltaSpan = document.createElement("span");
+            faltaSpan = document.createElement("span");
             faltaSpan.innerText = `Falta: ${faltante}`;
             faltaSpan.className = "falta";
-            rightGroup.appendChild(faltaSpan);
 
-            const emoji = document.createElement("span");
+            emoji = document.createElement("span");
             emoji.innerText = "🟡";
             emoji.className = "progress-emoji";
-            rightGroup.appendChild(emoji);
         }
-        const progSpan = document.createElement("span");
+        progSpan = document.createElement("span");
         progSpan.innerText = `(${cumplidos}/${total})`;
         progSpan.className = "progress";
-        rightGroup.appendChild(progSpan);
     }
 
     // Se tiver código → adiciona botões de controle dentro do rightGroup
@@ -420,8 +423,32 @@ function agregar(id, texto, codigo = null, progreso = null) {
         }
     }
 
-    if (rightGroup.children.length > 0) {
-        li.appendChild(rightGroup);
+    // Agregar elementos en orden diferente según el contexto
+    if (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-")) {
+        // Para "noPuedeCursar": Falta → 🟡 → Año/Categoria → (x/y) → botones
+        if (faltaSpan) {
+            li.appendChild(faltaSpan);
+        }
+        if (emoji) {
+            li.appendChild(emoji);
+        }
+        if (infoSpan) {
+            li.appendChild(infoSpan);
+        }
+        if (progSpan) {
+            li.appendChild(progSpan);
+        }
+        if (rightGroup.children.length > 0) {
+            li.appendChild(rightGroup);
+        }
+    } else {
+        // Para otros: Año/Categoria → botones
+        if (infoSpan) {
+            li.appendChild(infoSpan);
+        }
+        if (rightGroup.children.length > 0) {
+            li.appendChild(rightGroup);
+        }
     }
 
     document.getElementById(id).appendChild(li);
