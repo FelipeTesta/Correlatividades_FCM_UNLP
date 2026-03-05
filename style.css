@@ -23,6 +23,151 @@ h2 {
 }
 
 /* ============================= */
+/* OPTATIVAS BOX */
+/* ============================= */
+
+.optativas-box {
+    padding: 12px 14px;
+    background-color: #0a0a0a;
+    border: 1px solid #1a3a1a;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.optativas-box span:first-child {
+    color: #999;
+    font-size: 14px;
+}
+
+.horas-count {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4ade80;
+}
+
+.horas-label {
+    color: #999;
+    font-size: 12px;
+}
+
+/* ============================= */
+/* PROGRESS CONTAINER */
+/* ============================= */
+
+.progress-container {
+    padding: 14px;
+    background-color: #0a0a0a;
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+    margin-bottom: 14px;
+}
+
+.progress-info {
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #ccc;
+}
+
+.progress-bar-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 24px;
+    background-color: #1a1a1a;
+    border-radius: 4px;
+    display: flex;
+    overflow: hidden;
+    border: 1px solid #333;
+    position: relative;
+}
+
+.progress-segment {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #000;
+    font-weight: bold;
+    transition: width 0.3s ease;
+}
+
+.progress-segment.aprobadas {
+    background-color: #22c55e;
+}
+
+.progress-segment.regularizadas {
+    background-color: #f97316;
+}
+
+.progress-segment.puede-cursar {
+    background-color: #facc15;
+}
+
+.progress-percent {
+    font-size: 12px;
+    color: #999;
+    min-width: 40px;
+    text-align: right;
+}
+
+
+/* ============================= */
+/* EXTENSION FORM */
+/* ============================= */
+
+.extension-form {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.extension-form input {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #222;
+    background-color: #111;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.extension-form input:last-of-type {
+    flex: 0.5;
+}
+
+.extension-form button {
+    padding: 6px 10px;
+    background-color: #111;
+    border: 1px solid #222;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.extension-form button:hover {
+    background-color: #1c1c1c;
+}
+
+/* texto de proyectos de extensión */
+.extension-nombre {
+    color: #86efac;
+}
+
+/* texto de materias optativas */
+.optativa-nombre {
+    color: #22d3ee;
+}
+
+/* ============================= */
 /* INPUTS */
 /* ============================= */
 
@@ -77,7 +222,7 @@ ul {
 li {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* remove space-between; we'll control alignment with margin-left:auto on right groups */
     gap: 4px;
     margin-bottom: 4px;
     padding: 2px;
@@ -85,9 +230,28 @@ li {
     background-color: #111;
 }
 
+/* container holding progress bar/count and buttons, pushed to right */
+.right-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+
 /* Nome da matéria */
-li span {
+li span:first-child {
     flex: 1;
+}
+
+/* tag de año */
+.anio-tag {
+    font-size: 11px;
+    color: #999;
+    opacity: 0.8;
+    margin-left: 8px;
+    font-weight: normal;
+    white-space: nowrap;
+    min-width: 50px;
 }
 
 /* ============================= */
@@ -120,6 +284,15 @@ li button:hover {
     background-color: #222;
 }
 
+/* Ocultar los botones dentro de "No puede cursar" */
+#noPuedeCursar li button,
+#noPuedeCursar-obligatorias li button,
+#noPuedeCursar-optativas li button {
+    display: none;
+}
+
+/* estilos anteriores de ocultar botones están obsoletos; ahora el JS decide qué mostrar */
+
 /* ============================= */
 /* REGULARIZADAS SUBDIVISÕES */
 /* ============================= */
@@ -143,6 +316,37 @@ li button:hover {
     opacity: 0.8;
 }
 
+/* Header colapsável para subsections de optativas */
+.collapsible-header {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    transition: opacity 0.2s ease;
+}
+
+.collapsible-header:hover {
+    opacity: 0.9;
+}
+
+/* Conteúdo colapsável dentro de sub-sections */
+.sub-content {
+    overflow: hidden;
+    max-height: 1000px;
+    opacity: 1;
+    transition:
+        max-height 0.3s ease,
+        opacity 0.2s ease;
+}
+
+/* Quando sub-content está colapsado */
+.sub-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
 /* Esconde automaticamente quando vazio */
 .sub-section:has(ul:empty) {
     display: none;
@@ -151,6 +355,38 @@ li button:hover {
 /* Remove espaço se estiver vazio */
 .sub-section ul:empty + * {
     margin-top: 0;
+}
+
+/* barra de progresso ao lado direito */
+.progress {
+    margin-left: 6px;
+    opacity: 0.9;
+    font-size: 12px;
+}
+
+/* missing requirement label */
+.falta {
+    font-size: 12px;
+    opacity: 0.75;
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+/* emoji progress spacing */
+.progress-emoji {
+    margin-left: 4px;
+}
+
+.progress-bar-inner {
+    height: 100%;
+    background-color: #fff;
+    transition: width 0.3s;
+    border-radius: 3px;
+}
+
+/* when only one requirement remains */
+.progress-bar.almost .progress-bar-inner {
+    background-color: #facc15; /* amarillo */
 }
 
 /* ============================= */
