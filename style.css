@@ -2,9 +2,18 @@
 /* TEMA PRETO PROFUNDO */
 /* ============================= */
 
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
-    margin: 30px;
+    margin: 20px;
     background-color: #000000;
     color: #e5e5e5;
 }
@@ -14,7 +23,7 @@ body {
 /* ============================= */
 
 h1 {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     font-weight: 600;
 }
 
@@ -27,11 +36,11 @@ h2 {
 /* ============================= */
 
 .optativas-box {
-    padding: 12px 14px;
+    padding: 8px 12px;
     background-color: #0a0a0a;
     border: 1px solid #1a3a1a;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -58,11 +67,11 @@ h2 {
 /* ============================= */
 
 .progress-container {
-    padding: 14px;
+    padding: 10px 14px;
     background-color: #0a0a0a;
     border: 1px solid #1a1a1a;
     border-radius: 4px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
 }
 
 .progress-info {
@@ -201,8 +210,9 @@ button:hover {
 
 .listas {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 14px;
+    align-content: start;
 }
 
 .listas div {
@@ -217,28 +227,65 @@ button:hover {
 
 ul {
     padding-left: 8px;
-    overflow: visible;
-    max-height: none;
+    margin: 6px 0;
 }
 
 li {
     display: flex;
     align-items: center;
-    /* remove space-between; we'll control alignment with margin-left:auto on right groups */
-    gap: 4px;
+    gap: 6px;
     margin-bottom: 4px;
-    padding: 2px;
+    padding: 4px 8px;
     border-radius: 4px;
     background-color: #111;
-    overflow: visible;
+    font-size: 14px;
+}
+
+/* Item row para no puede cursar - dois boxes na mesma linha */
+li.item-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.item-box {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.item-nombre {
+    flex: 1 1 auto;
+    min-width: 120px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.item-requisitos {
+    flex: 2 1 auto;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    min-width: 200px;
 }
 
 /* container holding progress bar/count and buttons, pushed to right */
 .right-group {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     margin-left: auto;
+}
+
+/* Container info-row para no puede cursar */
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 /* Nome da matéria */
@@ -248,12 +295,12 @@ li span:first-child {
 
 /* tag de año */
 .anio-tag {
-    font-size: 11px;
+    font-size: 12px;
     color: #999;
     opacity: 0.8;
     margin-left: 8px;
     font-weight: normal;
-    white-space: nowrap;
+    white-space: normal;
     min-width: 50px;
 }
 
@@ -302,20 +349,20 @@ li button:hover {
 
 .regularizadas-box {
     background-color: #0a0a0a;
-    padding: 18px;
+    padding: 10px;
     border: 1px solid #111;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
 /* Cada seção interna */
 .sub-section {
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 /* Título interno menor */
 .sub-section h4 {
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 15px;
     opacity: 0.8;
 }
 
@@ -336,7 +383,7 @@ li button:hover {
 
 /* Conteúdo colapsável dentro de sub-sections */
 .sub-content {
-    overflow: visible;
+    overflow: hidden;
     max-height: none;
     opacity: 1;
     transition:
@@ -353,14 +400,6 @@ li button:hover {
 /* Esconde automaticamente quando vazio */
 .sub-section:has(ul:empty) {
     display: none;
-}
-
-/* Garante visibilidade no mobile */
-.sub-section ul {
-    display: block;
-    visibility: visible;
-    max-height: none;
-    overflow: visible;
 }
 
 /* Remove espaço se estiver vazio */
@@ -380,7 +419,7 @@ li button:hover {
     font-size: 12px;
     opacity: 0.75;
     margin-right: 4px;
-    white-space: nowrap;
+    white-space: normal;
 }
 
 /* emoji progress spacing */
@@ -405,7 +444,7 @@ li button:hover {
 /* ============================= */
 
 .box {
-    padding: 10px 14px;
+    padding: 10px 12px;
     border: 1px solid #111;
     border-radius: 4px;
     background-color: #0a0a0a;
@@ -423,7 +462,7 @@ li button:hover {
 
 /* Conteúdo interno */
 .box-content {
-    overflow: visible;
+    overflow: hidden;
     max-height: none;
     opacity: 1;
     transition:
@@ -459,84 +498,129 @@ li button:hover {
         grid-template-columns: 1fr;
     }
 
-    /* Cards ocupam mais espaço */
-    .listas div {
-        border-radius: 4px;
+    /* Boxes sempre visíveis no mobile (desabilita colapso) */
+    .box-content {
+        max-height: none;
+        overflow: visible;
     }
 
-    /* Inputs e selects ocupam largura total */
-    select,
-    input,
-    button {
+    .sub-content {
+        max-height: none;
+        overflow: visible;
+    }
+
+    /* Top bar - layout vertical */
+    .top-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .top-bar label {
         width: 100%;
-        box-sizing: border-box;
     }
 
-    /* Extension form - layout vertical no mobile */
+    .top-bar input {
+        flex: 1;
+    }
+
+    .top-bar button {
+        flex: 1;
+    }
+
+    /* Optativas box */
+    .optativas-box {
+        flex-wrap: wrap;
+    }
+
+    .optativas-box span:first-child {
+        width: 100%;
+    }
+
+    /* Legend box */
+    .legend-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Extension form - layout vertical */
     .extension-form {
         flex-direction: column;
     }
 
-    .extension-form input {
-        width: 100%;
-    }
-
-    .extension-form input:last-of-type {
-        flex: none;
-    }
-
+    .extension-form input,
     .extension-form button {
         width: 100%;
     }
 
-    /* Botões não ficam gigantes */
+    /* Inputs e buttons */
+    select, input, button {
+        max-width: 100%;
+    }
+
+    /* LI ITEMS - layout para no puede cursar */
+    li {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+
+    /* No puede cursar - dois boxes em linhas separadas no mobile */
+    li.item-row {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .item-box {
+        width: 100%;
+    }
+
+    .item-nombre {
+        min-width: 100%;
+    }
+
+    .item-requisitos {
+        justify-content: flex-start;
+    }
+
+    li span:first-child {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    /* Container da linha 2 (Falta + Emoji + Ano + Progress) */
+    .info-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .info-row .falta,
+    .info-row .progress-emoji,
+    .info-row .anio-tag,
+    .info-row .progress {
+        display: inline;
+        width: auto;
+    }
+
+    /* Right group com botões alinhado à direita */
+    .right-group {
+        display: flex;
+        margin-left: auto;
+    }
+
     li button {
         width: auto;
     }
 
-    /* Lista fica mais compacta mas os itens não quebram */
-    li {
-        flex-wrap: nowrap;
-        gap: 4px;
-    }
-
-    /* Nome da matéria pode quebrar se necessário */
-    li span:first-child {
-        flex: 1;
-        min-width: 80px;
-    }
-
-    /* Ajusta título */
-    h1 {
-        font-size: 20px;
-    }
-
-    h2 {
-        font-size: 16px;
-    }
-
-    h3 {
-        font-size: 15px;
-    }
-
-    /* Reduz padding nos boxes */
+    /* Boxes */
     .box {
         padding: 8px;
     }
 
-    .box:has(.box-content.collapsed) {
-        padding: 4px;
+    h1 {
+        font-size: 18px;
     }
-
-    /* Garante que sub-sections de optativas apareçam */
-    .sub-section {
-        display: block;
-    }
-
-    /* Tags de ano não encolhem demais */
-    .anio-tag {
-        min-width: auto;
-        font-size: 10px;
-    }
-
-}

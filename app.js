@@ -319,6 +319,85 @@ function agregar(id, texto, codigo = null, progreso = null) {
 
     const li = document.createElement("li");
 
+    // Para "no puede cursar": criar dois boxes separados
+    if (progreso && (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-"))) {
+        li.className = "item-row";
+        
+        // Box 1: Nome da matéria
+        const box1 = document.createElement("div");
+        box1.className = "item-box item-nombre";
+        
+        const span = document.createElement("span");
+        span.innerText = texto;
+        
+        if (codigo) {
+            const materia = materias.find(m => m.codigo === codigo);
+            if (materia && materia.categoria === "optativa") {
+                span.className = "optativa-nombre";
+            }
+        }
+        box1.appendChild(span);
+        
+        // Box 2: Requisitos
+        const box2 = document.createElement("div");
+        box2.className = "item-box item-requisitos";
+        
+        const { cumplidos, total, faltante } = progreso;
+        
+        if (faltante) {
+            const faltaSpan = document.createElement("span");
+            faltaSpan.innerText = `Falta: ${faltante}`;
+            faltaSpan.className = "falta";
+            box2.appendChild(faltaSpan);
+            
+            const emoji = document.createElement("span");
+            emoji.innerText = "🟡";
+            emoji.className = "progress-emoji";
+            box2.appendChild(emoji);
+        }
+        
+        // Info (ano/categoria)
+        let infoSpan = null;
+        if (codigo) {
+            const materia = materias.find(m => m.codigo === codigo);
+            if (materia) {
+                let infoText = "";
+                if (materia.categoria === "optativa" && materia.horas) {
+                    infoText += `${materia.horas}h`;
+                }
+                if (materia.anio) {
+                    if (infoText) infoText += " | ";
+                    infoText += `${materia.anio}° Año`;
+                }
+                if (materia.categoria) {
+                    if (infoText) infoText += " | ";
+                    infoText += materia.categoria.charAt(0).toUpperCase() + materia.categoria.slice(1);
+                }
+                if (infoText) {
+                    infoSpan = document.createElement("span");
+                    infoSpan.innerText = infoText;
+                    infoSpan.className = "anio-tag";
+                }
+            }
+        }
+        
+        if (infoSpan) {
+            box2.appendChild(infoSpan);
+        }
+        
+        const progSpan = document.createElement("span");
+        progSpan.innerText = `(${cumplidos}/${total})`;
+        progSpan.className = "progress";
+        box2.appendChild(progSpan);
+        
+        li.appendChild(box1);
+        li.appendChild(box2);
+        
+        document.getElementById(id).appendChild(li);
+        return;
+    }
+
+    // Para otros casos: estructura original
     const span = document.createElement("span");
     span.innerText = texto;
     
@@ -425,19 +504,25 @@ function agregar(id, texto, codigo = null, progreso = null) {
 
     // Agregar elementos en orden diferente según el contexto
     if (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-")) {
-        // Para "noPuedeCursar": Falta → 🟡 → Año/Categoria → (x/y) → botones
+        // Para "no puede cursar": criar container para linha 2
+        const infoRow = document.createElement("div");
+        infoRow.className = "info-row";
+        
         if (faltaSpan) {
-            li.appendChild(faltaSpan);
+            infoRow.appendChild(faltaSpan);
         }
         if (emoji) {
-            li.appendChild(emoji);
+            infoRow.appendChild(emoji);
         }
         if (infoSpan) {
-            li.appendChild(infoSpan);
+            infoRow.appendChild(infoSpan);
         }
         if (progSpan) {
-            li.appendChild(progSpan);
+            infoRow.appendChild(progSpan);
         }
+        
+        li.appendChild(infoRow);
+        
         if (rightGroup.children.length > 0) {
             li.appendChild(rightGroup);
         }
