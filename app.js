@@ -87,7 +87,15 @@ function eliminarProyectoExtension(id) {
 // VERIFICACIONES
 // ===============================
 
-function cumpleRequisitos(lista) {
+function cumpleRequisitos(lista, materia = null) {
+
+    // Verificar año de matrícula para optativas
+    if (materia && materia.categoria === "optativa" && materia.anio) {
+        const aniosMatricula = new Date().getFullYear() - anioIngreso;
+        if (aniosMatricula < materia.anio) {
+            return false;
+        }
+    }
 
     for (let req of lista) {
         if (!verificarRequisito(req)) return false;
@@ -110,6 +118,8 @@ function render() {
 
     // coletar itens para noPuedeCursar antes de renderizar
     const noPuedeCursarItems = [];
+    const puedeCursarObligatorias = [];
+    const puedeCursarOptativas = [];
 
     materias.forEach(m => {
 
@@ -122,25 +132,36 @@ function render() {
 
         if (estado === "regularizada") {
 
-            if (cumpleRequisitos(m.paraAprobar)) {
+            if (cumpleRequisitos(m.paraAprobar, m)) {
                 agregar("puedeFinal", m.nombre, m.codigo);
             } else {
-                agregar("noPuedeFinal", m.nombre, m.codigo);
+                agregar("no puedeFinal", m.nombre, m.codigo);
             }
 
             return;
         }
 
         // SIN ESTADO
-        if (cumpleRequisitos(m.paraCursar)) {
-            const listId = m.categoria === "optativa" ? "puedeCursar-optativas" : "puedeCursar-obligatorias";
-            agregar(listId, m.nombre, m.codigo);
+        if (cumpleRequisitos(m.paraCursar, m)) {
+            if (m.categoria === "optativa") {
+                puedeCursarOptativas.push(m);
+            } else {
+                puedeCursarObligatorias.push(m);
+            }
         } else {
             const progreso = calcularProgresoParaCursar(m);
             noPuedeCursarItems.push({ nombre: m.nombre, codigo: m.codigo, progreso, categoria: m.categoria });
         }
 
     });
+
+    // Ordenar por año (menor para maior)
+    puedeCursarObligatorias.sort((a, b) => (a.anio || 0) - (b.anio || 0));
+    puedeCursarOptativas.sort((a, b) => (a.anio || 0) - (b.anio || 0));
+
+    // Renderizar puede cursar ordenado
+    puedeCursarObligatorias.forEach(m => agregar("puedeCursar-obligatorias", m.nombre, m.codigo));
+    puedeCursarOptativas.forEach(m => agregar("puedeCursar-optativas", m.nombre, m.codigo));
 
     // renderizar proyectos de extensión en "aprobadas"
     proyectosExtension.forEach(p => {
@@ -226,7 +247,7 @@ function actualizarBarraProgreso() {
             aprobadas += puntos;
         } else if (estado === "regularizada") {
             regularizadas += puntos;
-        } else if (cumpleRequisitos(m.paraCursar)) {
+        } else if (cumpleRequisitos(m.paraCursar, m)) {
             puedeCursar += puntos;
         }
     });
@@ -294,10 +315,22 @@ function resolverRequisitosTransitivos(requisitos) {
 
 function calcularProgresoParaCursar(materia) {
     const requisitosTransitivos = resolverRequisitosTransitivos(materia.paraCursar);
-    const total = requisitosTransitivos.length;
-    if (total === 0) return null;
+    let total = requisitosTransitivos.length;
+    
+    // Agregar verificación de año de matrícula para optativas
+    let requiereAnioMatricula = false;
+    if (materia.categoria === "optativa" && materia.anio) {
+        const aniosMatricula = new Date().getFullYear() - anioIngreso;
+        if (aniosMatricula < materia.anio) {
+            requiereAnioMatricula = true;
+            total += 1;
+        }
+    }
+    
+    if (total === 0 && !requiereAnioMatricula) return null;
     let cumplidos = 0;
     let faltanteNombre = null;
+    
     for (let req of requisitosTransitivos) {
         const estadoMateria = estados[req.materia];
         const condicionCumple = req.condicion === "aprobada"
@@ -311,6 +344,17 @@ function calcularProgresoParaCursar(materia) {
             faltanteNombre = m ? m.nombre : req.materia;
         }
     }
+    
+    // Verificar año de matrícula
+    if (requiereAnioMatricula) {
+        const aniosMatricula = new Date().getFullYear() - anioIngreso;
+        if (aniosMatricula >= materia.anio) {
+            cumplidos++;
+        } else if (!faltanteNombre) {
+            faltanteNombre = `${materia.anio}° Año de matrícula`;
+        }
+    }
+    
     const faltantesCount = total - cumplidos;
     return { cumplidos, total, faltante: faltantesCount === 1 ? faltanteNombre : null };
 }

@@ -209,10 +209,9 @@ button:hover {
 /* ============================= */
 
 .listas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 14px;
-    align-content: start;
 }
 
 .listas div {
@@ -246,8 +245,8 @@ li.item-row {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
 }
 
 .item-box {
@@ -257,18 +256,18 @@ li.item-row {
 }
 
 .item-nombre {
-    flex: 1 1 auto;
-    min-width: 120px;
+    flex: 0 1 300px;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 .item-requisitos {
-    flex: 2 1 auto;
-    justify-content: flex-start;
-    gap: 8px;
+    display: flex;
     flex-wrap: wrap;
-    min-width: 200px;
+    justify-content: flex-end;
+    flex: 1 0 auto;
+    align-items: center;
+    gap: 8px;
 }
 
 /* container holding progress bar/count and buttons, pushed to right */
@@ -286,6 +285,7 @@ li.item-row {
     gap: 8px;
     flex-wrap: wrap;
     width: 100%;
+    justify-content: flex-end;
 }
 
 /* Nome da matéria */
@@ -571,6 +571,7 @@ li button:hover {
     li.item-row {
         flex-direction: column;
         gap: 6px;
+        align-items: flex-start;
     }
 
     .item-box {
@@ -579,10 +580,14 @@ li button:hover {
 
     .item-nombre {
         min-width: 100%;
+        max-width: 100%;
+        flex: none;
     }
 
     .item-requisitos {
         justify-content: flex-start;
+        flex: none;
+        width: 100%;
     }
 
     li span:first-child {
@@ -596,6 +601,7 @@ li button:hover {
         flex-wrap: wrap;
         gap: 8px;
         width: 100%;
+        justify-content: flex-start;
     }
 
     .info-row .falta,
@@ -604,6 +610,7 @@ li button:hover {
     .info-row .progress {
         display: inline;
         width: auto;
+        margin-left: 0;
     }
 
     /* Right group com botões alinhado à direita */
