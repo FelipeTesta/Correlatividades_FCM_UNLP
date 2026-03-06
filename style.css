@@ -217,6 +217,8 @@ button:hover {
 
 ul {
     padding-left: 8px;
+    overflow: visible;
+    max-height: none;
 }
 
 li {
@@ -228,6 +230,7 @@ li {
     padding: 2px;
     border-radius: 4px;
     background-color: #111;
+    overflow: visible;
 }
 
 /* container holding progress bar/count and buttons, pushed to right */
@@ -333,8 +336,8 @@ li button:hover {
 
 /* Conteúdo colapsável dentro de sub-sections */
 .sub-content {
-    overflow: hidden;
-    max-height: 1000px;
+    overflow: visible;
+    max-height: none;
     opacity: 1;
     transition:
         max-height 0.3s ease,
@@ -350,6 +353,14 @@ li button:hover {
 /* Esconde automaticamente quando vazio */
 .sub-section:has(ul:empty) {
     display: none;
+}
+
+/* Garante visibilidade no mobile */
+.sub-section ul {
+    display: block;
+    visibility: visible;
+    max-height: none;
+    overflow: visible;
 }
 
 /* Remove espaço se estiver vazio */
@@ -412,8 +423,8 @@ li button:hover {
 
 /* Conteúdo interno */
 .box-content {
-    overflow: hidden;
-    max-height: 1000px;
+    overflow: visible;
+    max-height: none;
     opacity: 1;
     transition:
         max-height 0.3s ease,
@@ -461,15 +472,38 @@ li button:hover {
         box-sizing: border-box;
     }
 
+    /* Extension form - layout vertical no mobile */
+    .extension-form {
+        flex-direction: column;
+    }
+
+    .extension-form input {
+        width: 100%;
+    }
+
+    .extension-form input:last-of-type {
+        flex: none;
+    }
+
+    .extension-form button {
+        width: 100%;
+    }
+
     /* Botões não ficam gigantes */
     li button {
         width: auto;
     }
 
-    /* Lista fica mais compacta */
+    /* Lista fica mais compacta mas os itens não quebram */
     li {
-        flex-wrap: wrap;
-        gap: 6px;
+        flex-wrap: nowrap;
+        gap: 4px;
+    }
+
+    /* Nome da matéria pode quebrar se necessário */
+    li span:first-child {
+        flex: 1;
+        min-width: 80px;
     }
 
     /* Ajusta título */
@@ -492,6 +526,17 @@ li button:hover {
 
     .box:has(.box-content.collapsed) {
         padding: 4px;
+    }
+
+    /* Garante que sub-sections de optativas apareçam */
+    .sub-section {
+        display: block;
+    }
+
+    /* Tags de ano não encolhem demais */
+    .anio-tag {
+        min-width: auto;
+        font-size: 10px;
     }
 
 }
