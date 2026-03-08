@@ -91,7 +91,7 @@ function cumpleRequisitos(lista, materia = null) {
 
     // Verificar año de matrícula para optativas
     if (materia && materia.categoria === "optativa" && materia.anio) {
-        const aniosMatricula = new Date().getFullYear() - anioIngreso;
+        const aniosMatricula = new Date().getFullYear() - anioIngreso + 1;
         if (aniosMatricula < materia.anio) {
             return false;
         }
