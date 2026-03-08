@@ -499,14 +499,18 @@ li button:hover {
     }
 
     /* Boxes sempre visíveis no mobile (desabilita colapso) */
-    .box-content {
-        max-height: none;
-        overflow: visible;
+    .box-content, 
+    .box-content.collapsed {
+        max-height: none !important;
+        opacity: 1 !important;
+        overflow: visible !important;
     }
 
-    .sub-content {
-        max-height: none;
-        overflow: visible;
+    .sub-content,
+    .sub-content.collapsed {
+        max-height: none !important;
+        opacity: 1 !important;
+        overflow: visible !important;
     }
 
     /* Top bar - layout vertical */

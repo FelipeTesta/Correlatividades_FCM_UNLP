@@ -135,7 +135,7 @@ function render() {
             if (cumpleRequisitos(m.paraAprobar, m)) {
                 agregar("puedeFinal", m.nombre, m.codigo);
             } else {
-                agregar("no puedeFinal", m.nombre, m.codigo);
+                agregar("noPuedeFinal", m.nombre, m.codigo);
             }
 
             return;
@@ -163,29 +163,52 @@ function render() {
     puedeCursarObligatorias.forEach(m => agregar("puedeCursar-obligatorias", m.nombre, m.codigo));
     puedeCursarOptativas.forEach(m => agregar("puedeCursar-optativas", m.nombre, m.codigo));
 
-    // renderizar proyectos de extensión en "aprobadas"
+    // renderizar proyectos de extensión en "aprobadas" y en su propia lista
     proyectosExtension.forEach(p => {
-        const li = document.createElement("li");
-        const span = document.createElement("span");
-        span.innerText = p.nombre;
-        span.className = "extension-nombre";
-        li.appendChild(span);
+        // En Aprobadas
+        const liAprobada = document.createElement("li");
+        const spanAprobada = document.createElement("span");
+        spanAprobada.innerText = p.nombre;
+        spanAprobada.className = "extension-nombre";
+        liAprobada.appendChild(spanAprobada);
 
-        const infoSpan = document.createElement("span");
-        infoSpan.innerText = `${p.horas} Horas | Proyecto de Extensión`;
-        infoSpan.className = "anio-tag";
-        li.appendChild(infoSpan);
+        const infoSpanAprobada = document.createElement("span");
+        infoSpanAprobada.innerText = `${p.horas} Horas | Proyecto de Extensión`;
+        infoSpanAprobada.className = "anio-tag";
+        liAprobada.appendChild(infoSpanAprobada);
 
-        const rightGroup = document.createElement("div");
-        rightGroup.className = "right-group";
+        const rightGroupAprobada = document.createElement("div");
+        rightGroupAprobada.className = "right-group";
 
-        const btnDelete = document.createElement("button");
-        btnDelete.innerText = "❌";
-        btnDelete.onclick = () => eliminarProyectoExtension(p.id);
-        rightGroup.appendChild(btnDelete);
+        const btnDeleteAprobada = document.createElement("button");
+        btnDeleteAprobada.innerText = "❌";
+        btnDeleteAprobada.onclick = () => eliminarProyectoExtension(p.id);
+        rightGroupAprobada.appendChild(btnDeleteAprobada);
 
-        li.appendChild(rightGroup);
-        document.getElementById("aprobadas").appendChild(li);
+        liAprobada.appendChild(rightGroupAprobada);
+        document.getElementById("aprobadas").appendChild(liAprobada);
+
+        // En Proyectos de Extensión (la caja dedicada)
+        const liExtension = document.createElement("li");
+        const spanExtension = document.createElement("span");
+        spanExtension.innerText = p.nombre;
+        liExtension.appendChild(spanExtension);
+
+        const infoSpanExtension = document.createElement("span");
+        infoSpanExtension.innerText = `${p.horas} Horas`;
+        infoSpanExtension.className = "anio-tag";
+        liExtension.appendChild(infoSpanExtension);
+
+        const rightGroupExtension = document.createElement("div");
+        rightGroupExtension.className = "right-group";
+
+        const btnDeleteExtension = document.createElement("button");
+        btnDeleteExtension.innerText = "❌";
+        btnDeleteExtension.onclick = () => eliminarProyectoExtension(p.id);
+        rightGroupExtension.appendChild(btnDeleteExtension);
+
+        liExtension.appendChild(rightGroupExtension);
+        document.getElementById("proyectosExtension").appendChild(liExtension);
     });
 
     // ordenar por faltantes (total - cumplidos) em ordem crescente
