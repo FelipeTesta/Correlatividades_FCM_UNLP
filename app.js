@@ -250,6 +250,7 @@ function actualizarBarraProgreso() {
     
     let aprobadas = 0;
     let regularizadas = 0;
+    let optativasPct = 0;
     let puedeCursar = 0;
     let total = 0;
     
@@ -279,13 +280,14 @@ function actualizarBarraProgreso() {
     // Agregar horas optativas al total (270 puntos = 270 horas)
     const horasOptativas = calcularHorasOptativas();
     total += 270;
-    aprobadas += Math.min(horasOptativas, 270); // contar solo hasta 270 horas
+    const optativasPuntos = Math.min(horasOptativas, 270);
     
     // calcular porcentajes
     const pctAprobadas = total > 0 ? (aprobadas / total) * 100 : 0;
     const pctRegularizadas = total > 0 ? (regularizadas / total) * 100 : 0;
+    const pctOptativas = total > 0 ? (optativasPuntos / total) * 100 : 0;
     const pctPuedeCursar = total > 0 ? (puedeCursar / total) * 100 : 0;
-    const pctTotal = ((aprobadas + regularizadas + puedeCursar) / total) * 100;
+    const pctTotal = ((aprobadas + regularizadas + optativasPuntos + puedeCursar) / total) * 100;
     
     // actualizar texto
     document.getElementById("materiasCount").innerText = `Materias: ${obligatorias.filter(m => estados[m.codigo] === "aprobada").length} (Aprobadas) / ${obligatorias.length} (Totales) | Optativas: ${Math.min(horasOptativas, 270)}/270h`;
@@ -293,10 +295,12 @@ function actualizarBarraProgreso() {
     // actualizar segmentos de barra
     const segAprobadas = document.getElementById("segmentAprobadas");
     const segRegularizadas = document.getElementById("segmentRegularizadas");
+    const segOptativas = document.getElementById("segmentOptativas");
     const segPuedeCursar = document.getElementById("segmentPuedeCursar");
     
     segAprobadas.style.width = pctAprobadas + "%";
     segRegularizadas.style.width = pctRegularizadas + "%";
+    segOptativas.style.width = pctOptativas + "%";
     segPuedeCursar.style.width = pctPuedeCursar + "%";
     
     // actualizar porcentaje total

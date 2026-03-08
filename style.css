@@ -116,8 +116,12 @@ h2 {
     background-color: #f97316;
 }
 
+.progress-segment.optativas {
+    background-color: #22d3ee;
+}
+
 .progress-segment.puede-cursar {
-    background-color: #facc15;
+    background-color: #666666;
 }
 
 .progress-percent {
