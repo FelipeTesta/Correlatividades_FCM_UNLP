@@ -498,21 +498,6 @@ li button:hover {
         grid-template-columns: 1fr;
     }
 
-    /* Boxes sempre visíveis no mobile (desabilita colapso) */
-    .box-content, 
-    .box-content.collapsed {
-        max-height: none !important;
-        opacity: 1 !important;
-        overflow: visible !important;
-    }
-
-    .sub-content,
-    .sub-content.collapsed {
-        max-height: none !important;
-        opacity: 1 !important;
-        overflow: visible !important;
-    }
-
     /* Top bar - layout vertical */
     .top-bar {
         display: flex;

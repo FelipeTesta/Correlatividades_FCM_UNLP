@@ -135,7 +135,8 @@ function render() {
             if (cumpleRequisitos(m.paraAprobar, m)) {
                 agregar("puedeFinal", m.nombre, m.codigo);
             } else {
-                agregar("noPuedeFinal", m.nombre, m.codigo);
+                const progreso = calcularProgreso(m, m.paraAprobar);
+                agregar("noPuedeFinal", m.nombre, m.codigo, progreso);
             }
 
             return;
@@ -149,7 +150,7 @@ function render() {
                 puedeCursarObligatorias.push(m);
             }
         } else {
-            const progreso = calcularProgresoParaCursar(m);
+            const progreso = calcularProgreso(m);
             noPuedeCursarItems.push({ nombre: m.nombre, codigo: m.codigo, progreso, categoria: m.categoria });
         }
 
@@ -336,13 +337,13 @@ function resolverRequisitosTransitivos(requisitos) {
     return todosRequisitos;
 }
 
-function calcularProgresoParaCursar(materia) {
-    const requisitosTransitivos = resolverRequisitosTransitivos(materia.paraCursar);
-    let total = requisitosTransitivos.length;
+function calcularProgreso(materia, listaRequisitos = null) {
+    const requisitosEvaluar = listaRequisitos || resolverRequisitosTransitivos(materia.paraCursar);
+    let total = requisitosEvaluar.length;
     
-    // Agregar verificación de año de matrícula para optativas
+    // Agregar verificación de año de matrícula para optativas (solo si calculamos para cursar)
     let requiereAnioMatricula = false;
-    if (materia.categoria === "optativa" && materia.anio) {
+    if (!listaRequisitos && materia.categoria === "optativa" && materia.anio) {
         const aniosMatricula = new Date().getFullYear() - anioIngreso;
         if (aniosMatricula < materia.anio) {
             requiereAnioMatricula = true;
@@ -354,12 +355,8 @@ function calcularProgresoParaCursar(materia) {
     let cumplidos = 0;
     let faltanteNombre = null;
     
-    for (let req of requisitosTransitivos) {
-        const estadoMateria = estados[req.materia];
-        const condicionCumple = req.condicion === "aprobada"
-            ? estadoMateria === "aprobada"
-            : /* regularizada */ !!estadoMateria;
-        if (condicionCumple) {
+    for (let req of requisitosEvaluar) {
+        if (verificarRequisito(req)) {
             cumplidos++;
         } else if (!faltanteNombre) {
             // primera materia que no cumple
@@ -386,8 +383,8 @@ function agregar(id, texto, codigo = null, progreso = null) {
 
     const li = document.createElement("li");
 
-    // Para "no puede cursar": criar dois boxes separados
-    if (progreso && (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-"))) {
+    // Para "no puede cursar" o "no puede final": criar dois boxes separados
+    if (progreso && (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-") || id === "noPuedeFinal")) {
         li.className = "item-row";
         
         // Box 1: Nome da matéria
@@ -456,6 +453,30 @@ function agregar(id, texto, codigo = null, progreso = null) {
         progSpan.innerText = `(${cumplidos}/${total})`;
         progSpan.className = "progress";
         box2.appendChild(progSpan);
+        
+        // Botões de controle para noPuedeFinal (Reset e Aprobada)
+        if (id === "noPuedeFinal" && codigo) {
+            const rightGroup = document.createElement("div");
+            rightGroup.className = "right-group";
+            
+            const btnAprobada = document.createElement("button");
+            btnAprobada.innerText = "✅";
+            btnAprobada.onclick = () => {
+                estados[codigo] = "aprobada";
+                guardarLocalYRender();
+            };
+            rightGroup.appendChild(btnAprobada);
+
+            const btnReset = document.createElement("button");
+            btnReset.innerText = "🔄";
+            btnReset.onclick = () => {
+                delete estados[codigo];
+                guardarLocalYRender();
+            };
+            rightGroup.appendChild(btnReset);
+            
+            box2.appendChild(rightGroup);
+        }
         
         li.appendChild(box1);
         li.appendChild(box2);
@@ -638,10 +659,10 @@ function toggleBox(titleElement) {
 
     if (isCollapsed) {
         content.classList.remove("collapsed");
-        titleElement.innerText = titleElement.innerText.replace("▸", "▾");
+        titleElement.innerHTML = titleElement.innerHTML.replace("▸", "▾");
     } else {
         content.classList.add("collapsed");
-        titleElement.innerText = titleElement.innerText.replace("▾", "▸");
+        titleElement.innerHTML = titleElement.innerHTML.replace("▾", "▸");
     }
 }
 
