@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- AI_GUIDE: See README_AI.md for project architecture, state management, and development conventions -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -27,28 +28,19 @@
 </div>
 
 <div class="top-bar">
-<label>Año de ingreso:</label>
-<input type="number" id="anioIngreso" value="2023">
-<button onclick="guardarAnio()">Guardar</button>
-<button onclick="resetearTodos()">↪Resetear Todos</button>
+  <div class="top-bar-controls">
+    <label>Año de ingreso:</label>
+    <input type="number" id="anioIngreso" value="2023">
+    <button onclick="guardarAnio()">Guardar</button>
+    <button onclick="resetearTodos()">↪Resetear Todos</button>
+  </div>
+  <button id="btnHowToUse" class="btn-help" onclick="showHelpModal()">¿CÓMO USAR?</button>
 </div>
 
 <div class="optativas-box">
 <span>Horas Optativas Acumuladas:</span>
 <span id="horasOptativas" class="horas-count">0</span>
 <span class="horas-label">/ 270</span>
-</div>
-
-<hr>
-
-<!-- ===================== -->
-<!-- LEGENDA -->
-<!-- ===================== -->
-
-<div class="legend-box">
-<span>✅ Aprobada</span>
-<span>🟨 Cursada Regular</span>
-<span>🔄 Resetear</span>
 </div>
 
 <hr>

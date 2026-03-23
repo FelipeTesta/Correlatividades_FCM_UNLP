@@ -1,4 +1,6 @@
 // ===============================
+// AI_GUIDE: See README_AI.md for project architecture, state management, and development conventions
+// ===============================
 // INCLUIR: % concluido, optativas
 // ===============================
 // ===============================
@@ -357,15 +359,16 @@ function calcularProgreso(materia, listaRequisitos = null) {
     
     if (total === 0 && !requiereAnioMatricula) return null;
     let cumplidos = 0;
-    let faltanteNombre = null;
+    let faltantes = [];
     
     for (let req of requisitosEvaluar) {
         if (verificarRequisito(req)) {
             cumplidos++;
-        } else if (!faltanteNombre) {
-            // primera materia que no cumple
+        } else {
             const m = materias.find(x => x.codigo === req.materia);
-            faltanteNombre = m ? m.nombre : req.materia;
+            const nombre = m ? m.nombre : req.materia;
+            const condicion = req.condicion === "aprobada" ? "Aprobada" : "Regularizada";
+            faltantes.push(`${nombre} (${condicion})`);
         }
     }
     
@@ -374,13 +377,17 @@ function calcularProgreso(materia, listaRequisitos = null) {
         const aniosMatricula = new Date().getFullYear() - anioIngreso;
         if (aniosMatricula >= materia.anio) {
             cumplidos++;
-        } else if (!faltanteNombre) {
-            faltanteNombre = `${materia.anio}° Año de matrícula`;
+        } else {
+            faltantes.push(`${materia.anio}° Año de matrícula`);
         }
     }
     
-    const faltantesCount = total - cumplidos;
-    return { cumplidos, total, faltante: faltantesCount === 1 ? faltanteNombre : null };
+    return { 
+        cumplidos, 
+        total, 
+        faltante: faltantes.length === 1 ? faltantes[0].split(" (")[0] : null,
+        faltantes: faltantes
+    };
 }
 
 function agregar(id, texto, codigo = null, progreso = null) {
@@ -457,6 +464,18 @@ function agregar(id, texto, codigo = null, progreso = null) {
         progSpan.innerText = `(${cumplidos}/${total})`;
         progSpan.className = "progress";
         box2.appendChild(progSpan);
+
+        if (progreso.faltantes && progreso.faltantes.length > 0) {
+            const btnWarn = document.createElement("button");
+            btnWarn.innerText = "⚠";
+            btnWarn.className = "btn-warning-faltantes";
+            btnWarn.title = "Ver materias faltantes";
+            btnWarn.onclick = (e) => {
+                e.stopPropagation();
+                mostrarPopupFaltantes(texto, progreso.faltantes);
+            };
+            box2.appendChild(btnWarn);
+        }
         
         // Botões de controle para noPuedeFinal (Reset e Aprobada)
         if (id === "noPuedeFinal" && codigo) {
@@ -611,6 +630,18 @@ function agregar(id, texto, codigo = null, progreso = null) {
         }
         if (progSpan) {
             infoRow.appendChild(progSpan);
+
+            if (progreso.faltantes && progreso.faltantes.length > 0) {
+                const btnWarn = document.createElement("button");
+                btnWarn.innerText = "⚠";
+                btnWarn.className = "btn-warning-faltantes";
+                btnWarn.title = "Ver materias faltantes";
+                btnWarn.onclick = (e) => {
+                    e.stopPropagation();
+                    mostrarPopupFaltantes(texto, progreso.faltantes);
+                };
+                infoRow.appendChild(btnWarn);
+            }
         }
         
         li.appendChild(infoRow);
@@ -695,8 +726,125 @@ function toggleSubsection(headerElement) {
 
 render();
 
+// Check if first time
+if (!localStorage.getItem("hasSeenHelp")) {
+    showHelpModal();
+    localStorage.setItem("hasSeenHelp", "true");
+}
+
+function showHelpModal() {
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.onclick = () => document.body.removeChild(overlay);
+
+    const modal = document.createElement("div");
+    modal.className = "modal-content";
+    modal.onclick = (e) => e.stopPropagation();
+
+    const btnX = document.createElement("button");
+    btnX.innerText = "×";
+    btnX.className = "modal-close-x";
+    btnX.onclick = () => document.body.removeChild(overlay);
+    modal.appendChild(btnX);
+
+    const title = document.createElement("h3");
+    title.innerText = "¿Cómo usar este sitio?";
+    modal.appendChild(title);
+
+    const list = document.createElement("ul");
+    
+    const items = [
+        "Los iconos ✅🟨🔄 son botones y sirven para marcar el estado de cada materia.",
+        "✅ <b>Aprobada</b>. Ya rendiste el final y aprobaste la materia.",
+        "🟨 <b>Cursada</b>: Tiene la cursada aprobada pero te falta rendir el final.",
+        "🔄 <b>Resetear</b>: Quita el estado de la materia si la marcaste mal.",
+        "⚠ <b>Info</b>: Haz clic para ver qué requisitos te faltan para cursar o rendir final."
+    ];
+
+    items.forEach(text => {
+        const li = document.createElement("li");
+        li.innerHTML = text;
+        li.style.background = "transparent";
+        li.style.borderBottom = "1px solid #222";
+        li.style.padding = "12px 0";
+        list.appendChild(li);
+    });
+    modal.appendChild(list);
+
+    const btnCerrar = document.createElement("button");
+    btnCerrar.innerText = "¡ENTENDIDO!";
+    btnCerrar.style.width = "100%";
+    btnCerrar.style.marginTop = "15px";
+    btnCerrar.style.padding = "10px";
+    btnCerrar.style.backgroundColor = "#22d3ee";
+    btnCerrar.style.color = "#000";
+    btnCerrar.style.fontWeight = "bold";
+    btnCerrar.onclick = () => document.body.removeChild(overlay);
+    modal.appendChild(btnCerrar);
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
 function actualizarHorasOptativas() {
     const horas = calcularHorasOptativas();
     const el = document.getElementById("horasOptativas");
     if (el) el.innerText = horas;
+}
+
+// ===============================
+// POPUP MATERIAS FALTANTES
+// ===============================
+
+function mostrarPopupFaltantes(materiaNombre, faltantes) {
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.onclick = () => document.body.removeChild(overlay);
+
+    const modal = document.createElement("div");
+    modal.className = "modal-content";
+    modal.onclick = (e) => e.stopPropagation();
+
+    const btnX = document.createElement("button");
+    btnX.innerText = "×";
+    btnX.className = "modal-close-x";
+    btnX.onclick = () => document.body.removeChild(overlay);
+    modal.appendChild(btnX);
+
+    const title = document.createElement("h3");
+    title.innerText = "Requisitos faltantes para:";
+    modal.appendChild(title);
+
+    const subtitle = document.createElement("h2");
+    subtitle.innerText = materiaNombre;
+    subtitle.style.fontSize = "18px";
+    subtitle.style.marginBottom = "15px";
+    subtitle.style.color = "#fff";
+    modal.appendChild(subtitle);
+
+    const list = document.createElement("ul");
+    list.style.maxHeight = "300px";
+    list.style.overflowY = "auto";
+    
+    faltantes.sort().forEach(faltante => {
+        const li = document.createElement("li");
+        li.innerText = "• " + faltante;
+        li.style.background = "transparent";
+        li.style.borderBottom = "1px solid #222";
+        li.style.borderRadius = "0";
+        list.appendChild(li);
+    });
+    modal.appendChild(list);
+
+    const btnCerrar = document.createElement("button");
+    btnCerrar.innerText = "Cerrar";
+    btnCerrar.style.width = "100%";
+    btnCerrar.style.marginTop = "15px";
+    btnCerrar.style.padding = "10px";
+    btnCerrar.style.backgroundColor = "#222";
+    btnCerrar.onclick = () => document.body.removeChild(overlay);
+    modal.appendChild(btnCerrar);
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
 }
