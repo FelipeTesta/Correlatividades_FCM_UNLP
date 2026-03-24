@@ -1,0 +1,82 @@
+Código,Materia,Febrero,1° Marzo,2° Marzo,3° Marzo,Abril
+A0001,Anatomía A,9-feb,2-mar,16-mar,25-mar,6-abr
+A0001,Anatomía B,9-feb,2-mar,16-mar,30-mar,6-abr
+A0001,Anatomía C,11-feb,5-mar,16-mar,25-mar,6-abr
+BE001,Bioética,-,-,-,-,-
+BIOL9,Biología,12-feb,5-mar,19-mar,26-mar,9-abr
+BC001,Bioquímica Clínica I,9-feb,2-mar,16-mar,30-mar,6-abr
+BC002,Bioquímica Clínica II,9-feb,2-mar,16-mar,30-mar,6-abr
+B0001,Bioquímica y Biología Molecular,9-feb,5-mar,16-mar,26-mar,9-abr
+CATME,Calidad de la Atención Médica,10-feb,3-mar,17-mar,31-mar,7-abr
+CE001,Ciencias Exactas - Regular,13-feb,6-mar,20-mar,27-mar,10-abr
+CE001,Ciencias Exactas - Libre,-,6-mar,-,-,-
+CS001,Ciencias Sociales y medicina,10-feb,3-mar,17-mar,31-mar,7-abr
+C1001,Cirugía A,11-feb,4-mar,18-mar,25-mar,8-abr
+C1001,Cirugía B,11-feb,4-mar,18-mar,25-mar,8-abr
+C1001,Cirugía C,12-feb,5-mar,19-mar,26-mar,9-abr
+C1001,Cirugía D,9-feb,2-mar,16-mar,30-mar,6-abr
+C1001,Cirugía E,13-feb,6-mar,20-mar,27-mar,10-abr
+CDT01,Cirugía de Torax,9-feb,2-mar,16-mar,30-mar,6-abr
+H0001,"Citología, Histología y Embriología",9-feb,2-mar,16-mar,26-mar,6-abr
+DL001,Deontología Médica y medicina Legal,11-feb,4-mar,18-mar,25-mar,8-abr
+D0001,Dermatología,12-feb,2-mar,19-mar,25-mar,9-abr
+R9002,Diagnóstico y Terapéutica por imágenes II y Radiologia,-,-,-,-,-
+DISIN,Discapacidad Intelectual,14-feb,7-mar,21-mar,27-mar,11-abr
+E0001,Ecología Humana y Promoción de la Salud,10-feb,3-mar,17-mar,31-mar,7-abr
+PENFC,El paciente con Enfermedad Crónica de Alto Impacto Familiar,10-feb,3-mar,17-mar,31-mar,7-abr
+ENFPF,Enfermedades poco Frecuentes en Medicina,-,-,-,-,-
+EP001,Epidemiología,10-feb,3-mar,17-mar,31-mar,7-abr
+EACS1,Estadística Aplicada a Ciencias de la Salud,13-feb,5-mar,20-mar,26-mar,7-abr
+F9002,Farmacología Aplicada- Farmacología P/V,13-feb,2-mar,16-mar,25-mar,6-abr
+F9001,Farmacología Básica,13-feb,2-mar,16-mar,25-mar,6-abr
+FM001,Filosofía Médica,10-feb,3-mar,17-mar,31-mar,7-abr
+FB001,Fisiología y Física Biológica,10-feb,3-mar,17-mar,25-mar,7-abr
+GE001,Genética-Regular,12-feb,3-mar,17-mar,26-mar,7-abr
+GE001,Genética-Libre,12-feb,3-mar,17-mar,26-mar,7-abr
+G0001,Ginecología A,10-feb,3-mar,17-mar,31-mar,7-abr
+G0001,Ginecología B,10-feb,3-mar,17-mar,31-mar,7-abr
+HM001,Historia de la Medicina-Regular,11-feb,4-mar,18-mar,25-mar,8-abr
+HM001,Historia de la Medicina-Libre,12-feb,5-mar,19-mar,26-mar,9-abr
+I0001,Infectología,12-feb,5-mar,19-mar,26-mar,9-abr
+IAA01,Informática Aplicada,10-feb,3-mar,17-mar,31-mar,7-abr
+IFB01,Informática Básica- Libre,11-feb,4-mar,18-mar,25-mar,8-abr
+IFM02,Informática Médica,12-feb,5-mar,19-mar,26-mar,9-abr
+IMD01,Ingles Médico-Regular,13-feb,6-mar,16-mar,27-mar,6-abr
+IMD01,Ingles Médico-Libre,13-feb,6-mar,16-mar,27-mar,6-abr
+IM001,Inmunología-Regular,9-feb,2-mar,16-mar,30-mar,6-abr
+IM001,Inmunología-Libre,9-feb,2-mar,16-mar,30-mar,6-abr
+IES01,Introducción a la Epistemología,10-feb,3-mar,17-mar,31-mar,7-abr
+LCM01,"Literatura, Cine y Medicina",12-feb,5-mar,19-mar,26-mar,9-abr
+MGF,Medicina General y Familiar,11-feb,4-mar,18-mar,25-mar,8-abr
+MI191,Medicina Interna A,12-feb,5-mar,19-mar,26-mar,9-abr
+MI191,Medicina Interna B,10-feb,3-mar,17-mar,25-mar,7-abr
+MI191,Medicina Interna C,10-feb,3-mar,17-mar,31-mar,7-abr
+MI291,Medicina Interna D,10-feb,3-mar,17-mar,31-mar,7-abr
+MI291,Medicina Interna E,12-feb,5-mar,19-mar,26-mar,9-abr
+MI291,Medicina Interna F,9-feb,2-mar,16-mar,25-mar,9-abr
+M0001,Microbiología y Parasitología,9-feb,2-mar,16-mar,25-mar,6-abr
+NEUAT,Neuroanatomía Semiológica – Regular,9-feb,2-mar,16-mar,25-mar,6-abr
+NEUAT,Neuroanatomía Semiológica – Libre,9-feb,2-mar,16-mar,25-mar,6-abr
+NCG,Neurocirugia,11-feb,4-mar,18-mar,25-mar,8-abr
+N0001,Neurología,10-feb,3-mar,17-mar,31-mar,7-abr
+NUTRI,Nutrición Clínica,-,-,-,-,-
+OB001,Obstetricia,11-feb,4-mar,18-mar,25-mar,8-abr
+OF001,Oftalmología,12-feb,5-mar,19-mar,26-mar,9-abr
+OR001,Ortopedia y Traumatología,12-feb,4-mar,19-mar,25-mar,9-abr
+O0001,Otorrinolaringología,12-feb,5-mar,19-mar,26-mar,9-abr
+PT001,Patología A,10-feb,3-mar,17-mar,31-mar,7-abr
+PT001,Patología B,9-feb,2-mar,16-mar,30-mar,6-abr
+PD001,Pediatría A,10-feb,3-mar,17-mar,31-mar,7-abr
+PD001,Pediatría B,11-feb,4-mar,18-mar,25-mar,8-abr
+PG001,Psicología Médica,10-feb,3-mar,17-mar,26-mar,7-abr
+P9002,Psiquiatría II,11-feb,4-mar,18-mar,25-mar,8-abr
+SA001,Salud Ambiental,10-feb,3-mar,17-mar,31-mar,7-abr
+HG002,Salud Pública II,10-feb,3-mar,17-mar,31-mar,7-abr
+S0003,Salud y Medicina Comunitaria,9-feb,2-mar,16-mar,30-mar,6-abr
+SIC01,Seminario en Investigación Científica,9-feb,2-mar,16-mar,30-mar,6-abr
+TIN01,Terapia Intensiva-Regular,13-feb,4-mar,18-mar,25-mar,8-abr
+TIN01,Terapia Intensiva-Libre,13-feb,4-mar,18-mar,25-mar,8-abr
+TX001,Toxicología,11-feb,4-mar,18-mar,25-mar,8-abr
+T0100,Transplante de Órganos,11-feb,4-mar,18-mar,25-mar,8-abr
+T0100,Transplante de Órganos - Libre,,,,,
+U0001,Urología,10-feb,3-mar,17-mar,31-mar,7-abr
