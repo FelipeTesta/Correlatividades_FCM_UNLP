@@ -31,8 +31,9 @@
   <div class="top-bar-controls">
     <label>Año de ingreso:</label>
     <input type="number" id="anioIngreso" value="2023">
-    <button onclick="guardarAnio()">Guardar</button>
-    <button onclick="resetearTodos()">↪Resetear Todos</button>
+    <span class="top-bar-divider">|</span>
+    <button class="btn-primary" onclick="guardarAnio()">Guardar</button>
+    <button class="btn-danger" onclick="resetearTodos()">↪ Resetear</button>
   </div>
   <button id="btnHowToUse" class="btn-help" onclick="showHelpModal()">¿CÓMO USAR?</button>
 </div>

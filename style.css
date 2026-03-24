@@ -188,7 +188,7 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 12px;
     flex-wrap: wrap;
 }
@@ -196,8 +196,60 @@ h2 {
 .top-bar-controls {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     flex-wrap: wrap;
+}
+
+.top-bar-controls label {
+    font-size: 12px;
+    color: #999;
+}
+
+.top-bar-divider {
+    color: #333;
+    margin: 0 4px;
+}
+
+.top-bar-controls button {
+    min-width: 100px;
+}
+
+.top-bar-controls input {
+    padding: 6px 8px;
+    border: 1px solid #222;
+    background-color: #111;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 80px;
+}
+
+.top-bar-controls label {
+    font-size: 12px;
+    color: #999;
+}
+
+.top-bar-divider {
+    color: #333;
+    margin: 0 4px;
+}
+
+.btn-danger {
+    background-color: transparent !important;
+    border: 1px solid #444 !important;
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 12px !important;
+    padding: 8px 16px !important;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #222 !important;
+    border-color: #666 !important;
 }
 
 .btn-help {
@@ -214,6 +266,29 @@ h2 {
 .btn-help:hover {
     background-color: #22d3ee11 !important;
     border-color: #22d3ee !important;
+}
+
+.btn-primary {
+    background-color: transparent !important;
+    border: 1px solid #444 !important;
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 12px !important;
+    padding: 8px 16px !important;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #222 !important;
+    border-color: #666 !important;
+}
+
+.btn-primary:hover {
+    background-color: #ffffff11 !important;
+    border-color: #666 !important;
 }
 
 /* ============================= */
@@ -303,7 +378,12 @@ li.item-row {
     gap: 8px;
     flex-wrap: wrap;
     width: 100%;
-    justify-content: flex-end;
+    justify-content: space-between;
+}
+
+/* Progress fica à esquerda */
+.info-row .progress {
+    margin-right: auto;
 }
 
 /* Nome da matéria */
@@ -560,6 +640,69 @@ li button:hover {
 }
 
 /* ============================= */
+/* FECHAS DE FINALES */
+/* ============================= */
+
+.fechas-proximas {
+    display: inline;
+    font-size: 12px;
+    color: #22d3ee !important;
+    margin-left: 4px;
+}
+
+.fechas-proximas.urgente {
+    color: #f97316;
+    font-weight: bold;
+}
+
+.btn-calendario {
+    background: none !important;
+    border: none !important;
+    color: #22d3ee !important;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px !important;
+    vertical-align: middle;
+}
+
+.btn-calendario:hover {
+    transform: scale(1.2);
+}
+
+.catedra-select {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 15px;
+    background-color: #111;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.fechas-section-title {
+    font-size: 13px;
+    color: #22d3ee;
+    margin: 15px 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fecha-item {
+    font-weight: bold;
+    color: #fff;
+}
+
+.fecha-item-anterior {
+    color: #777;
+}
+
+.fechas-container {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* ============================= */
 /* BOX COLAPSÁVEL AJUSTADO */
 /* ============================= */
 
@@ -621,20 +764,34 @@ li button:hover {
     /* Top bar - layout vertical */
     .top-bar {
         display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+        flex-direction: column;
+        gap: 12px;
     }
 
-    .top-bar label {
+    .top-bar-controls {
         width: 100%;
+        justify-content: flex-start;
     }
 
-    .top-bar input {
-        flex: 1;
+    .top-bar-controls label {
+        width: auto;
     }
 
-    .top-bar button {
+    .top-bar-controls input {
+        flex: 0 0 80px;
+    }
+
+    .top-bar-divider {
+        display: none;
+    }
+
+    .top-bar-controls button {
         flex: 1;
+        min-width: auto;
+    }
+
+    .btn-help {
+        width: 100%;
     }
 
     /* Optativas box */
@@ -726,6 +883,11 @@ li button:hover {
     .right-group {
         display: flex;
         margin-left: auto;
+    }
+
+    .fechas-proximas {
+        margin-left: 0;
+        margin-top: 4px;
     }
 
     li button {

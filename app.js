@@ -11,6 +11,221 @@
 let estados = JSON.parse(localStorage.getItem("estados")) || {};
 let proyectosExtension = JSON.parse(localStorage.getItem("proyectosExtension")) || [];
 let anioIngreso = localStorage.getItem("anioIngreso") || new Date().getFullYear();
+let fechasFinales = {};
+let catedrasData = {};
+let fechasCargadas = false;
+let catedrasSeleccionadas = JSON.parse(localStorage.getItem("catedrasSeleccionadas")) || {};
+
+function guardarCatedraSeleccionada(codigo, catedra) {
+    catedrasSeleccionadas[codigo] = catedra;
+    localStorage.setItem("catedrasSeleccionadas", JSON.stringify(catedrasSeleccionadas));
+}
+
+// ===============================
+// FECHAS DE FINALES - Parser CSV
+// ===============================
+
+const MESES = {
+    'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+    'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+};
+
+function parsearFecha(fechaStr, anio = 2026) {
+    if (!fechaStr || fechaStr === '-' || fechaStr.trim() === '') return null;
+    const fechaStrLimpia = fechaStr.trim().toLowerCase();
+    const match = fechaStrLimpia.match(/(\d{1,2})-([a-zé]+)/);
+    if (!match) return null;
+    const dia = parseInt(match[1]);
+    const mes = MESES[match[2]];
+    if (mes === undefined) return null;
+    return new Date(anio, mes, dia);
+}
+
+function cargarFechasFinales() {
+    console.log('Cargando fechas de finales...');
+    return fetch('finales/finales_1er quad 2026.csv')
+        .then(response => {
+            console.log('Response:', response);
+            return response.text();
+        })
+        .then(csv => {
+            const lineas = csv.split('\n');
+            const headers = lineas[0].split(',');
+            
+            fechasFinales = {};
+            catedrasData = {};
+            
+            for (let i = 1; i < lineas.length; i++) {
+                const linea = lineas[i];
+                if (!linea.trim()) continue;
+                
+                const valores = [];
+                let actual = '';
+                let entreComillas = false;
+                for (let char of linea) {
+                    if (char === '"') {
+                        entreComillas = !entreComillas;
+                    } else if (char === ',' && !entreComillas) {
+                        valores.push(actual.trim());
+                        actual = '';
+                    } else {
+                        actual += char;
+                    }
+                }
+                valores.push(actual.trim());
+                
+                const codigo = valores[0];
+                const materia = valores[1];
+                const esLibre = materia && materia.toLowerCase().includes('libre');
+                
+                if (!codigo) continue;
+                
+                if (!fechasFinales[codigo]) {
+                    fechasFinales[codigo] = [];
+                }
+                
+                // Extraer cátedra
+                let catedra = 'Regular';
+                const materiaLower = materia ? materia.toLowerCase() : '';
+                
+                // Para "Patología A", "Cirugía B" -> extrae "A", "B"
+                if (materia && /\s+[A-F]$/.test(materia)) {
+                    catedra = materia.slice(-1);
+                }
+                // Para "Historia de la Medicina-Libre", "Ciencias Exactas - Libre" -> "Libre"
+                else if (materiaLower.includes('libre')) {
+                    catedra = 'Libre';
+                }
+                // Para "Historia de la Medicina-Regular" -> "Regular" (já é o padrão)
+                else if (materiaLower.includes('regular')) {
+                    catedra = 'Regular';
+                }
+                // Para matérias sem sufixo (como "Genética", "Inmunología") -> "Regular"
+                
+                const fechas = [];
+                for (let j = 2; j < valores.length; j++) {
+                    const fechaRaw = valores[j];
+                    const fechaDate = parsearFecha(fechaRaw);
+                    if (fechaDate) {
+                        fechas.push({
+                            fecha: fechaDate,
+                            label: headers[j].trim()
+                        });
+                    }
+                }
+                
+                if (fechas.length > 0) {
+                    fechasFinales[codigo].push({
+                        catedra: catedra,
+                        esLibre: esLibre,
+                        nombreCompleto: materia,
+                        fechas: fechas
+                    });
+                    
+                    if (!catedrasData[codigo]) {
+                        catedrasData[codigo] = { tieneCatedras: false, catedras: [] };
+                    }
+                    if (fechasFinales[codigo].length > 1) {
+                        catedrasData[codigo].tieneCatedras = true;
+                    }
+                    catedrasData[codigo].catedras.push(catedra);
+                }
+            }
+            fechasCargadas = true;
+        })
+        .catch(err => console.error('Error cargando fechas de finales:', err));
+}
+
+function obtenerProximasFechas(codigo, soloLibre = false) {
+    const ahora = new Date();
+    ahora.setHours(0, 0, 0, 0);
+    
+    const entradas = fechasFinales[codigo];
+    if (!entradas || entradas.length === 0) return null;
+    
+    const catedraSel = catedrasSeleccionadas[codigo];
+    const todasFechas = [];
+    entradas.forEach(entrada => {
+        if (soloLibre && !entrada.esLibre) return;
+        if (catedraSel && catedraSel !== 'Regular' && entrada.catedra !== catedraSel) {
+            return;
+        }
+        entrada.fechas.forEach(f => {
+            todasFechas.push({
+                fecha: f.fecha,
+                label: f.label,
+                catedra: entrada.catedra,
+                esLibre: entrada.esLibre,
+                nombreCompleto: entrada.nombreCompleto
+            });
+        });
+    });
+    
+    if (todasFechas.length === 0) return null;
+    
+    todasFechas.sort((a, b) => a.fecha - b.fecha);
+    
+    const proximas = [];
+    for (let f of todasFechas) {
+        const diffTiempo = f.fecha - ahora;
+        const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
+        if (diffDias >= 0 && proximas.length < 3) {
+            proximas.push({ ...f, diffDias });
+        }
+    }
+    
+    if (proximas.length === 0) return null;
+    return proximas;
+}
+
+function obtenerTodasFechas(codigo) {
+    const entradas = fechasFinales[codigo];
+    if (!entradas || entradas.length === 0) return null;
+    
+    const ahora = new Date();
+    ahora.setHours(0, 0, 0, 0);
+    
+    const catedraSel = catedrasSeleccionadas[codigo];
+    const todasFechas = [];
+    entradas.forEach(entrada => {
+        if (catedraSel && catedraSel !== 'Regular' && entrada.catedra !== catedraSel) {
+            return;
+        }
+        entrada.fechas.forEach(f => {
+            todasFechas.push({
+                fecha: f.fecha,
+                label: f.label,
+                catedra: entrada.catedra,
+                esLibre: entrada.esLibre,
+                nombreCompleto: entrada.nombreCompleto
+            });
+        });
+    });
+    
+    if (todasFechas.length === 0) return null;
+    
+    todasFechas.sort((a, b) => a.fecha - b.fecha);
+    
+    const proximas = [];
+    const anteriores = [];
+    
+    for (let f of todasFechas) {
+        if (f.fecha >= ahora) {
+            proximas.push(f);
+        } else {
+            anteriores.push(f);
+        }
+    }
+    
+    return { proximas, anteriores };
+}
+
+function formatearFechaDMA(fecha) {
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth();
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    return `${dia}/${meses[mes]}`;
+}
 
 document.getElementById("anioIngreso").value = anioIngreso;
 
@@ -513,8 +728,9 @@ function agregar(id, texto, codigo = null, progreso = null) {
     span.innerText = texto;
     
     // aplicar clase para optativas
+    let materia = null;
     if (codigo) {
-        const materia = materias.find(m => m.codigo === codigo);
+        materia = materias.find(m => m.codigo === codigo);
         if (materia && materia.categoria === "optativa") {
             span.className = "optativa-nombre";
         }
@@ -614,23 +830,15 @@ function agregar(id, texto, codigo = null, progreso = null) {
     }
 
     // Agregar elementos en orden diferente según el contexto
-    if (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-")) {
+    if (id === "no puede cursar" || id.startsWith("no puede cursar-")) {
         // Para "no puede cursar": criar container para linha 2
         const infoRow = document.createElement("div");
         infoRow.className = "info-row";
         
-        if (faltaSpan) {
-            infoRow.appendChild(faltaSpan);
-        }
-        if (emoji) {
-            infoRow.appendChild(emoji);
-        }
-        if (infoSpan) {
-            infoRow.appendChild(infoSpan);
-        }
+        // Primero el progress (a la izquierda)
         if (progSpan) {
             infoRow.appendChild(progSpan);
-
+            
             if (progreso.faltantes && progreso.faltantes.length > 0) {
                 const btnWarn = document.createElement("button");
                 btnWarn.innerText = "⚠";
@@ -643,6 +851,15 @@ function agregar(id, texto, codigo = null, progreso = null) {
                 infoRow.appendChild(btnWarn);
             }
         }
+        if (faltaSpan) {
+            infoRow.appendChild(faltaSpan);
+        }
+        if (emoji) {
+            infoRow.appendChild(emoji);
+        }
+        if (infoSpan) {
+            infoRow.appendChild(infoSpan);
+        }
         
         li.appendChild(infoRow);
         
@@ -651,6 +868,82 @@ function agregar(id, texto, codigo = null, progreso = null) {
         }
     } else {
         // Para otros: Año/Categoria → botones
+        
+        // Agregar fechas de finales para puedeFinal, no puedeFinal y puedeCursar-optativas
+        let fechasSpan = null;
+        let btnCalendario = null;
+        const esRegularizada = id === "puedeFinal" || id === "no puedeFinal";
+        const esPuedeCursarOptativa = id === "puedeCursar-optativas";
+        
+        if (codigo && (esRegularizada || esPuedeCursarOptativa)) {
+            const tieneDatos = fechasFinales[codigo] && fechasFinales[codigo].length > 0;
+            const tieneOpcionLibre = tieneDatos && fechasFinales[codigo].some(e => e.esLibre);
+            
+            // En puedeCursar-optativas: solo mostrar si tiene opción Libre
+            if (esPuedeCursarOptativa && !tieneOpcionLibre) {
+                // No mostrar nada
+            } else {
+                const proximas = obtenerProximasFechas(codigo, esPuedeCursarOptativa);
+                const catedraSel = catedrasSeleccionadas[codigo];
+                const esOptativa = materia && materia.categoria === "optativa";
+                
+                if (proximas && proximas.length > 0) {
+                    let textoFechas = esRegularizada ? "Finales: " : "Próxima final libre: ";
+                    
+                    if (esRegularizada && catedraSel && materia) {
+                        textoFechas = materia.nombre + " - " + catedraSel + ": ";
+                    }
+                    
+                    textoFechas += proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
+                    
+                    fechasSpan = document.createElement("span");
+                    fechasSpan.innerText = textoFechas;
+                    fechasSpan.className = "fechas-proximas";
+                    
+                    if (proximas[0].diffDias < 4) {
+                        fechasSpan.classList.add("urgente");
+                    }
+                } else if (tieneDatos) {
+                    fechasSpan = document.createElement("span");
+                    fechasSpan.innerText = "Próximas Finales: sin fechas previstas";
+                    fechasSpan.className = "fechas-proximas";
+                }
+                
+                if (fechasSpan || tieneDatos) {
+                    btnCalendario = document.createElement("button");
+                    btnCalendario.innerText = "🗓";
+                    btnCalendario.className = "btn-calendario";
+                    btnCalendario.title = "Ver todas las fechas";
+                    btnCalendario.onclick = (e) => {
+                        e.stopPropagation();
+                        console.log('Botão clicado, codigo:', codigo, 'fechasFinales:', fechasFinales[codigo]);
+                        mostrarPopupFechas(codigo, texto);
+                    };
+                } else if (codigo && fechasFinales[codigo] && fechasFinales[codigo].length > 0) {
+                    console.log('Fallback acionado para:', codigo, 'datos:', fechasFinales[codigo]);
+                    // Fallback: se tem datos pero no se mostró nada, igualmente mostrar botão
+                    btnCalendario = document.createElement("button");
+                    btnCalendario.innerText = "🗓";
+                    btnCalendario.className = "btn-calendario";
+                    btnCalendario.title = "Ver todas las fechas";
+                    btnCalendario.onclick = (e) => {
+                        e.stopPropagation();
+                        mostrarPopupFechas(codigo, texto);
+                    };
+                }
+            }
+        }
+        
+        // Agregar fechas antes del infoSpan (lado izquierdo)
+        if (fechasSpan || btnCalendario) {
+            if (btnCalendario) {
+                li.appendChild(btnCalendario);
+            }
+            if (fechasSpan) {
+                li.appendChild(fechasSpan);
+            }
+        }
+        
         if (infoSpan) {
             li.appendChild(infoSpan);
         }
@@ -724,7 +1017,9 @@ function toggleSubsection(headerElement) {
 // INICIALIZAR
 // ===============================
 
-render();
+cargarFechasFinales().then(() => {
+    render();
+});
 
 // Check if first time
 if (!localStorage.getItem("hasSeenHelp")) {
@@ -755,10 +1050,12 @@ function showHelpModal() {
     
     const items = [
         "Los iconos ✅🟨🔄 son botones y sirven para marcar el estado de cada materia.",
-        "✅ <b>Aprobada</b>. Ya rendiste el final y aprobaste la materia.",
+        "✅ <b>Aprobada</b>: Ya rendiste el final y aprobaste la materia.",
         "🟨 <b>Cursada</b>: Tiene la cursada aprobada pero te falta rendir el final.",
         "🔄 <b>Resetear</b>: Quita el estado de la materia si la marcaste mal.",
-        "⚠ <b>Info</b>: Haz clic para ver qué requisitos te faltan para cursar o rendir final."
+        "⚠ <b>Info</b>: Haz clic para ver qué requisitos te faltan para cursar o rendir final.",
+        "🗓 <b>Fechas de Final</b>: En materias regularizadas y optativas, muestra las próximas fechas de examen. Haz clic para ver todas las fechas y seleccionar una cátedra específica.",
+        "Para optativas en 'Puede Cursar', solo se muestran las fechas de final libre."
     ];
 
     items.forEach(text => {
@@ -838,10 +1135,225 @@ function mostrarPopupFaltantes(materiaNombre, faltantes) {
 
     const btnCerrar = document.createElement("button");
     btnCerrar.innerText = "Cerrar";
+    btnCerrar.className = "btn-primary";
     btnCerrar.style.width = "100%";
     btnCerrar.style.marginTop = "15px";
-    btnCerrar.style.padding = "10px";
-    btnCerrar.style.backgroundColor = "#222";
+    btnCerrar.style.padding = "12px";
+    btnCerrar.onclick = () => document.body.removeChild(overlay);
+    modal.appendChild(btnCerrar);
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+// ===============================
+// POPUP FECHAS DE FINALES
+// ===============================
+
+function mostrarPopupFechas(codigo, nombreMateria) {
+    const entradas = fechasFinales[codigo];
+    if (!entradas || entradas.length === 0) {
+        alert('No hay datos para: ' + codigo);
+        return;
+    }
+    
+    // Usar datos directamente sin filtro para el popup
+    const todasFechas = [];
+    entradas.forEach(entrada => {
+        entrada.fechas.forEach(f => {
+            todasFechas.push({
+                fecha: f.fecha,
+                label: f.label,
+                catedra: entrada.catedra,
+                esLibre: entrada.esLibre,
+                nombreCompleto: entrada.nombreCompleto
+            });
+        });
+    });
+    
+    if (todasFechas.length === 0) {
+        alert('No hay fechas para: ' + codigo);
+        return;
+    }
+    
+    const ahora = new Date();
+    ahora.setHours(0, 0, 0, 0);
+    todasFechas.sort((a, b) => a.fecha - b.fecha);
+    
+    const proximas = [];
+    const anteriores = [];
+    for (let f of todasFechas) {
+        if (f.fecha >= ahora) {
+            proximas.push(f);
+        } else {
+            anteriores.push(f);
+        }
+    }
+    
+    const datos = { proximas, anteriores };
+    
+    const tieneCatedras = catedrasData[codigo] && catedrasData[codigo].tieneCatedras;
+    
+    const overlay = document.createElement("div");
+    overlay.className = "modal-overlay";
+    overlay.onclick = () => document.body.removeChild(overlay);
+
+    const modal = document.createElement("div");
+    modal.className = "modal-content";
+    modal.onclick = (e) => e.stopPropagation();
+
+    const btnX = document.createElement("button");
+    btnX.innerText = "×";
+    btnX.className = "modal-close-x";
+    btnX.onclick = () => document.body.removeChild(overlay);
+    modal.appendChild(btnX);
+
+    const title = document.createElement("h3");
+    title.innerText = "Fechas de Final";
+    modal.appendChild(title);
+
+    const subtitle = document.createElement("h2");
+    subtitle.innerText = nombreMateria;
+    subtitle.style.fontSize = "18px";
+    subtitle.style.marginBottom = "15px";
+    subtitle.style.color = "#fff";
+    modal.appendChild(subtitle);
+
+    if (tieneCatedras) {
+        const selectCatedra = document.createElement("select");
+        selectCatedra.className = "catedra-select";
+        
+        catedrasData[codigo].catedras.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat;
+            option.textContent = cat === 'Regular' ? 'Cátedra Regular' : `Cátedra ${cat}`;
+            selectCatedra.appendChild(option);
+        });
+        
+        // Definir valor primeiro
+        if (catedrasSeleccionadas[codigo]) {
+            selectCatedra.value = catedrasSeleccionadas[codigo];
+        }
+        
+        modal.appendChild(selectCatedra);
+        
+        selectCatedra.onchange = () => {
+            const catedraSeleccionada = selectCatedra.value;
+            guardarCatedraSeleccionada(codigo, catedraSeleccionada);
+            render();
+            const container = modal.querySelector('.fechas-container');
+            if (container) {
+                actualizarFechasPopup(modal, codigo, nombreMateria, catedraSeleccionada);
+            }
+        };
+    }
+
+    const containerFechas = document.createElement("div");
+    containerFechas.className = "fechas-container";
+    modal.appendChild(containerFechas);
+
+    // Definir função antes de chamar
+    const actualizarFechasPopup = (modalEl, cod, nomMateria, catedraSel) => {
+        const container = modalEl.querySelector('.fechas-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        let fechasFiltradas = { proximas: [], anteriores: [] };
+        
+        if (catedraSel && catedraSel !== 'Regular') {
+            const entrada = fechasFinales[cod].find(e => e.catedra === catedraSel);
+            if (entrada) {
+                const ahora = new Date();
+                ahora.setHours(0, 0, 0, 0);
+                
+                entrada.fechas.forEach(f => {
+                    if (f.fecha >= ahora) {
+                        fechasFiltradas.proximas.push(f);
+                    } else {
+                        fechasFiltradas.anteriores.push(f);
+                    }
+                });
+                
+                fechasFiltradas.proximas.sort((a, b) => b.fecha - a.fecha);
+                fechasFiltradas.anteriores.sort((a, b) => b.fecha - a.fecha);
+            }
+        } else {
+            fechasFiltradas = datos;
+        }
+        
+        if (fechasFiltradas.proximas.length > 0) {
+            const h4Prox = document.createElement("h4");
+            h4Prox.innerText = "Próximas";
+            h4Prox.className = "fechas-section-title";
+            container.appendChild(h4Prox);
+            
+            const ulProx = document.createElement("ul");
+            fechasFiltradas.proximas.forEach(f => {
+                const li = document.createElement("li");
+                li.style.background = "transparent";
+                li.style.borderBottom = "1px solid #222";
+                li.style.borderRadius = "0";
+                
+                const fechaSpan = document.createElement("span");
+                fechaSpan.innerText = formatearFechaDMA(f.fecha);
+                fechaSpan.className = "fecha-item";
+                
+                const labelSpan = document.createElement("span");
+                labelSpan.innerText = ` (${f.label})`;
+                labelSpan.style.color = "#999";
+                labelSpan.style.fontSize = "12px";
+                
+                li.appendChild(fechaSpan);
+                li.appendChild(labelSpan);
+                ulProx.appendChild(li);
+            });
+            container.appendChild(ulProx);
+        }
+        
+        if (fechasFiltradas.anteriores.length > 0) {
+            const h4Ant = document.createElement("h4");
+            h4Ant.innerText = "Anteriores";
+            h4Ant.className = "fechas-section-title";
+            container.appendChild(h4Ant);
+            
+            const ulAnt = document.createElement("ul");
+            fechasFiltradas.anteriores.forEach(f => {
+                const li = document.createElement("li");
+                li.style.background = "transparent";
+                li.style.borderBottom = "1px solid #222";
+                li.style.borderRadius = "0";
+                li.style.color = "#777";
+                
+                const fechaSpan = document.createElement("span");
+                fechaSpan.innerText = formatearFechaDMA(f.fecha);
+                fechaSpan.className = "fecha-item-anterior";
+                
+                const labelSpan = document.createElement("span");
+                labelSpan.innerText = ` (${f.label})`;
+                labelSpan.style.color = "#555";
+                labelSpan.style.fontSize = "12px";
+                
+                li.appendChild(fechaSpan);
+                li.appendChild(labelSpan);
+                ulAnt.appendChild(li);
+            });
+            container.appendChild(ulAnt);
+        }
+    };
+
+    if (tieneCatedras) {
+        const catedraInicial = catedrasSeleccionadas[codigo] || catedrasData[codigo].catedras[0];
+        actualizarFechasPopup(modal, codigo, nombreMateria, catedraInicial);
+    } else {
+        actualizarFechasPopup(modal, codigo, nombreMateria, null);
+    }
+
+    const btnCerrar = document.createElement("button");
+    btnCerrar.innerText = "Cerrar";
+    btnCerrar.className = "btn-primary";
+    btnCerrar.style.width = "100%";
+    btnCerrar.style.marginTop = "15px";
+    btnCerrar.style.padding = "12px";
     btnCerrar.onclick = () => document.body.removeChild(overlay);
     modal.appendChild(btnCerrar);
 
