@@ -63,24 +63,15 @@ The `materias` array consists of objects with the following schema:
 - `puedeCursar-obligatorias` / `puedeCursar-optativas`: Available courses.
 - `noPuedeCursar-obligatorias` / `noPuedeCursar-optativas`: Blocked courses.
 ___
-
 # IMPLEMENT
-1. ✅ Próximas datas de finais
-   - Em "Regularizadas"/"Puede rider final" e "Puede Cursar/Optativas", incluir texto com próximas datas e botão "🗓"
-   - Botão abre popup com todas as datas separadas em "Próximas" e "Anteriores"
-   - Para matérias com múltiplas cátedras (A, B, C), seletor no popup para filtrar datas
-   -Datas a menos de 4 dias são destacadas em laranja
-   - Informações carregadas do CSV em pasta "finales/"
-   - Para optativas com opção "Libre": mostra "Próxima final libre:"
-   - Quando sem datas futuras: "Próximas Finales: sin fechas previstas"
-   - Quando sem informação no CSV: não exibe nada
-2. ✅ Sistemas de Cátedras
-   - Parser do CSV detecta cátedras (A-F, Libre, Regular)
-   - Seleção salva no localStorage e persistida
-   - Na tela principal exibe "Matéria - Cátedra X: datas" quando selecionada
-   - Popup inicia com última seleção do usuário
-3. ✅ Interface do popup de datas
-   - Atualiza popup ao mudar seleção de cátedra
-   -Datas ordenadas da mais futura para a mais antiga
-4. ✅ Tutorial atualizado
-   - "Cómo usar?" agora inclui instrução sobre botão 🗓
+- [ ] Implementar modo oscuro
+- [ ] Mejorar validación de formularios
+- [ ] Añadir exportar/importar estado
+
+## LOG DE IMPLEMENTACIONES
+- 29/03/2026
+  + Unificación de datos: fusionado optativas_lista.js en materias.js
+  + Corrección de valores 'anio' incorrectos: FM001:2, GE001:2, IES01:1, MGF:5
+  + Modificación del cálculo de porcentaje de progreso: excluido segmento 'puede cursar'
+  + Verificación de función resetearTodos(): limpia correctamente todos los estados
+  + Confirmación de funcionamiento con estructura de datos unificada

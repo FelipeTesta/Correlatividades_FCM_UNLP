@@ -224,7 +224,7 @@ function formatearFechaDMA(fecha) {
     const dia = fecha.getDate();
     const mes = fecha.getMonth();
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-    return `${dia}/${meses[mes]}`;
+    return dia + "/" + meses[mes];
 }
 
 document.getElementById("anioIngreso").value = anioIngreso;
@@ -391,7 +391,7 @@ function render() {
         liAprobada.appendChild(spanAprobada);
 
         const infoSpanAprobada = document.createElement("span");
-        infoSpanAprobada.innerText = `${p.horas} Horas | Proyecto de Extensión`;
+        infoSpanAprobada.innerText = p.horas + " Horas | Proyecto de Extensión";
         infoSpanAprobada.className = "anio-tag";
         liAprobada.appendChild(infoSpanAprobada);
 
@@ -413,7 +413,7 @@ function render() {
         liExtension.appendChild(spanExtension);
 
         const infoSpanExtension = document.createElement("span");
-        infoSpanExtension.innerText = `${p.horas} Horas`;
+        infoSpanExtension.innerText = p.horas + " Horas";
         infoSpanExtension.className = "anio-tag";
         liExtension.appendChild(infoSpanExtension);
 
@@ -504,24 +504,30 @@ function actualizarBarraProgreso() {
     const pctRegularizadas = total > 0 ? (regularizadas / total) * 100 : 0;
     const pctOptativas = total > 0 ? (optativasPuntos / total) * 100 : 0;
     const pctPuedeCursar = total > 0 ? (puedeCursar / total) * 100 : 0;
-    const pctTotal = ((aprobadas + regularizadas + optativasPuntos + puedeCursar) / total) * 100;
+    const pctTotal = ((aprobadas + regularizadas + optativasPuntos) / total) * 100;
     
     // actualizar texto
-    document.getElementById("materiasCount").innerText = `Materias: ${obligatorias.filter(m => estados[m.codigo] === "aprobada").length} (Aprobadas) / ${obligatorias.length} (Totales) | Optativas: ${Math.min(horasOptativas, 270)}/270h`;
+    document.getElementById("materiasCount").innerText = "Materias: " + obligatorias.filter(m => estados[m.codigo] === "aprobada").length + " (Aprobadas) / " + obligatorias.length + "(Totales) | Optativas: " + Math.min(horasOptativas, 270) + "/270h";
     
-    // actualizar segmentos de barra
-    const segAprobadas = document.getElementById("segmentAprobadas");
-    const segRegularizadas = document.getElementById("segmentRegularizadas");
-    const segOptativas = document.getElementById("segmentOptativas");
-    const segPuedeCursar = document.getElementById("segmentPuedeCursar");
-    
-    segAprobadas.style.width = pctAprobadas + "%";
-    segRegularizadas.style.width = pctRegularizadas + "%";
-    segOptativas.style.width = pctOptativas + "%";
-    segPuedeCursar.style.width = pctPuedeCursar + "%";
-    
-    // actualizar porcentaje total
-    document.getElementById("progressPercent").innerText = Math.round(pctTotal) + "%";
+  // actualizar segmentos de barra
+  const segAprobadas = document.getElementById("segmentAprobadas");
+  const segRegularizadas = document.getElementById("segmentRegularizadas");
+  const segOptativas = document.getElementById("segmentOptativas");
+  const segPuedeCursar = document.getElementById("segmentPuedeCursar");
+  
+  segAprobadas.style.width = pctAprobadas + "%";
+  segRegularizadas.style.width = pctRegularizadas + "%";
+  segOptativas.style.width = pctOptativas + "%";
+  segPuedeCursar.style.width = pctPuedeCursar + "%";
+  
+   // agregar tooltips explicativos
+   segAprobadas.title = "Aprobadas: " + Math.round(pctAprobadas) + "%";
+   segRegularizadas.title = "Regularizadas: " + Math.round(pctRegularizadas) + "%";
+   segOptativas.title = "Optativas: " + Math.round(pctOptativas) + "% (" + Math.min(horasOptativas, 270) + "/270h)";
+   segPuedeCursar.title = "Puede cursar: " + Math.round(pctPuedeCursar) + "%";
+  
+  // actualizar porcentaje total
+  document.getElementById("progressPercent").innerText = Math.round(pctTotal) + "%";
 }
 
 function verificarRequisito(req) {
@@ -543,7 +549,7 @@ function resolverRequisitosTransitivos(requisitos) {
 
     function colectar(reqs) {
         for (let req of reqs) {
-            const key = `${req.materia}:${req.condicion}`;
+            const key = req.materia + ":" + req.condicion;
             if (visitados.has(key)) continue;
             visitados.add(key);
             todosRequisitos.push(req);
@@ -583,7 +589,7 @@ function calcularProgreso(materia, listaRequisitos = null) {
             const m = materias.find(x => x.codigo === req.materia);
             const nombre = m ? m.nombre : req.materia;
             const condicion = req.condicion === "aprobada" ? "Aprobada" : "Regularizada";
-            faltantes.push(`${nombre} (${condicion})`);
+            faltantes.push(nombre + " (" + condicion + ")");
         }
     }
     
@@ -593,7 +599,7 @@ function calcularProgreso(materia, listaRequisitos = null) {
         if (aniosMatricula >= materia.anio) {
             cumplidos++;
         } else {
-            faltantes.push(`${materia.anio}° Año de matrícula`);
+            faltantes.push(materia.anio + "° Año de matrícula");
         }
     }
     
@@ -634,17 +640,17 @@ function agregar(id, texto, codigo = null, progreso = null) {
         
         const { cumplidos, total, faltante } = progreso;
         
-        if (faltante) {
-            const faltaSpan = document.createElement("span");
-            faltaSpan.innerText = `Falta: ${faltante}`;
-            faltaSpan.className = "falta";
-            box2.appendChild(faltaSpan);
-            
-            const emoji = document.createElement("span");
-            emoji.innerText = "🟡";
-            emoji.className = "progress-emoji";
-            box2.appendChild(emoji);
-        }
+         if (faltante) {
+             const faltaSpan = document.createElement("span");
+             faltaSpan.innerText = "Falta: " + faltante;
+             faltaSpan.className = "falta";
+             box2.appendChild(faltaSpan);
+             
+             const emoji = document.createElement("span");
+             emoji.innerText = "🟡";
+             emoji.className = "progress-emoji";
+             box2.appendChild(emoji);
+         }
         
         // Info (ano/categoria)
         let infoSpan = null;
@@ -653,11 +659,11 @@ function agregar(id, texto, codigo = null, progreso = null) {
             if (materia) {
                 let infoText = "";
                 if (materia.categoria === "optativa" && materia.horas) {
-                    infoText += `${materia.horas}h`;
+infoText += materia.horas + "h";
                 }
                 if (materia.anio) {
                     if (infoText) infoText += " | ";
-                    infoText += `${materia.anio}° Año`;
+infoText += materia.anio + "° Año";
                 }
                 if (materia.categoria) {
                     if (infoText) infoText += " | ";
@@ -675,10 +681,10 @@ function agregar(id, texto, codigo = null, progreso = null) {
             box2.appendChild(infoSpan);
         }
         
-        const progSpan = document.createElement("span");
-        progSpan.innerText = `(${cumplidos}/${total})`;
-        progSpan.className = "progress";
-        box2.appendChild(progSpan);
+         const progSpan = document.createElement("span");
+         progSpan.innerText = "(" + cumplidos + "/" + total + ")";
+         progSpan.className = "progress";
+         box2.appendChild(progSpan);
 
         if (progreso.faltantes && progreso.faltantes.length > 0) {
             const btnWarn = document.createElement("button");
@@ -747,11 +753,11 @@ function agregar(id, texto, codigo = null, progreso = null) {
             let infoText = "";
             // agregar horas para optativas al principio
             if (materia.categoria === "optativa" && materia.horas) {
-                infoText += `${materia.horas}h`;
+                infoText += materia.horas + "h";
             }
             if (materia.anio) {
                 if (infoText) infoText += " | ";
-                infoText += `${materia.anio}° Año`;
+                infoText += materia.anio + "° Año";
             }
             if (materia.categoria) {
                 if (infoText) infoText += " | ";
@@ -779,7 +785,7 @@ function agregar(id, texto, codigo = null, progreso = null) {
         const { cumplidos, total, faltante } = progreso;
         if (faltante) {
             faltaSpan = document.createElement("span");
-            faltaSpan.innerText = `Falta: ${faltante}`;
+            faltaSpan.innerText = "Falta: " + faltante;
             faltaSpan.className = "falta";
 
             emoji = document.createElement("span");
@@ -787,7 +793,7 @@ function agregar(id, texto, codigo = null, progreso = null) {
             emoji.className = "progress-emoji";
         }
         progSpan = document.createElement("span");
-        progSpan.innerText = `(${cumplidos}/${total})`;
+        progSpan.innerText = "(" + cumplidos + "/" + total + ")";
         progSpan.className = "progress";
     }
 

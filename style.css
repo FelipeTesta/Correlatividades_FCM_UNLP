@@ -775,6 +775,215 @@ li button:hover {
 
     .top-bar-controls label {
         width: auto;
+        font-size: 14px; /* Aumentar legibilidade */
+    }
+
+    .top-bar-controls input {
+        flex: 0 0 80px;
+        min-height: 44px; /* Tamanho mínimo para toque */
+        font-size: 16px; /* Tamanho recomendado para inputs */
+    }
+
+    .top-bar-divider {
+        display: none;
+    }
+
+    .top-bar-controls button {
+        flex: 1;
+        min-width: auto;
+        min-height: 44px; /* Tamanho mínimo para toque */
+        font-size: 16px;
+    }
+
+    .btn-help {
+        width: 100%;
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    /* Optativas box */
+    .optativas-box {
+        flex-wrap: wrap;
+        padding: 12px; /* Mais espaçamento para toque */
+    }
+
+    .optativas-box span:first-child {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .horas-count {
+        font-size: 20px; /* Maior para destaque */
+    }
+
+    .horas-label {
+        font-size: 14px;
+    }
+
+    /* Legend box */
+    .legend-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Extension form - layout vertical */
+    .extension-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .extension-form input,
+    .extension-form button {
+        width: 100%;
+        min-height: 44px; /* Tamanho mínimo para toque */
+        font-size: 16px;
+    }
+
+    /* Inputs e buttons */
+    select, input, button {
+        max-width: 100%;
+        min-height: 44px; /* Tamanho mínimo para toque */
+        font-size: 16px;
+    }
+
+    /* LI ITEMS - layout para no pode cursar */
+    li {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 12px; /* Mais espaçamento para toque */
+        margin-bottom: 10px;
+    }
+
+    /* No pode cursar - dois boxes em linhas separadas no mobile */
+    li.item-row {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .item-box {
+        width: 100%;
+    }
+
+    .item-nombre {
+        min-width: 100%;
+        max-width: 100%;
+        flex: none;
+        font-size: 16px;
+    }
+
+    .item-requisitos {
+        justify-content: flex-start;
+        flex: none;
+        width: 100%;
+    }
+
+    li span:first-child {
+        width: 100%;
+        margin-bottom: 6px;
+        font-size: 16px;
+    }
+
+    /* Container da linha 2 (Falta + Emoji + Ano + Progress) */
+    .info-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .info-row .falta,
+    .info-row .progress-emoji,
+    .info-row .anio-tag,
+    .info-row .progress {
+        display: inline;
+        width: auto;
+        margin-left: 0;
+        font-size: 14px;
+    }
+
+    /* Right group com botões alinhado à direita */
+    .right-group {
+        display: flex;
+        margin-left: auto;
+        gap: 10px;
+    }
+
+    .fechas-proximas {
+        margin-left: 0;
+        margin-top: 6px;
+        font-size: 14px;
+    }
+
+    li button {
+        width: auto;
+        min-height: 40px; /* Tamanho mínimo para toque */
+        font-size: 16px;
+    }
+
+    /* Botões de ação específicos */
+    .btn-warning-faltantes,
+    .btn-calendario {
+        min-width: 40px;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Boxes */
+    .box {
+        padding: 12px; /* Mais espaçamento interno */
+        margin-bottom: 12px;
+    }
+
+    .box h3 {
+        font-size: 18px;
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 22px; /* Título maior para mobile */
+        text-align: center;
+    }
+    
+    /* Barra de progresso */
+    .progress-container {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .progress-bar {
+        height: 28px; /* Barra mais alta para toque */
+    }
+    
+    .progress-percent {
+        font-size: 14px;
+        min-width: 50px;
+    }
+}
+
+    /* Grid vira 1 coluna no celular */
+    .listas {
+        grid-template-columns: 1fr;
+    }
+
+    /* Top bar - layout vertical */
+    .top-bar {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .top-bar-controls {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .top-bar-controls label {
+        width: auto;
     }
 
     .top-bar-controls input {
