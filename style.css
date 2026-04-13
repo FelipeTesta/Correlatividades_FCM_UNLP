@@ -132,29 +132,37 @@ h2 {
 }
 
 
-/* ============================= */
-/* EXTENSION FORM */
-/* ============================= */
+.input-error {
+    border: 1px solid red !important;
+}
 
-.extension-form {
+.vacuna-form {
     display: flex;
     gap: 6px;
     margin-bottom: 10px;
 }
 
-.extension-form input {
+.vacuna-form select,
+.vacuna-form input {
     flex: 1;
     padding: 6px 8px;
     border: 1px solid #222;
-    background-color: #111;
+    background-color: #1a1a1a;
     color: white;
     border-radius: 4px;
+    font-size: 14px;
+}
+
+.vacuna-form button {
+    padding: 6px 10px;
+    background-color: #111;
+    border: 1px solid #222;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 12px;
 }
 
-.extension-form input:last-of-type {
-    flex: 0.5;
-}
 
 .extension-form button {
     padding: 6px 10px;
@@ -170,6 +178,17 @@ h2 {
     background-color: #1c1c1c;
 }
 
+.extension-form input {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #222;
+    background-color: #111;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
 /* texto de proyectos de extensión */
 .extension-nombre {
     color: #86efac;
@@ -181,16 +200,16 @@ h2 {
 }
 
 /* ============================= */
-/* TOP BAR */
+/* TOP BAR VACUNAS */
 /* ============================= */
 
-.top-bar {
+.top-bar-vacunas {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 16px;
     margin-bottom: 12px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .top-bar-controls {

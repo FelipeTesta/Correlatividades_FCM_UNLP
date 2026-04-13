@@ -7,8 +7,33 @@ Hecho con chat GPT.
 
 # Log de Modificaciones
 
-29/03/2026
-    +Unificación de datos: fusionado optativas_lista.js en materias.js
+12/04/2026 (Parte 4)
+    +Corrección de lógica en el modal explicativo: Verificación de cobertura global de patologías;
+    +Corrección de lógica de "Refuerzo" en modal;
+    +Cierre de modal al hacer clic fuera del mismo;
+    +Formato de fecha unificado a MM/YYYY;
+    +Corrección de bug en botón de eliminación (❌) del historial;
+
+12/04/2026 (Parte 3)
+    +Simplificación del registro de vacunas: Eliminado selector central;
+    +Integración de registro rápido por fila en "Vacunas Necesarias";
+    +Selector único de mes/año posicionado en cabecera de "Vacunas Necesarias";
+    +Nueva lógica de registro rápido `registrarDosisRapido()`;
+
+12/04/2026 (Parte 2)
+    +Reordenamiento de interfaz: Vacunas Necesarias antes del Histórico;
+    +Funcionalidad colapsable para Histórico de Vacunas;
+    +Estilizado de selector de vacunas (fondo oscuro);
+    +Autocompletado de fecha ('26' a '2026');
+
+12/04/2026
+    +Implementación de página /vacunas para registro de esquema vacunal;
+    +Estructura de datos con patologías cubiertas para cálculo inteligente de dosis/refuerzos faltantes;
+    +Integración con localStorage para persistencia local;
+    +Reestructuración lógica esquema vacunal: Serie inicial y refuerzos calculados por fecha;
+    +Funcionalidades añadidas: Remoción individual de registros (❌) y Reset total del historial (🔄);
+    +Botón de acceso rápido en la página principal;
+
     +Corrección de valores 'anio' incorrectos: FM001:2, GE001:2, IES01:1, MGF:5
     +Modificación del cálculo de porcentaje de progreso: excluido segmento 'puede cursar'
     +Verificación de función resetearTodos(): limpia correctamente todos los estados

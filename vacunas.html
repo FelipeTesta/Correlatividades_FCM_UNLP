@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Esquema Vacunal - Personal de Salud 2026</title>
+<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h1>Esquema Vacunal - Personal de Salud</h1>
+
+<div class="top-bar-vacunas">
+  <button class="btn-primary" onclick="window.location.href='index.html'">← Volver</button>
+  <button class="btn-danger" onclick="resetearHistorico()" style="margin-left: auto;">Reset 🔄</button>
+</div>
+
+<!-- Modal para explicación de faltantes -->
+<div id="modalExplicacion" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <button class="modal-close-x" onclick="cerrarModal()">×</button>
+    <h3 id="modalTitle">Explicación</h3>
+    <ul id="modalExplicacionList"></ul>
+  </div>
+</div>
+
+<hr>
+
+<!-- REMOVED: <div class="box">
+  <h3>Registrar Nueva Dosis</h3>
+  <div class="box-content">
+    <div class="vacuna-form">
+      <select id="vacunaSelect"></select>
+      <input type="month" id="vacunaFecha">
+      <button class="btn-primary" onclick="registrarDosis()">Agregar</button>
+    </div>
+  </div>
+</div> -->
+
+<div class="box" id="faltantesBox">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <h3 onclick="toggleBox(this)" style="margin: 0; cursor: pointer;">Vacunas Necesarias / Faltantes ⬇️</h3>
+    <div style="display: flex; gap: 5px; align-items: center;">
+        <input type="text" id="globalVacunaFecha" placeholder="03/2026" style="background-color: #1a1a1a; border: 1px solid #333; color: white; padding: 4px; border-radius: 4px;">
+    </div>
+  </div>
+  <div class="box-content">
+    <ul id="faltantesList"></ul>
+  </div>
+</div>
+
+<div class="box" id="historicoBox">
+  <h3 onclick="toggleBox(this)">Histórico de Vacunas ⬇️</h3>
+  <div class="box-content">
+    <ul id="historicoList"></ul>
+  </div>
+</div>
+
+<script src="vacunas_data.js"></script>
+<script src="vacunas.js"></script>
+</body>
+</html>
