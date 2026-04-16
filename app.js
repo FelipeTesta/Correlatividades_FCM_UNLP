@@ -43,9 +43,11 @@ function parsearFecha(fechaStr, anio = 2026) {
 
 function cargarFechasFinales() {
     console.log('Cargando fechas de finales...');
-    return fetch('finales/finales_1er quad 2026.csv')
+    return fetch('REF/finales/finales_1er quad 2026.csv')
         .then(response => {
-            console.log('Response:', response);
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
             return response.text();
         })
         .then(csv => {
