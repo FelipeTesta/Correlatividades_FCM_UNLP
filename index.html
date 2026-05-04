@@ -55,7 +55,7 @@
 <!-- ===================== -->
 
 <div class="box">
-<h3 onclick="toggleBox(this)">Aprobadas ▾</h3>
+<h3 onclick="toggleBox(this)">Aprobadas <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <ul id="aprobadas"></ul>
 </div>
@@ -67,17 +67,17 @@
 
 <div class="box regularizadas-box">
 
-<h3 onclick="toggleBox(this)">Regularizadas ▾</h3>
+<h3 onclick="toggleBox(this)">Regularizadas <span class="box-count">[0]</span> ▾</h3>
 
 <div class="box-content">
 
 <div class="sub-section">
-<h4>Puede rendir final</h4>
+<h4>Puede rendir final <span class="box-count">[0]</span></h4>
 <ul id="puedeFinal"></ul>
 </div>
 
 <div class="sub-section">
-<h4>No puede rendir final</h4>
+<h4>No puede rendir final <span class="box-count">[0]</span></h4>
 <ul id="noPuedeFinal"></ul>
 </div>
 
@@ -89,14 +89,14 @@
 <!-- ===================== -->
 
 <div class="box">
-<h3 onclick="toggleBox(this)">Puede cursar ▾</h3>
+<h3 onclick="toggleBox(this)">Puede cursar <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <div class="sub-section">
-<h4>Obrigatórias</h4>
+<h4>Obrigatórias <span class="box-count">[0]</span></h4>
 <ul id="puedeCursar-obligatorias"></ul>
 </div>
 <div class="sub-section">
-<h4 onclick="toggleSubsection(this)" class="collapsible-header">Optativas ▾</h4>
+<h4 onclick="toggleSubsection(this)" class="collapsible-header">Optativas <span class="box-count">[0]</span> ▾</h4>
 <div class="sub-content">
 <ul id="puedeCursar-optativas"></ul>
 </div>
@@ -109,7 +109,7 @@
 <!-- ===================== -->
 
 <div class="box">
-<h3 onclick="toggleBox(this)">Proyectos de Extensión ▾</h3>
+<h3 onclick="toggleBox(this)">Proyectos de Extensión <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <div class="extension-form">
 <input type="text" id="extensionNombre" placeholder="Nombre del proyecto">
@@ -126,14 +126,14 @@
 <!-- ===================== -->
 
 <div class="box">
-<h3 onclick="toggleBox(this)">No puede cursar ▾</h3>
+<h3 onclick="toggleBox(this)">No puede cursar <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <div class="sub-section">
-<h4>Obrigatórias</h4>
+<h4>Obrigatórias <span class="box-count">[0]</span></h4>
 <ul id="noPuedeCursar-obligatorias"></ul>
 </div>
 <div class="sub-section">
-<h4 onclick="toggleSubsection(this)" class="collapsible-header">Optativas ▾</h4>
+<h4 onclick="toggleSubsection(this)" class="collapsible-header">Optativas <span class="box-count">[0]</span> ▾</h4>
 <div class="sub-content">
 <ul id="noPuedeCursar-optativas"></ul>
 </div>

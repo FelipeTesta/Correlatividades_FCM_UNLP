@@ -15,6 +15,41 @@ let fechasFinales = {};
 let catedrasData = {};
 let fechasCargadas = false;
 let catedrasSeleccionadas = JSON.parse(localStorage.getItem("catedrasSeleccionadas")) || {};
+let boxStates = JSON.parse(localStorage.getItem("boxStates")) || {};
+
+function getBoxKey(element) {
+    const h3 = element.querySelector("h3, h4");
+    if (!h3) return null;
+    return h3.innerText.replace(/[▾▸]/g, "").trim();
+}
+
+function saveBoxState(key, isCollapsed) {
+    boxStates[key] = isCollapsed;
+    try { localStorage.setItem("boxStates", JSON.stringify(boxStates)); } catch(e) {}
+}
+
+function restoreBoxStates() {
+    document.querySelectorAll(".box").forEach(box => {
+        const h3 = box.querySelector("h3");
+        if (!h3) return;
+        const key = h3.innerText.replace(/[▾▸]/g, "").trim();
+        const content = box.querySelector(".box-content");
+        if (boxStates[key] === true && content) {
+            content.classList.add("collapsed");
+            h3.innerHTML = h3.innerHTML.replace("▾", "▸");
+        }
+    });
+    document.querySelectorAll(".sub-section").forEach(sub => {
+        const h4 = sub.querySelector("h4.collapsible-header");
+        if (!h4) return;
+        const key = h4.innerText.replace(/[▾▸]/g, "").trim();
+        const content = sub.querySelector(".sub-content");
+        if (boxStates[key] === true && content) {
+            content.classList.add("collapsed");
+            h4.innerHTML = h4.innerHTML.replace("▾", "▸");
+        }
+    });
+}
 
 function guardarCatedraSeleccionada(codigo, catedra) {
     catedrasSeleccionadas[codigo] = catedra;
@@ -41,99 +76,53 @@ function parsearFecha(fechaStr, anio = 2026) {
     return new Date(anio, mes, dia);
 }
 
+function parseFechaLocal(dateStr) {
+    if (!dateStr) return null;
+    const parts = dateStr.split('-');
+    if (parts.length !== 3) {
+        const d = new Date(dateStr);
+        return isNaN(d.getTime()) ? null : d;
+    }
+    const year = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1;
+    const day = parseInt(parts[2]);
+    const d = new Date(year, month, day);
+    return isNaN(d.getTime()) ? null : d;
+}
+
 function cargarFechasFinales() {
-    console.log('Cargando fechas de finales...');
-    return fetch('REF/finales/finales_1er quad 2026.csv')
+    console.log('Cargando fechas de finales desde JSON...');
+    return fetch('REF/finales/finales.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok: ' + response.statusText);
             }
-            return response.text();
+            return response.json();
         })
-        .then(csv => {
-            const lineas = csv.split('\n');
-            const headers = lineas[0].split(',');
-            
+        .then(data => {
             fechasFinales = {};
             catedrasData = {};
             
-            for (let i = 1; i < lineas.length; i++) {
-                const linea = lineas[i];
-                if (!linea.trim()) continue;
-                
-                const valores = [];
-                let actual = '';
-                let entreComillas = false;
-                for (let char of linea) {
-                    if (char === '"') {
-                        entreComillas = !entreComillas;
-                    } else if (char === ',' && !entreComillas) {
-                        valores.push(actual.trim());
-                        actual = '';
-                    } else {
-                        actual += char;
-                    }
-                }
-                valores.push(actual.trim());
-                
-                const codigo = valores[0];
-                const materia = valores[1];
-                const esLibre = materia && materia.toLowerCase().includes('libre');
-                
-                if (!codigo) continue;
-                
-                if (!fechasFinales[codigo]) {
-                    fechasFinales[codigo] = [];
-                }
-                
-                // Extraer cátedra
-                let catedra = 'Regular';
-                const materiaLower = materia ? materia.toLowerCase() : '';
-                
-                // Para "Patología A", "Cirugía B" -> extrae "A", "B"
-                if (materia && /\s+[A-F]$/.test(materia)) {
-                    catedra = materia.slice(-1);
-                }
-                // Para "Historia de la Medicina-Libre", "Ciencias Exactas - Libre" -> "Libre"
-                else if (materiaLower.includes('libre')) {
-                    catedra = 'Libre';
-                }
-                // Para "Historia de la Medicina-Regular" -> "Regular" (já é o padrão)
-                else if (materiaLower.includes('regular')) {
-                    catedra = 'Regular';
-                }
-                // Para matérias sem sufixo (como "Genética", "Inmunología") -> "Regular"
-                
-                const fechas = [];
-                for (let j = 2; j < valores.length; j++) {
-                    const fechaRaw = valores[j];
-                    const fechaDate = parsearFecha(fechaRaw);
-                    if (fechaDate) {
-                        fechas.push({
-                            fecha: fechaDate,
-                            label: headers[j].trim()
-                        });
-                    }
-                }
-                
-                if (fechas.length > 0) {
+            for (let codigo in data) {
+                fechasFinales[codigo] = [];
+                for (let catedra in data[codigo]) {
                     fechasFinales[codigo].push({
                         catedra: catedra,
-                        esLibre: esLibre,
-                        nombreCompleto: materia,
-                        fechas: fechas
+                        esLibre: catedra.toLowerCase().includes('libre'),
+                        nombreCompleto: materias.find(m => m.codigo === codigo)?.nombre || codigo,
+                        fechas: data[codigo][catedra].map(f => ({
+                            fecha: parseFechaLocal(f.fecha),
+                            label: f.label
+                        }))
                     });
-                    
-                    if (!catedrasData[codigo]) {
-                        catedrasData[codigo] = { tieneCatedras: false, catedras: [] };
-                    }
-                    if (fechasFinales[codigo].length > 1) {
-                        catedrasData[codigo].tieneCatedras = true;
-                    }
-                    catedrasData[codigo].catedras.push(catedra);
+                }
+                
+                if (!catedrasData[codigo]) {
+                    catedrasData[codigo] = { tieneCatedras: Object.keys(data[codigo]).length > 1, catedras: Object.keys(data[codigo]) };
                 }
             }
             fechasCargadas = true;
+            console.log('Fechas cargadas correctamente.');
         })
         .catch(err => console.error('Error cargando fechas de finales:', err));
 }
@@ -442,6 +431,46 @@ function render() {
     noPuedeCursarItems.forEach(item => {
         const listId = item.categoria === "optativa" ? "noPuedeCursar-optativas" : "noPuedeCursar-obligatorias";
         agregar(listId, item.nombre, item.codigo, item.progreso);
+    });
+    actualizarContadores();
+    restoreBoxStates();
+}
+
+function actualizarContadores() {
+    const counts = {
+        aprobadas: document.getElementById("aprobadas")?.children.length || 0,
+        puedeFinal: document.getElementById("puedeFinal")?.children.length || 0,
+        noPuedeFinal: document.getElementById("noPuedeFinal")?.children.length || 0,
+        puedeCursarObl: document.getElementById("puedeCursar-obligatorias")?.children.length || 0,
+        puedeCursarOpt: document.getElementById("puedeCursar-optativas")?.children.length || 0,
+        noPuedeCursarObl: document.getElementById("noPuedeCursar-obligatorias")?.children.length || 0,
+        noPuedeCursarOpt: document.getElementById("noPuedeCursar-optativas")?.children.length || 0,
+        proyectosExtension: document.getElementById("proyectosExtension")?.children.length || 0,
+    };
+
+    counts.puedeCursarTotal = counts.puedeCursarObl + counts.puedeCursarOpt;
+    counts.regularizadasTotal = counts.puedeFinal + counts.noPuedeFinal;
+    counts.noPuedeCursarTotal = counts.noPuedeCursarObl + counts.noPuedeCursarOpt;
+
+    const h3Boxes = document.querySelectorAll(".box > h3");
+    const boxOrder = ["aprobadas", "regularizadasTotal", "puedeCursarTotal", "proyectosExtension", "noPuedeCursarTotal"];
+    h3Boxes.forEach((h3, i) => {
+        if (i < boxOrder.length) {
+            const span = h3.querySelector(".box-count");
+            if (span) span.innerText = `[${counts[boxOrder[i]]}]`;
+        }
+    });
+
+    const subSections = document.querySelectorAll(".sub-section");
+    const subOrder = ["puedeFinal", "noPuedeFinal", "puedeCursarObl", "puedeCursarOpt", "noPuedeCursarObl", "noPuedeCursarOpt"];
+    subSections.forEach((sub, i) => {
+        if (i < subOrder.length) {
+            const h4 = sub.querySelector("h4");
+            if (h4) {
+                const span = h4.querySelector(".box-count");
+                if (span) span.innerText = `[${counts[subOrder[i]]}]`;
+            }
+        }
     });
 }
 
@@ -838,7 +867,7 @@ infoText += materia.anio + "° Año";
     }
 
     // Agregar elementos en orden diferente según el contexto
-    if (id === "no puede cursar" || id.startsWith("no puede cursar-")) {
+    if (id === "noPuedeCursar" || id.startsWith("noPuedeCursar-")) {
         // Para "no puede cursar": criar container para linha 2
         const infoRow = document.createElement("div");
         infoRow.className = "info-row";
@@ -880,7 +909,7 @@ infoText += materia.anio + "° Año";
         // Agregar fechas de finales para puedeFinal, no puedeFinal y puedeCursar-optativas
         let fechasSpan = null;
         let btnCalendario = null;
-        const esRegularizada = id === "puedeFinal" || id === "no puedeFinal";
+        const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
         const esPuedeCursarOptativa = id === "puedeCursar-optativas";
         
         if (codigo && (esRegularizada || esPuedeCursarOptativa)) {
@@ -1000,6 +1029,9 @@ function toggleBox(titleElement) {
         content.classList.add("collapsed");
         titleElement.innerHTML = titleElement.innerHTML.replace("▾", "▸");
     }
+
+    const key = getBoxKey(box);
+    if (key) saveBoxState(key, !isCollapsed);
 }
 
 function toggleSubsection(headerElement) {
@@ -1014,11 +1046,14 @@ function toggleSubsection(headerElement) {
 
     if (isCollapsed) {
         subContent.classList.remove("collapsed");
-        headerElement.innerText = headerElement.innerText.replace("▸", "▾");
+        headerElement.innerHTML = headerElement.innerHTML.replace("▸", "▾");
     } else {
         subContent.classList.add("collapsed");
-        headerElement.innerText = headerElement.innerText.replace("▾", "▸");
+        headerElement.innerHTML = headerElement.innerHTML.replace("▾", "▸");
     }
+
+    const key = headerElement.innerText.replace(/[▾▸]/g, "").trim();
+    saveBoxState(key, !isCollapsed);
 }
 
 // ===============================
@@ -1054,8 +1089,6 @@ function showHelpModal() {
     title.innerText = "¿Cómo usar este sitio?";
     modal.appendChild(title);
 
-    const list = document.createElement("ul");
-    
     const items = [
         "Los iconos ✅🟨🔄 son botones y sirven para marcar el estado de cada materia.",
         "✅ <b>Aprobada</b>: Ya rendiste el final y aprobaste la materia.",
@@ -1065,27 +1098,71 @@ function showHelpModal() {
         "🗓 <b>Fechas de Final</b>: En materias regularizadas y optativas, muestra las próximas fechas de examen. Haz clic para ver todas las fechas y seleccionar una cátedra específica.",
         "Para optativas en 'Puede Cursar', solo se muestran las fechas de final libre."
     ];
+    
+    // Obter logs recentes
+    const logs = [
+        "04/05/2026 - Actualización de fechas de finales y migración de registros",
+        "12/04/2026 - Reordenación, Colapsabilidad y Estilos en Vacunas"
+    ];
 
-    items.forEach(text => {
-        const li = document.createElement("li");
-        li.innerHTML = text;
-        li.style.background = "transparent";
-        li.style.borderBottom = "1px solid #222";
-        li.style.padding = "12px 0";
-        list.appendChild(li);
-    });
-    modal.appendChild(list);
+    let paginaAtual = 1;
 
-    const btnCerrar = document.createElement("button");
-    btnCerrar.innerText = "¡ENTENDIDO!";
-    btnCerrar.style.width = "100%";
-    btnCerrar.style.marginTop = "15px";
-    btnCerrar.style.padding = "10px";
-    btnCerrar.style.backgroundColor = "#22d3ee";
-    btnCerrar.style.color = "#000";
-    btnCerrar.style.fontWeight = "bold";
-    btnCerrar.onclick = () => document.body.removeChild(overlay);
-    modal.appendChild(btnCerrar);
+    function renderizarPagina(modal, btnSiguiente) {
+        // Limpar conteúdo existente exceto o X
+        const btnX = modal.querySelector('.modal-close-x');
+        const title = modal.querySelector('h3');
+        
+        // Remover todo o resto
+        const filhos = Array.from(modal.children);
+        filhos.forEach(filho => {
+            if (filho !== btnX && filho !== title) {
+                modal.removeChild(filho);
+            }
+        });
+
+        if (paginaAtual === 1) {
+            title.innerText = "¿Cómo usar este sitio?";
+            const list = document.createElement("ul");
+            items.forEach(text => {
+                const li = document.createElement("li");
+                li.innerHTML = text;
+                li.style.background = "transparent";
+                li.style.borderBottom = "1px solid #222";
+                li.style.padding = "12px 0";
+                list.appendChild(li);
+            });
+            modal.appendChild(list);
+            btnSiguiente.innerText = "SIGUIENTE";
+            btnSiguiente.onclick = () => { paginaAtual = 2; renderizarPagina(modal, btnSiguiente); };
+            modal.appendChild(btnSiguiente);
+        } else {
+            title.innerText = "Últimas Actualizaciones";
+            const list = document.createElement("ul");
+            logs.forEach(text => {
+                const li = document.createElement("li");
+                li.innerText = text;
+                li.style.background = "transparent";
+                li.style.borderBottom = "1px solid #222";
+                li.style.padding = "12px 0";
+                list.appendChild(li);
+            });
+            modal.appendChild(list);
+            btnSiguiente.innerText = "¡ENTENDIDO!";
+            btnSiguiente.onclick = () => document.body.removeChild(overlay);
+            modal.appendChild(btnSiguiente);
+        }
+    }
+
+    const btnSiguiente = document.createElement("button");
+    btnSiguiente.style.width = "100%";
+    btnSiguiente.style.marginTop = "15px";
+    btnSiguiente.style.padding = "10px";
+    btnSiguiente.style.backgroundColor = "#22d3ee";
+    btnSiguiente.style.color = "#000";
+    btnSiguiente.style.fontWeight = "bold";
+
+    renderizarPagina(modal, btnSiguiente);
+
 
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
@@ -1198,6 +1275,9 @@ function mostrarPopupFechas(codigo, nombreMateria) {
         }
     }
     
+    // Anteriores: descendente (mais recente primeiro)
+    anteriores.sort((a, b) => b.fecha - a.fecha);
+    
     const datos = { proximas, anteriores };
     
     const tieneCatedras = catedrasData[codigo] && catedrasData[codigo].tieneCatedras;
@@ -1282,7 +1362,7 @@ function mostrarPopupFechas(codigo, nombreMateria) {
                     }
                 });
                 
-                fechasFiltradas.proximas.sort((a, b) => b.fecha - a.fecha);
+                fechasFiltradas.proximas.sort((a, b) => a.fecha - b.fecha);
                 fechasFiltradas.anteriores.sort((a, b) => b.fecha - a.fecha);
             }
         } else {
