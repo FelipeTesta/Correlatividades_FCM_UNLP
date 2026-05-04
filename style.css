@@ -243,16 +243,6 @@ h2 {
     width: 80px;
 }
 
-.top-bar-controls label {
-    font-size: 12px;
-    color: #999;
-}
-
-.top-bar-divider {
-    color: #333;
-    margin: 0 4px;
-}
-
 .btn-danger {
     background-color: transparent !important;
     border: 1px solid #444 !important;
@@ -298,11 +288,6 @@ h2 {
     cursor: pointer;
     border-radius: 4px;
     transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-    background-color: #222 !important;
-    border-color: #666 !important;
 }
 
 .btn-primary:hover {
@@ -675,17 +660,28 @@ li button:hover {
 }
 
 .btn-calendario {
-    background: none !important;
-    border: none !important;
+    background: #111 !important;
+    border: 1px solid #333 !important;
     color: #22d3ee !important;
     cursor: pointer;
     font-size: 14px;
-    padding: 0 4px !important;
+    width: 28px;
+    height: 28px;
+    padding: 0 !important;
+    border-radius: 4px;
     vertical-align: middle;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.15), 0 2px 4px rgba(34, 211, 238, 0.2);
 }
 
 .btn-calendario:hover {
-    transform: scale(1.2);
+    background: #1a1a2e !important;
+    border-color: #22d3ee !important;
+    box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.2), 0 2px 8px rgba(34, 211, 238, 0.35);
 }
 
 .catedra-select {
@@ -742,6 +738,13 @@ li button:hover {
     margin-left: 14px;
 }
 
+.box-count {
+    color: #d0d0d0;
+    font-size: 13px;
+    font-weight: normal;
+    margin-left: 4px;
+}
+
 /* Conteúdo interno */
 .box-content {
     overflow: hidden;
@@ -777,7 +780,7 @@ li button:hover {
 
     /* Grid vira 1 coluna no celular */
     .listas {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
     /* Top bar - layout vertical */
@@ -943,13 +946,18 @@ li button:hover {
     }
 
     /* Botões de ação específicos */
-    .btn-warning-faltantes,
-    .btn-calendario {
+    .btn-warning-faltantes {
         min-width: 40px;
         min-height: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .btn-calendario {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
     }
 
     /* Boxes */
@@ -984,149 +992,3 @@ li button:hover {
     }
 }
 
-    /* Grid vira 1 coluna no celular */
-    .listas {
-        grid-template-columns: 1fr;
-    }
-
-    /* Top bar - layout vertical */
-    .top-bar {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .top-bar-controls {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .top-bar-controls label {
-        width: auto;
-    }
-
-    .top-bar-controls input {
-        flex: 0 0 80px;
-    }
-
-    .top-bar-divider {
-        display: none;
-    }
-
-    .top-bar-controls button {
-        flex: 1;
-        min-width: auto;
-    }
-
-    .btn-help {
-        width: 100%;
-    }
-
-    /* Optativas box */
-    .optativas-box {
-        flex-wrap: wrap;
-    }
-
-    .optativas-box span:first-child {
-        width: 100%;
-    }
-
-    /* Legend box */
-    .legend-box {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    /* Extension form - layout vertical */
-    .extension-form {
-        flex-direction: column;
-    }
-
-    .extension-form input,
-    .extension-form button {
-        width: 100%;
-    }
-
-    /* Inputs e buttons */
-    select, input, button {
-        max-width: 100%;
-    }
-
-    /* LI ITEMS - layout para no puede cursar */
-    li {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 8px;
-        margin-bottom: 8px;
-    }
-
-    /* No puede cursar - dois boxes em linhas separadas no mobile */
-    li.item-row {
-        flex-direction: column;
-        gap: 6px;
-        align-items: flex-start;
-    }
-
-    .item-box {
-        width: 100%;
-    }
-
-    .item-nombre {
-        min-width: 100%;
-        max-width: 100%;
-        flex: none;
-    }
-
-    .item-requisitos {
-        justify-content: flex-start;
-        flex: none;
-        width: 100%;
-    }
-
-    li span:first-child {
-        width: 100%;
-        margin-bottom: 4px;
-    }
-
-    /* Container da linha 2 (Falta + Emoji + Ano + Progress) */
-    .info-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .info-row .falta,
-    .info-row .progress-emoji,
-    .info-row .anio-tag,
-    .info-row .progress {
-        display: inline;
-        width: auto;
-        margin-left: 0;
-    }
-
-    /* Right group com botões alinhado à direita */
-    .right-group {
-        display: flex;
-        margin-left: auto;
-    }
-
-    .fechas-proximas {
-        margin-left: 0;
-        margin-top: 4px;
-    }
-
-    li button {
-        width: auto;
-    }
-
-    /* Boxes */
-    .box {
-        padding: 8px;
-    }
-
-    h1 {
-        font-size: 18px;
-    }
