@@ -1,0 +1,4758 @@
+{
+  "A0001": {
+    "Anatomía A": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ],
+    "Anatomía B": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ],
+    "Anatomía C": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-23",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-18",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "BE001": {
+    "Bioética": [
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "BIOL9": {
+    "Biología": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "BC001": {
+    "Bioquímica Clínica I": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "BC002": {
+    "Bioquímica Clínica II": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ],
+    "Nutrición Clínica": []
+  },
+  "B0001": {
+    "Bioquímica y Biología Molecular": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "CATME": {
+    "Calidad de la Atención Médica": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "CE001": {
+    "Ciencias Exactas - Regular": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-06",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-20",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-27",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-10",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-26",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-17",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-14",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-28",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-18",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-23",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-20",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-04",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-18",
+        "label": "2° Dic"
+      }
+    ],
+    "Ciencias Exactas - Libre": [
+      {
+        "fecha": "2026-03-06",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-07-17",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-12-04",
+        "label": "1° Dic"
+      }
+    ]
+  },
+  "CS001": {
+    "Ciencias Sociales y medicina": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "C1001": {
+    "Cirugía A": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-14",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ],
+    "Cirugía B": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ],
+    "Cirugía C": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-15",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ],
+    "Cirugía D": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ],
+    "Cirugía E": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-06",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-20",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-27",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-10",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-15",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-26",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-17",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-14",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-28",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-18",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-23",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-13",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-04",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-18",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "CDT01": {
+    "Cirugía de Torax": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "H0001": {
+    "Citología, Histología y Embriología": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Citología Histología y Embriología": [
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "DL001": {
+    "Deontología Médica y medicina Legal": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "D0001": {
+    "Dermatología": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "R9002": {
+    "Diagnóstico y Terapéutica por imágenes II y Radiologia": []
+  },
+  "DISIN": {
+    "Discapacidad Intelectual": [
+      {
+        "fecha": "2026-02-14",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-07",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-21",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-27",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-11",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-16",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-27",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-18",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-29",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-19",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-24",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-14",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-05",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-19",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "E0001": {
+    "Ecología Humana y Promoción de la Salud": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "PENFC": {
+    "El paciente con Enfermedad Crónica de Alto Impacto Familiar": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "ENFPF": {
+    "Enfermedades poco Frecuentes en Medicina": []
+  },
+  "EP001": {
+    "Epidemiología": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "EACS1": {
+    "Estadística Aplicada a Ciencias de la Salud": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-20",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "F9002": {
+    "Farmacología Aplicada- Farmacología P/V": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Farmacología Aplicada- Farmacologia P/V": [
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "F9001": {
+    "Farmacología Básica": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "FM001": {
+    "Filosofía Médica": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "FB001": {
+    "Fisiología y Física Biológica": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "GE001": {
+    "Genética-Regular": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      }
+    ],
+    "Genética-Libre": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      }
+    ],
+    "Genética": [
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "G0001": {
+    "Ginecología A": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ],
+    "Ginecología B": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "HM001": {
+    "Historia de la Medicina-Regular": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ],
+    "Historia de la Medicina-Libre": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "I0001": {
+    "Infectología": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "IAA01": {
+    "Informática Aplicada": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      }
+    ],
+    "La Informática aplicada al análisis y presentación de trabajos científicos en Ciencias de la Salud": [
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "IFB01": {
+    "Informática Básica- Libre": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "IFM02": {
+    "Informática Médica": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "IMD01": {
+    "Ingles Médico-Regular": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-06",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-27",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Ingles Médico-Libre": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-06",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-27",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Ingles Médico": [
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-26",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "IM001": {
+    "Inmunología-Regular": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Inmunología-Libre": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Inmunología": [
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "IES01": {
+    "Introducción a la Epistemología": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "LCM01": {
+    "Literatura, Cine y Medicina": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      }
+    ],
+    "Literatura Cine y Medicina": [
+      {
+        "fecha": "2026-05-15",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-26",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-17",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-14",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-28",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-18",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-23",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-13",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-04",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-18",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "MGF": {
+    "Medicina General y Familiar": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "MI191": {
+    "Medicina Interna A": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ],
+    "Medicina Interna B": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ],
+    "Medicina Interna C": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ],
+    "Medicina Interna D": [
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ],
+    "Medicina Interna E": [
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ],
+    "Medicina Interna F": [
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "MI291": {
+    "Medicina Interna D": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      }
+    ],
+    "Medicina Interna E": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      }
+    ],
+    "Medicina Interna F": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      }
+    ]
+  },
+  "M0001": {
+    "Microbiología y Parasitología": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "NEUAT": {
+    "Neuroanatomía Semiológica – Regular": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Neuroanatomía Semiológica – Libre": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      }
+    ],
+    "Neuroanatomía Semiológica - REGULARES": [
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ],
+    "Neuroanatomía Semiológica - LIBRES": [
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "NCG": {
+    "Neurocirugia": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "N0001": {
+    "Neurología": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "NUTRI": {
+    "Nutrición Clínica": []
+  },
+  "OB001": {
+    "Obstetricia": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "OF001": {
+    "Oftalmología": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "OR001": {
+    "Ortopedia y Traumatología": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "O0001": {
+    "Otorrinolaringología": [
+      {
+        "fecha": "2026-02-12",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-05",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-19",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-09",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-14",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-25",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-16",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-27",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-17",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "PT001": {
+    "Patología A": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ],
+    "Patología B": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "PD001": {
+    "Pediatría A": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ],
+    "Pediatría B": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-15",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-26",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-28",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-18",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-23",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-13",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-11",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-18",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "PG001": {
+    "Psicología Médica": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-26",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "P9002": {
+    "Psiquiatría II": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-13",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "SA001": {
+    "Salud Ambiental": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "HG002": {
+    "Salud Pública II": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "S0003": {
+    "Salud y Medicina Comunitaria": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "SIC01": {
+    "Seminario en Investigación Científica": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-30",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "TIN01": {
+    "Terapia Intensiva-Regular": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ],
+    "Terapia Intensiva-Libre": [
+      {
+        "fecha": "2026-02-13",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "TX001": {
+    "Toxicología": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "T0100": {
+    "Transplante de Órganos": [
+      {
+        "fecha": "2026-02-11",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-04",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-18",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-08",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      }
+    ],
+    "Transplante de Órganos - Libre": [
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "U0001": {
+    "Urología": [
+      {
+        "fecha": "2026-02-10",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-03",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-17",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-31",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-07",
+        "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-19",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
+      }
+    ]
+  },
+  "R9001": {
+    "Diagnóstico y Terapéutica por imágenes II y Radiologia": [
+      {
+        "fecha": "2026-05-13",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-24",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-15",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-12",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-26",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-16",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "2° Dic"
+      }
+    ]
+  }
+}

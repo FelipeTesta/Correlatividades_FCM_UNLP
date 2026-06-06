@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Modo Árbol - Correlatividades Medicina UNLP</title>
+    <link rel="stylesheet" href="arbol.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="tree-page">
+
+    <!-- Top Bar -->
+    <div class="tree-top-bar">
+        <a href="index.html" class="btn-back">← Volver</a>
+        <h1>🌳 Modo Árbol</h1>
+        <label class="toggle-switch" role="switch" aria-label="Mostrar optativas">
+            <input type="checkbox" id="toggleOptativas" onchange="toggleOptativasVisibility()">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Optativas</span>
+        </label>
+        <div class="zoom-controls">
+            <button onclick="zoomOut()" title="Alejar">−</button>
+            <span id="zoomLevel" aria-live="polite">100%</span>
+            <button onclick="zoomIn()" title="Acercar">+</button>
+            <button onclick="resetZoom()" title="Restablecer">⟲</button>
+        </div>
+        <button class="btn-legend" onclick="toggleLegend()">📋 Leyenda</button>
+    </div>
+
+    <!-- Scrollable Tree Area -->
+    <div class="tree-wrapper" id="treeWrapper"></div>
+
+    <!-- Legend -->
+    <div class="tree-legend" id="treeLegend">
+        <h4>Leyenda</h4>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#22c55e"></span>
+            Aprobada
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#f97316"></span>
+            Regularizada
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#facc15"></span>
+            Puede cursar
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#333"></span>
+            No puede cursar
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#22d3ee"></span>
+            Optativa (puede cursar)
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background:#1a6b73"></span>
+            Optativa (no puede cursar)
+        </div>
+        <hr class="legend-divider">
+<div class="legend-item">
+    <span class="legend-line" style="background:#22c55e"></span>
+    Requisito cumplido
+</div>
+<div class="legend-item">
+    <span class="legend-line" style="background:#666"></span>
+    No cumplido (Cursada)
+</div>
+<div class="legend-item">
+    <span class="legend-line legend-line-dashed" style="background:#999"></span>
+    No cumplido (final)
+</div>
+<div class="legend-item">
+    <span class="legend-line" style="background:#22d3ee"></span>
+    Optativa
+</div>
+        <hr class="legend-divider">
+        <div class="legend-buttons">
+            <span>✅ Aprobar</span>
+            <span>🟨 Regularizar</span>
+            <span>🔄 Resetear</span>
+        </div>
+        <div class="legend-item" style="font-size:10px; color:#666; margin-top:6px;">
+            Clic para resaltar correlativas
+        </div>
+    </div>
+
+</div>
+
+<script src="APP/materias.js"></script>
+<script src="arbol.js"></script>
+
+</body>
+</html>
