@@ -16,7 +16,8 @@ const LINE_COLORS = {
     met: '#22c55e',
     notMetCursada: '#666',
     notMetFinal: '#999',
-    optativa: '#22d3ee'
+    optativa: '#22d3ee',
+    finalAprobada: '#ffffff'
 };
 
 const STATUS_CLASS_MAP = {
@@ -468,7 +469,7 @@ function updateTree() {
 // LINE COLORS
 // ===============================
 
-function getLineColor(prereqCode, prereqCondicion) {
+function getLineColor(prereqCode, prereqCondicion, isParaAprobar) {
     // Check if the prerequisite subject is optativa
     for (var i = 0; i < materias.length; i++) {
         if (materias[i].codigo === prereqCode && materias[i].categoria === 'optativa') {
@@ -482,10 +483,8 @@ function getLineColor(prereqCode, prereqCondicion) {
     if (prereqCondicion === 'aprobada' && estado === 'aprobada') return LINE_COLORS.met;
     if (prereqCondicion === 'regularizada' && estado) return LINE_COLORS.met;
 
-    // Not met - color based on condition type
-    if (prereqCondicion === 'aprobada') return LINE_COLORS.notMetFinal;
-    if (prereqCondicion === 'regularizada') return LINE_COLORS.notMetCursada;
-
+    // Not met
+    if (isParaAprobar) return LINE_COLORS.finalAprobada;
     return LINE_COLORS.notMetCursada;
 }
 
@@ -536,64 +535,45 @@ function drawConnections() {
     // Track drawn connections to avoid duplicates
     var drawn = {};
 
-    // First pass: draw paraCursar connections (solid lines)
-    for (var i = 0; i < materias.length; i++) {
-        var m = materias[i];
-        if (!m.paraCursar) continue;
+    // Helper to draw a connection
+    function drawReq(m, req, isParaAprobar) {
+        if (req.materia === 'OPT-HORAS') return;
 
-        for (var j = 0; j < m.paraCursar.length; j++) {
-            var req = m.paraCursar[j];
-            if (req.materia === 'OPT-HORAS') continue;
+        var prereqNode = document.getElementById('tree-node-' + req.materia);
+        var depNode = document.getElementById('tree-node-' + m.codigo);
 
-            var prereqNode = document.getElementById('tree-node-' + req.materia);
-            var depNode = document.getElementById('tree-node-' + m.codigo);
+        if (!prereqNode || !depNode) return;
+        if (prereqNode.offsetParent === null || depNode.offsetParent === null) return;
 
-            if (!prereqNode || !depNode) continue;
-            if (prereqNode.offsetParent === null || depNode.offsetParent === null) continue;
+        var key = req.materia + '->' + m.codigo;
+        if (drawn[key]) return;
+        drawn[key] = true;
 
-            var key = req.materia + '->' + m.codigo;
-            if (drawn[key]) continue;
-            drawn[key] = 'solid';
+        var prereqRect = prereqNode.getBoundingClientRect();
+        var depRect = depNode.getBoundingClientRect();
 
-            var prereqRect = prereqNode.getBoundingClientRect();
-            var depRect = depNode.getBoundingClientRect();
+        var color = getLineColor(req.materia, req.condicion, isParaAprobar);
 
-            var color = getLineColor(req.materia, req.condicion);
-
-            drawBezier(svg, containerRect, prereqRect, depRect, color, req.materia, m.codigo, false);
-        }
+        drawBezier(svg, containerRect, prereqRect, depRect, color, req.materia, m.codigo);
     }
 
-    // Second pass: draw paraAprobar connections (dashed lines) - only if not already drawn as solid
+    // Process all connections
     for (var i = 0; i < materias.length; i++) {
         var m = materias[i];
-        if (!m.paraAprobar) continue;
-
-        for (var j = 0; j < m.paraAprobar.length; j++) {
-            var req = m.paraAprobar[j];
-            if (req.materia === 'OPT-HORAS') continue;
-
-            var prereqNode = document.getElementById('tree-node-' + req.materia);
-            var depNode = document.getElementById('tree-node-' + m.codigo);
-
-            if (!prereqNode || !depNode) continue;
-            if (prereqNode.offsetParent === null || depNode.offsetParent === null) continue;
-
-            var key = req.materia + '->' + m.codigo;
-            if (drawn[key]) continue; // Skip if already drawn as solid (paraCursar)
-            drawn[key] = 'dashed';
-
-            var prereqRect = prereqNode.getBoundingClientRect();
-            var depRect = depNode.getBoundingClientRect();
-
-            var color = getLineColor(req.materia, req.condicion);
-
-            drawBezier(svg, containerRect, prereqRect, depRect, color, req.materia, m.codigo, true);
+        if (m.paraCursar) {
+            for (var j = 0; j < m.paraCursar.length; j++) {
+                drawReq(m, m.paraCursar[j], false);
+            }
+        }
+        if (m.paraAprobar) {
+            for (var k = 0; k < m.paraAprobar.length; k++) {
+                drawReq(m, m.paraAprobar[k], true);
+            }
         }
     }
 }
 
-function drawBezier(svg, containerRect, startRect, endRect, color, fromCode, toCode, isDashed) {
+function drawBezier(svg, containerRect, startRect, endRect, color, fromCode, toCode) {
     // Calculate center points
     var startCenterX = startRect.left + startRect.width / 2 - containerRect.left;
     var startCenterY = startRect.top + startRect.height / 2 - containerRect.top;
@@ -648,15 +628,12 @@ function drawBezier(svg, containerRect, startRect, endRect, color, fromCode, toC
     pathEl.setAttribute('fill', 'none');
     pathEl.setAttribute('stroke-linecap', 'round');
     pathEl.setAttribute('class', 'connection-line');
-    if (isDashed) {
-        pathEl.setAttribute('stroke-dasharray', '6 3');
-    }
+    
     if (fromCode) pathEl.setAttribute('data-from', fromCode);
     if (toCode) pathEl.setAttribute('data-to', toCode);
 
     // Add arrow marker
-    var markerSuffix = isDashed ? '-dashed' : '';
-    var markerId = 'arrow-' + color.replace('#', '') + markerSuffix;
+    var markerId = 'arrow-' + color.replace('#', '');
     var existingMarker = svg.querySelector('#' + markerId);
 
     if (!existingMarker) {
@@ -741,51 +718,20 @@ function updateZoomDisplay() {
 // ===============================
 
 function selectNode(codigo) {
-    // If already selected, deselect
     if (selectedNode === codigo) {
         deselectAll();
         return;
     }
 
     selectedNode = codigo;
-
-    // Find correlatives: prerequisites + dependents
-    var correlatives = {};
-    correlatives[codigo] = true;
-
-    // Add all prerequisites (paraCursar) of the selected subject
-    var subject = null;
-    for (var i = 0; i < materias.length; i++) {
-        if (materias[i].codigo === codigo) {
-            subject = materias[i];
-            break;
-        }
-    }
-    if (subject && subject.paraCursar) {
-        for (var j = 0; j < subject.paraCursar.length; j++) {
-            var req = subject.paraCursar[j];
-            if (req.materia !== 'OPT-HORAS') correlatives[req.materia] = true;
-        }
-    }
-
-    // Add all subjects that depend on this one (reverse lookup)
-    for (var k = 0; k < materias.length; k++) {
-        var m = materias[k];
-        if (!m.paraCursar) continue;
-        for (var l = 0; l < m.paraCursar.length; l++) {
-            if (m.paraCursar[l].materia === codigo) {
-                correlatives[m.codigo] = true;
-                break;
-            }
-        }
-    }
+    var correlatives = findCorrelatives(codigo);
 
     // Apply visual changes to nodes
     var allNodes = document.querySelectorAll('.subject-node');
     for (var n = 0; n < allNodes.length; n++) {
         var node = allNodes[n];
         var nodeCode = node.dataset.codigo;
-        if (correlatives[nodeCode]) {
+        if (correlatives.nodes[nodeCode]) {
             node.classList.add('highlighted');
             node.classList.remove('dimmed');
         } else {
@@ -800,7 +746,7 @@ function selectNode(codigo) {
         var path = allPaths[p];
         var from = path.getAttribute('data-from');
         var to = path.getAttribute('data-to');
-        if (from === codigo || to === codigo) {
+        if (correlatives.lines[from + '->' + to]) {
             path.classList.add('highlighted');
             path.classList.remove('dimmed');
         } else {
@@ -808,7 +754,46 @@ function selectNode(codigo) {
             path.classList.remove('highlighted');
         }
     }
+}
 
+function findCorrelatives(codigo) {
+    var foundNodes = {};
+    var foundLines = {};
+    foundNodes[codigo] = true;
+
+    // Find subject
+    var m = null;
+    for (var i = 0; i < materias.length; i++) {
+        if (materias[i].codigo === codigo) {
+            m = materias[i];
+            break;
+        }
+    }
+    if (!m) return { nodes: foundNodes, lines: foundLines };
+
+    // 1. Direct Prerequisites (paraCursar + paraAprobar)
+    var prereqs = (m.paraCursar || []).concat(m.paraAprobar || []);
+    for (var j = 0; j < prereqs.length; j++) {
+        var reqCode = prereqs[j].materia;
+        if (reqCode === 'OPT-HORAS') continue;
+        foundNodes[reqCode] = true;
+        foundLines[reqCode + '->' + codigo] = true;
+    }
+
+    // 2. Direct Dependents (lookup in all subjects)
+    for (var k = 0; k < materias.length; k++) {
+        var m2 = materias[k];
+        var deps = (m2.paraCursar || []).concat(m2.paraAprobar || []);
+        for (var l = 0; l < deps.length; l++) {
+            if (deps[l].materia === codigo) {
+                var depCode = m2.codigo;
+                foundNodes[depCode] = true;
+                foundLines[codigo + '->' + depCode] = true;
+            }
+        }
+    }
+
+    return { nodes: foundNodes, lines: foundLines };
 }
 
 function deselectAll() {

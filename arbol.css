@@ -332,7 +332,8 @@ html, body {
 
 /* Status-based node background */
 .subject-node.status-aprobada {
-    background-color: rgba(34, 197, 94, 0.2);
+    background: #003803;
+    background: linear-gradient(100deg, rgba(0, 56, 3, 1) 0%, rgba(0, 105, 5, 1) 40%, rgba(0, 56, 3, 1) 100%);
 }
 
 /* Subtle glass reflection on approved nodes */
@@ -344,14 +345,14 @@ html, body {
     right: 0;
     bottom: 0;
     background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12) 0%,
-        rgba(255, 255, 255, 0.06) 30%,
+        100deg,
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.08) 30%,
         transparent 50%
     );
     pointer-events: none;
     border-radius: 6px;
-    animation: glassShine 3.5s ease-in-out 1.5s infinite;
+    animation: glassShine 6s ease-in-out infinite;
     z-index: 1;
 }
 
@@ -659,10 +660,6 @@ svg path.connection-line.highlighted {
     color: #e5e5e5;
 }
 
-/* Dashed line in legend */
-.legend-line-dashed {
-    background: repeating-linear-gradient(90deg, #999 0px, #999 6px, transparent 6px, transparent 9px) !important;
-}
 
 /* ============================= */
 /* FOCUS INDICATORS              */
@@ -842,18 +839,15 @@ svg path.connection-line.highlighted {
         transform: translateX(-100%) skewX(-15deg);
         opacity: 0;
     }
-    10% {
+    15% {
         opacity: 1;
     }
-    30% {
-        transform: translateX(200%) skewX(-15deg);
+    85% {
+        transform: translateX(150%) skewX(-15deg);
         opacity: 1;
-    }
-    31% {
-        opacity: 0;
     }
     100% {
-        transform: translateX(200%) skewX(-15deg);
+        transform: translateX(150%) skewX(-15deg);
         opacity: 0;
     }
 }
