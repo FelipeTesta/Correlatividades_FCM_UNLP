@@ -1,0 +1,12 @@
+# GitHub Pages configuration — disable Jekyll processing
+# This is a pure static site (HTML + CSS + JS)
+theme: null
+plugins: []
+
+# Exclude non-essential files from the site
+exclude:
+  - AGENTS.md
+  - LOG.md
+  - REF/
+  - .gitignore
+  - README.md
