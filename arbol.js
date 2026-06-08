@@ -41,7 +41,6 @@ window.addEventListener('resize', function () {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {
         if (document.querySelector('.tree-wrapper')) {
-            updateSvgDimensions();
             drawConnections();
         }
     }, 150);
@@ -161,6 +160,7 @@ function initTree() {
         updateSvgDimensions();
         drawConnections();
     });
+
 }
 
 // ===============================
@@ -276,6 +276,8 @@ function createSubjectNode(m) {
     node.addEventListener('click', function () {
         selectNode(m.codigo);
     });
+
+    // Note: mouseenter redraw removed — causes flash on click (clear+recreate cycle)
 
     // Tooltip
     node.title = m.nombre + ' (' + m.codigo + ')\n' + getStatusLabel(status);
@@ -501,11 +503,15 @@ function updateSvgDimensions() {
     var svg = getTreeSvg();
     if (!wrapper || !svg) return;
 
-    // Force reflow to ensure scroll dimensions are accurate
-    void wrapper.offsetHeight;
+    // Temporarily hide SVG to avoid it contributing to scrollWidth/scrollHeight
+    var prevDisplay = svg.style.display;
+    svg.style.display = 'none';
+    void wrapper.offsetHeight; // force reflow
 
-    var w = Math.max(wrapper.scrollWidth, wrapper.offsetWidth);
-    var h = Math.max(wrapper.scrollHeight, wrapper.offsetHeight);
+    var w = wrapper.scrollWidth;
+    var h = wrapper.scrollHeight;
+
+    svg.style.display = prevDisplay || '';
 
     svg.setAttribute('width', w);
     svg.setAttribute('height', h);
@@ -527,10 +533,11 @@ function drawConnections() {
         svg.removeChild(svg.firstChild);
     }
 
-    var container = document.querySelector('.tree-wrapper');
-    if (!container) return;
-
-    var containerRect = container.getBoundingClientRect();
+    // Use the SVG element itself as reference (not the wrapper)
+    // Since SVG is absolutely positioned inside the wrapper and scrolls with content,
+    // nodeRect - svgRect gives stable coordinates regardless of scroll position.
+    var svgRect = svg.getBoundingClientRect();
+    if (svgRect.width === 0 || svgRect.height === 0) return;
 
     // Track drawn connections to avoid duplicates
     var drawn = {};
@@ -554,7 +561,7 @@ function drawConnections() {
 
         var color = getLineColor(req.materia, req.condicion, isParaAprobar);
 
-        drawBezier(svg, containerRect, prereqRect, depRect, color, req.materia, m.codigo);
+        drawBezier(svg, svgRect, prereqRect, depRect, color, req.materia, m.codigo);
     }
 
     // Process all connections
@@ -571,14 +578,19 @@ function drawConnections() {
             }
         }
     }
+
+    // Re-apply selection visuals (without toggle logic)
+    applySelectionVisuals();
 }
 
-function drawBezier(svg, containerRect, startRect, endRect, color, fromCode, toCode) {
-    // Calculate center points
-    var startCenterX = startRect.left + startRect.width / 2 - containerRect.left;
-    var startCenterY = startRect.top + startRect.height / 2 - containerRect.top;
-    var endCenterX = endRect.left + endRect.width / 2 - containerRect.left;
-    var endCenterY = endRect.top + endRect.height / 2 - containerRect.top;
+function drawBezier(svg, svgRect, startRect, endRect, color, fromCode, toCode) {
+    // Calculate center points relative to the SVG element.
+    // Both node rects and svgRect are viewport-relative, so their difference
+    // gives stable SVG coordinates regardless of scroll position.
+    var startCenterX = startRect.left + startRect.width / 2 - svgRect.left;
+    var startCenterY = startRect.top + startRect.height / 2 - svgRect.top;
+    var endCenterX = endRect.left + endRect.width / 2 - svgRect.left;
+    var endCenterY = endRect.top + endRect.height / 2 - svgRect.top;
 
     var startX, startY, endX, endY;
     var path;
@@ -588,16 +600,14 @@ function drawBezier(svg, containerRect, startRect, endRect, color, fromCode, toC
 
     if (verticalDist < 30) {
         // HORIZONTAL CONNECTION (same row)
-        // Start from right-center of prerequisite, end at left-center of dependent
-        startX = startRect.right - containerRect.left;
+        startX = startRect.right - svgRect.left;
         startY = startCenterY;
-        endX = endRect.left - containerRect.left;
+        endX = endRect.left - svgRect.left;
         endY = endCenterY;
 
-        // If dependent is to the LEFT of prerequisite, reverse
         if (startCenterX > endCenterX) {
-            startX = startRect.left - containerRect.left;
-            endX = endRect.right - containerRect.left;
+            startX = startRect.left - svgRect.left;
+            endX = endRect.right - svgRect.left;
         }
 
         var hOffset = Math.max(horizontalDist * 0.4, 20);
@@ -607,11 +617,10 @@ function drawBezier(svg, containerRect, startRect, endRect, color, fromCode, toC
                ', ' + endX + ' ' + endY;
     } else {
         // VERTICAL CONNECTION (different rows)
-        // Start from bottom-center of prerequisite, end at top-center of dependent
         startX = startCenterX;
-        startY = startRect.bottom - containerRect.top;
+        startY = startRect.bottom - svgRect.top;
         endX = endCenterX;
-        endY = endRect.top - containerRect.top;
+        endY = endRect.top - svgRect.top;
 
         var vOffset = Math.max(verticalDist * 0.4, 20);
         path = 'M ' + startX + ' ' + startY +
@@ -724,36 +733,7 @@ function selectNode(codigo) {
     }
 
     selectedNode = codigo;
-    var correlatives = findCorrelatives(codigo);
-
-    // Apply visual changes to nodes
-    var allNodes = document.querySelectorAll('.subject-node');
-    for (var n = 0; n < allNodes.length; n++) {
-        var node = allNodes[n];
-        var nodeCode = node.dataset.codigo;
-        if (correlatives.nodes[nodeCode]) {
-            node.classList.add('highlighted');
-            node.classList.remove('dimmed');
-        } else {
-            node.classList.add('dimmed');
-            node.classList.remove('highlighted');
-        }
-    }
-
-    // Apply visual changes to SVG lines
-    var allPaths = document.querySelectorAll('svg path.connection-line');
-    for (var p = 0; p < allPaths.length; p++) {
-        var path = allPaths[p];
-        var from = path.getAttribute('data-from');
-        var to = path.getAttribute('data-to');
-        if (correlatives.lines[from + '->' + to]) {
-            path.classList.add('highlighted');
-            path.classList.remove('dimmed');
-        } else {
-            path.classList.add('dimmed');
-            path.classList.remove('highlighted');
-        }
-    }
+    applySelectionVisuals();
 }
 
 function findCorrelatives(codigo) {
@@ -808,8 +788,43 @@ function deselectAll() {
     for (var j = 0; j < allPaths.length; j++) {
         allPaths[j].classList.remove('highlighted', 'dimmed');
     }
-
 }
+
+
+function applySelectionVisuals() {
+    if (!selectedNode) return;
+    var correlatives = findCorrelatives(selectedNode);
+
+    // Apply visual changes to nodes
+    var allNodes = document.querySelectorAll('.subject-node');
+    for (var n = 0; n < allNodes.length; n++) {
+        var node = allNodes[n];
+        var nodeCode = node.dataset.codigo;
+        if (correlatives.nodes[nodeCode]) {
+            node.classList.add('highlighted');
+            node.classList.remove('dimmed');
+        } else {
+            node.classList.add('dimmed');
+            node.classList.remove('highlighted');
+        }
+    }
+
+    // Apply visual changes to SVG lines
+    var allPaths = document.querySelectorAll('svg path.connection-line');
+    for (var p = 0; p < allPaths.length; p++) {
+        var path = allPaths[p];
+        var from = path.getAttribute('data-from');
+        var to = path.getAttribute('data-to');
+        if (correlatives.lines[from + '->' + to]) {
+            path.classList.add('highlighted');
+            path.classList.remove('dimmed');
+        } else {
+            path.classList.add('dimmed');
+            path.classList.remove('highlighted');
+        }
+    }
+}
+
 
 // ESC key to deselect
 document.addEventListener('keydown', function (e) {
@@ -860,7 +875,7 @@ function toggleOptativasVisibility() {
         updateSvgDimensions();
         drawConnections();
         if (selectedNode) {
-            selectNode(selectedNode);
+            applySelectionVisuals();
         }
     }
 
@@ -898,4 +913,19 @@ function toggleLegend() {
 // Auto-hide legend after 10 seconds
 document.addEventListener('DOMContentLoaded', function() {
     legendTimeout = setTimeout(autoHideLegend, 10000);
+});
+
+// ===============================
+// SCROLL REDRAW & COMPACT INIT (one-time setup)
+// ===============================
+document.addEventListener('DOMContentLoaded', function() {
+    var wrapper = document.querySelector('.tree-wrapper');
+    if (wrapper) {
+        wrapper.addEventListener('scroll', function() {
+            requestAnimationFrame(function() {
+                drawConnections();
+            });
+        }, { passive: true });
+    }
+
 });
