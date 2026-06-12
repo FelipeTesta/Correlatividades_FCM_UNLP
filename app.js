@@ -263,6 +263,7 @@ function guardarLocalYRender() {
 function resetearTodos() {
     estados = {};
     try { localStorage.removeItem("estados"); } catch(e) {}
+    try { localStorage.removeItem("cursando"); } catch(e) {}
     render();
 }
 

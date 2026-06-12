@@ -495,6 +495,15 @@ function removeSubjectState(codigo) {
     delete estadosData[codigo];
     try { localStorage.setItem('estados', JSON.stringify(estadosData)); } catch(e) {}
     window.estados = estadosData;
+
+    // Also clear cursando state for this subject
+    var cursandoData;
+    try { cursandoData = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { cursandoData = {}; }
+    if (cursandoData[codigo]) {
+        delete cursandoData[codigo];
+        try { localStorage.setItem('cursando', JSON.stringify(cursandoData)); } catch(e) {}
+    }
+
     updateTree();
 }
 
