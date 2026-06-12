@@ -203,7 +203,7 @@ html, body {
 .optativa-label {
     display: block;
     font-size: 10px;
-    color: #22d3ee;
+    color: #a855f7;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 4px;
@@ -323,11 +323,11 @@ html, body {
 }
 
 .node-border.status-optativa-puede-cursar {
-    background-color: #22d3ee;
+    background-color: #a855f7;
 }
 
 .node-border.status-optativa-no-puede-cursar {
-    background-color: #1a6b73;
+    background-color: #581c87;
 }
 
 /* Status-based node background */
@@ -357,7 +357,8 @@ html, body {
 }
 
 .subject-node.status-regularizada {
-    background-color: rgba(249, 115, 22, 0.15);
+    background: #4a1a06;
+    background: linear-gradient(100deg, rgba(74, 26, 6, 1) 0%, rgba(120, 40, 8, 1) 40%, rgba(74, 26, 6, 1) 100%);
 }
 .subject-node.status-puede-cursar {
     background-color: rgba(250, 204, 21, 0.12);
@@ -366,15 +367,15 @@ html, body {
     background-color: rgba(51, 51, 51, 0.15);
 }
 .subject-node.status-optativa {
-    background-color: rgba(34, 211, 238, 0.15);
+    background-color: rgba(168, 85, 247, 0.15);
 }
 
 .subject-node.status-optativa-puede-cursar {
-    background-color: rgba(34, 211, 238, 0.12);
+    background-color: rgba(168, 85, 247, 0.12);
 }
 
 .subject-node.status-optativa-no-puede-cursar {
-    background-color: rgba(34, 211, 238, 0.04);
+    background-color: rgba(168, 85, 247, 0.04);
 }
 
 /* Status-based text colors */
@@ -394,11 +395,11 @@ html, body {
     color: #666;
 }
 .subject-node.status-optativa .node-code {
-    color: #22d3ee;
+    color: #a855f7;
 }
 
 .subject-node.status-optativa-puede-cursar .node-code {
-    color: #22d3ee;
+    color: #a855f7;
 }
 
 .subject-node.status-optativa-no-puede-cursar .node-code {
@@ -413,7 +414,7 @@ html, body {
 .subject-node.status-regularizada .node-dependents { color: #f97316; }
 .subject-node.status-puede-cursar .node-dependents { color: #facc15; }
 .subject-node.status-no-puede-cursar .node-dependents { color: #666; }
-.subject-node.status-optativa-puede-cursar .node-dependents { color: #22d3ee; }
+.subject-node.status-optativa-puede-cursar .node-dependents { color: #a855f7; }
 .subject-node.status-optativa-no-puede-cursar .node-dependents { color: #666; }
 
 /* Node action buttons */
@@ -421,6 +422,7 @@ html, body {
     display: flex;
     gap: 4px;
     justify-content: flex-end;
+    align-items: center;
     margin-top: 2px;
     padding-top: 2px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -462,6 +464,68 @@ html, body {
 
 .node-btn-reset:hover {
     background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Cursando mini toggle */
+.node-cursando-toggle {
+    order: -1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.node-cursando-label {
+    font-size: 8px;
+    color: #999;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.node-cursando-switch {
+    position: relative;
+    display: inline-block;
+    width: 28px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.node-cursando-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.node-cursando-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #333;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.node-cursando-slider::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: #e5e5e5;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s ease;
+}
+
+.node-cursando-switch input:checked + .node-cursando-slider {
+    background-color: #22d3ee;
+}
+
+.node-cursando-switch input:checked + .node-cursando-slider::before {
+    transform: translateX(12px);
 }
 
 /* ============================= */
@@ -625,7 +689,7 @@ svg path.connection-line.highlighted {
 }
 
 .toggle-switch input:checked + .toggle-slider {
-    background-color: #22d3ee;
+    background-color: #a855f7;
 }
 
 .toggle-switch input:checked + .toggle-slider::after {
@@ -826,6 +890,58 @@ svg path.connection-line.highlighted {
         font-size: 10px;
     }
 
+}
+
+/* ============================= */
+/* CURSANDO BORDER ANIMATION     */
+/* ============================= */
+
+@property --border-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes borderAngleRotate {
+    from { --border-angle: 0deg; }
+    to { --border-angle: 360deg; }
+}
+
+/* Cursando ON: cyan background + white/cyan glow border */
+.subject-node.cursando-active {
+    background: #023e4a;
+    background: linear-gradient(100deg, rgba(2, 62, 74, 1) 0%, rgba(6, 90, 107, 1) 40%, rgba(2, 62, 74, 1) 100%);
+    border: 1.5px solid transparent;
+    animation: borderAngleRotate 3s infinite linear;
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    background-image: 
+        linear-gradient(rgba(2, 62, 74, 1), rgba(2, 62, 74, 1)),
+        conic-gradient(from var(--border-angle), #ffffff, #22d3ee, #ffffff, #22d3ee, #ffffff);
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+}
+
+.subject-node.cursando-active .node-code {
+    color: #22d3ee;
+}
+
+.subject-node.cursando-active .node-dependents {
+    color: #22d3ee;
+}
+
+.subject-node.cursando-active .node-border {
+    background-color: #22d3ee;
+}
+
+/* Cursando pending on dependents: border animation only, NO glow */
+.subject-node.cursando-pending {
+    border: 1.5px solid transparent;
+    animation: borderAngleRotate 3s infinite linear;
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    background-image: 
+        linear-gradient(rgba(20, 20, 20, 1), rgba(20, 20, 20, 1)),
+        conic-gradient(from var(--border-angle), #ffffff, #333, #ffffff, #333, #ffffff);
 }
 
 /* ============================= */

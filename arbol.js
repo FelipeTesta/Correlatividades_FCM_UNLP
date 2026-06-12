@@ -16,7 +16,7 @@ const LINE_COLORS = {
     met: '#22c55e',
     notMetCursada: '#666',
     notMetFinal: '#999',
-    optativa: '#22d3ee',
+    optativa: '#a855f7',
     finalAprobada: '#ffffff'
 };
 
@@ -136,9 +136,10 @@ function initTree() {
             for (var k = 0; k < years[year].optativas.length; k++) {
                 optRow.appendChild(createSubjectNode(years[year].optativas[k]));
             }
-            // If optativas toggle is unchecked, hide this row by default
+            // If optativas toggle is unchecked, hide this row and label by default
             if (!document.getElementById('toggleOptativas').checked) {
                 optRow.classList.add('hidden');
+                optLabel.style.display = 'none';
             }
             section.appendChild(optRow);
         }
@@ -159,6 +160,11 @@ function initTree() {
     requestAnimationFrame(function() {
         updateSvgDimensions();
         drawConnections();
+    });
+
+    // Apply cursando effects after render
+    requestAnimationFrame(function() {
+        applyCursandoEffects();
     });
 
 }
@@ -266,6 +272,44 @@ function createSubjectNode(m) {
         btnReset.onclick = function(e) { e.stopPropagation(); removeSubjectState(m.codigo); };
         btnReset.setAttribute('aria-label', 'Resetear ' + m.nombre);
         actions.appendChild(btnReset);
+    }
+
+    // Cursando toggle - only for puede-cursar / optativa-puede-cursar nodes
+    var isCursandoStatus = (status === 'puede-cursar' || status === 'optativa-puede-cursar');
+    if (isCursandoStatus) {
+        var cursandoOn = isCursando(m.codigo);
+
+        var toggleDiv = document.createElement('div');
+        toggleDiv.className = 'node-cursando-toggle';
+
+        var cursandoLabel = document.createElement('span');
+        cursandoLabel.className = 'node-cursando-label';
+        cursandoLabel.textContent = 'Cursando';
+        toggleDiv.appendChild(cursandoLabel);
+
+        var cursandoSwitch = document.createElement('label');
+        cursandoSwitch.className = 'node-cursando-switch';
+
+        var cursandoInput = document.createElement('input');
+        cursandoInput.type = 'checkbox';
+        cursandoInput.checked = cursandoOn;
+        cursandoInput.setAttribute('aria-label', 'Cursando ' + m.nombre);
+        cursandoInput.onchange = function(e) { e.stopPropagation(); toggleCursando(m.codigo); };
+        cursandoSwitch.appendChild(cursandoInput);
+
+        var cursandoSlider = document.createElement('span');
+        cursandoSlider.className = 'node-cursando-slider';
+        cursandoSwitch.appendChild(cursandoSlider);
+
+        toggleDiv.appendChild(cursandoSwitch);
+        actions.appendChild(toggleDiv);
+    }
+
+    // Apply cursando-active class when cursando is ON
+    if (isCursandoStatus) {
+        if (isCursando(m.codigo)) {
+            node.classList.add('cursando-active');
+        }
     }
 
     content.appendChild(actions);
@@ -454,6 +498,73 @@ function removeSubjectState(codigo) {
     updateTree();
 }
 
+// ===============================
+// CURSANDO STATE
+// ===============================
+
+function isCursando(codigo) {
+    var data;
+    try { data = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { data = {}; }
+    return !!data[codigo];
+}
+
+function toggleCursando(codigo) {
+    var data;
+    try { data = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { data = {}; }
+    if (data[codigo]) {
+        delete data[codigo];
+    } else {
+        data[codigo] = true;
+    }
+    try { localStorage.setItem('cursando', JSON.stringify(data)); } catch(e) {}
+    updateTree();
+}
+
+function cumpleRequisitosConCursando(lista) {
+    if (!lista || lista.length === 0) return true;
+    for (var i = 0; i < lista.length; i++) {
+        var req = lista[i];
+        if (!verificarRequisitoConCursando(req)) return false;
+    }
+    return true;
+}
+
+function verificarRequisitoConCursando(req) {
+    if (req.materia === 'OPT-HORAS') {
+        var horas = calcularHorasOptativas();
+        if (req.condicion === '>=270') return horas >= 270;
+        return false;
+    }
+    var estadoMateria = estados[req.materia];
+    if (req.condicion === 'aprobada') return estadoMateria === 'aprobada';
+    if (req.condicion === 'regularizada') return !!estadoMateria || isCursando(req.materia);
+    return false;
+}
+
+function wouldBeAvailableWithCursando(m) {
+    if (estados[m.codigo] === 'aprobada' || estados[m.codigo] === 'regularizada') return false;
+    if (m.categoria === 'optativa') {
+        return cumpleRequisitosConCursando(m.paraCursar) ? 'optativa-puede-cursar' : null;
+    }
+    return cumpleRequisitosConCursando(m.paraCursar) ? 'puede-cursar' : null;
+}
+
+function applyCursandoEffects() {
+    // Find all nodes that are currently blocked but would be available with cursando
+    for (var i = 0; i < materias.length; i++) {
+        var m = materias[i];
+        var currentStatus = getSubjectStatus(m.codigo);
+        var wouldBe = wouldBeAvailableWithCursando(m);
+        
+        if (wouldBe && (currentStatus === 'no-puede-cursar' || currentStatus === 'optativa-no-puede-cursar')) {
+            var nodeEl = document.getElementById('tree-node-' + m.codigo);
+            if (nodeEl) {
+                nodeEl.classList.add('cursando-pending');
+            }
+        }
+    }
+}
+
 function updateTree() {
     var prevSelected = selectedNode;
     initTree();
@@ -471,23 +582,53 @@ function updateTree() {
 // LINE COLORS
 // ===============================
 
-function getLineColor(prereqCode, prereqCondicion, isParaAprobar) {
+function getConnectionVisualStyle(prereqCode, paraCursarReq, paraAprobarReq) {
     // Check if the prerequisite subject is optativa
     for (var i = 0; i < materias.length; i++) {
         if (materias[i].codigo === prereqCode && materias[i].categoria === 'optativa') {
-            return LINE_COLORS.optativa;
+            return { color: LINE_COLORS.optativa, dashed: false };
         }
     }
 
     var estado = estados[prereqCode];
 
-    // Condition fully met
-    if (prereqCondicion === 'aprobada' && estado === 'aprobada') return LINE_COLORS.met;
-    if (prereqCondicion === 'regularizada' && estado) return LINE_COLORS.met;
+    // Check if paraCursar requirement is met
+    var hasCursar = !!paraCursarReq;
+    var cursarMet = false;
+    if (hasCursar) {
+        if (paraCursarReq.condicion === 'aprobada') {
+            cursarMet = (estado === 'aprobada');
+        } else {
+            cursarMet = !!estado;
+        }
+    }
 
-    // Not met
-    if (isParaAprobar) return LINE_COLORS.finalAprobada;
-    return LINE_COLORS.notMetCursada;
+    // Check if paraAprobar requirement is met
+    var hasAprobar = !!paraAprobarReq;
+    var aprobarMet = false;
+    if (hasAprobar) {
+        if (paraAprobarReq.condicion === 'aprobada') {
+            aprobarMet = (estado === 'aprobada');
+        } else {
+            aprobarMet = !!estado;
+        }
+    }
+
+    // Case 1 & 2: Can't take course (paraCursar exists and NOT met)
+    if (hasCursar && !cursarMet) {
+        if (paraCursarReq.condicion === 'aprobada') {
+            return { color: LINE_COLORS.finalAprobada, dashed: false }; // Case 2: falta final (white)
+        }
+        return { color: LINE_COLORS.notMetCursada, dashed: false }; // Case 1: falta cursada (gray)
+    }
+
+    // Case 3: Can take course but can't take final (paraAprobar NOT met)
+    if (hasAprobar && !aprobarMet) {
+        return { color: LINE_COLORS.met, dashed: true }; // Case 3: green dashed
+    }
+
+    // Case 4: Everything met (green solid)
+    return { color: LINE_COLORS.met, dashed: false };
 }
 
 // ===============================
@@ -534,56 +675,67 @@ function drawConnections() {
     }
 
     // Use the SVG element itself as reference (not the wrapper)
-    // Since SVG is absolutely positioned inside the wrapper and scrolls with content,
-    // nodeRect - svgRect gives stable coordinates regardless of scroll position.
     var svgRect = svg.getBoundingClientRect();
     if (svgRect.width === 0 || svgRect.height === 0) return;
 
-    // Track drawn connections to avoid duplicates
-    var drawn = {};
+    // Collect all unique connections, storing BOTH paraCursar and paraAprobar requirements per pair
+    var connections = {};
 
-    // Helper to draw a connection
-    function drawReq(m, req, isParaAprobar) {
-        if (req.materia === 'OPT-HORAS') return;
-
-        var prereqNode = document.getElementById('tree-node-' + req.materia);
-        var depNode = document.getElementById('tree-node-' + m.codigo);
-
-        if (!prereqNode || !depNode) return;
-        if (prereqNode.offsetParent === null || depNode.offsetParent === null) return;
-
-        var key = req.materia + '->' + m.codigo;
-        if (drawn[key]) return;
-        drawn[key] = true;
-
-        var prereqRect = prereqNode.getBoundingClientRect();
-        var depRect = depNode.getBoundingClientRect();
-
-        var color = getLineColor(req.materia, req.condicion, isParaAprobar);
-
-        drawBezier(svg, svgRect, prereqRect, depRect, color, req.materia, m.codigo);
-    }
-
-    // Process all connections
+    // Pass 1: collect paraCursar requirements
     for (var i = 0; i < materias.length; i++) {
         var m = materias[i];
         if (m.paraCursar) {
             for (var j = 0; j < m.paraCursar.length; j++) {
-                drawReq(m, m.paraCursar[j], false);
+                var req = m.paraCursar[j];
+                if (req.materia === 'OPT-HORAS') continue;
+                var key = req.materia + '->' + m.codigo;
+                if (!connections[key]) {
+                    connections[key] = { from: req.materia, to: m.codigo, paraCursarReq: req, paraAprobarReq: null };
+                }
+                connections[key].paraCursarReq = req;
             }
         }
+    }
+
+    // Pass 2: collect paraAprobar requirements (merge into same connections)
+    for (var i = 0; i < materias.length; i++) {
+        var m = materias[i];
         if (m.paraAprobar) {
             for (var k = 0; k < m.paraAprobar.length; k++) {
-                drawReq(m, m.paraAprobar[k], true);
+                var req = m.paraAprobar[k];
+                if (req.materia === 'OPT-HORAS') continue;
+                var key = req.materia + '->' + m.codigo;
+                if (!connections[key]) {
+                    connections[key] = { from: req.materia, to: m.codigo, paraCursarReq: null, paraAprobarReq: req };
+                } else {
+                    connections[key].paraAprobarReq = req;
+                }
             }
         }
+    }
+
+    // Draw each connection with the correct visual style
+    for (var key in connections) {
+        var conn = connections[key];
+        var prereqNode = document.getElementById('tree-node-' + conn.from);
+        var depNode = document.getElementById('tree-node-' + conn.to);
+
+        if (!prereqNode || !depNode) continue;
+        if (prereqNode.offsetParent === null || depNode.offsetParent === null) continue;
+
+        var prereqRect = prereqNode.getBoundingClientRect();
+        var depRect = depNode.getBoundingClientRect();
+
+        var style = getConnectionVisualStyle(conn.from, conn.paraCursarReq, conn.paraAprobarReq);
+
+        drawBezier(svg, svgRect, prereqRect, depRect, style.color, conn.from, conn.to, style.dashed);
     }
 
     // Re-apply selection visuals (without toggle logic)
     applySelectionVisuals();
 }
 
-function drawBezier(svg, svgRect, startRect, endRect, color, fromCode, toCode) {
+function drawBezier(svg, svgRect, startRect, endRect, color, fromCode, toCode, isDashed) {
     // Calculate center points relative to the SVG element.
     // Both node rects and svgRect are viewport-relative, so their difference
     // gives stable SVG coordinates regardless of scroll position.
@@ -634,6 +786,9 @@ function drawBezier(svg, svgRect, startRect, endRect, color, fromCode, toCode) {
     pathEl.setAttribute('d', path);
     pathEl.setAttribute('stroke', color);
     pathEl.setAttribute('stroke-width', '2');
+    if (isDashed) {
+        pathEl.setAttribute('stroke-dasharray', '6 3');
+    }
     pathEl.setAttribute('fill', 'none');
     pathEl.setAttribute('stroke-linecap', 'round');
     pathEl.setAttribute('class', 'connection-line');
