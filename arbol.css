@@ -793,43 +793,44 @@ svg path.connection-line.highlighted {
     }
 
     .year-section {
-        margin-bottom: 8px;
+        margin-bottom: 5px;
     }
 
     .year-header {
-        font-size: 12px;
-        letter-spacing: 1px;
-        padding: 3px 0;
-        margin-bottom: 3px;
+        font-size: 10px;
+        letter-spacing: 0.5px;
+        padding: 2px 0;
+        margin-bottom: 2px;
     }
 
     .subjects-row {
-        gap: 5px;
-        margin-bottom: 4px;
+        gap: 3px;
+        margin-bottom: 3px;
     }
 
     .subjects-row.obligatorias {
         margin-bottom: 4px;
     }
 
-    /* On mobile, cards stack vertically full width */
+    /* On mobile, keep tree layout compact */
     .subject-node {
-        min-width: 0;
-        max-width: none;
-        flex: 1 1 100%;
-        min-height: 36px;
+        flex: 0 0 auto;
+        min-width: 65px;
+        max-width: 110px;
+        min-height: 40px;
     }
 
     .node-content {
-        padding: 4px 6px;
-        flex-direction: row;
-        align-items: center;
-        gap: 6px;
+        padding: 3px 4px;
+        flex-direction: column;
+        gap: 2px;
     }
 
     .node-name {
-        font-size: 11px;
-        flex: 1;
+        font-size: 8px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.2;
     }
 
     .node-code {
@@ -837,21 +838,34 @@ svg path.connection-line.highlighted {
         flex-shrink: 0;
     }
 
-    /* Show action buttons on mobile (no hover on touch) */
+    .node-meta {
+        font-size: 7px;
+        flex-wrap: wrap;
+    }
+
+    /* Action buttons: hidden by default, shown on highlight (selection) */
     .node-actions {
-        opacity: 1;
-        max-height: 30px;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
         margin-top: 0;
         padding-top: 0;
         border-top: none;
         flex-shrink: 0;
+        transition: opacity 0.2s ease, max-height 0.2s ease;
+    }
+
+    /* Show buttons when node is highlighted (selected/tapped) */
+    .subject-node.highlighted .node-actions {
+        opacity: 1;
+        max-height: 30px;
     }
 
     .node-btn {
-        font-size: 11px;
-        padding: 2px 3px;
-        min-height: 44px;
-        min-width: 44px;
+        font-size: 10px;
+        padding: 2px 2px;
+        min-height: 28px;
+        min-width: 28px;
     }
 
     .node-border {
@@ -890,6 +904,14 @@ svg path.connection-line.highlighted {
         font-size: 10px;
     }
 
+}
+
+/* Portrait mobile: reduced zoom for overview */
+@media (max-width: 768px) and (orientation: portrait) {
+    .tree-zoom-container {
+        transform: scale(0.65);
+        transform-origin: top center;
+    }
 }
 
 /* ============================= */

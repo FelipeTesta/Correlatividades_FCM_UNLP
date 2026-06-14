@@ -41,6 +41,7 @@ window.addEventListener('resize', function () {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {
         if (document.querySelector('.tree-wrapper')) {
+            updateSvgDimensions();
             drawConnections();
         }
     }, 150);
