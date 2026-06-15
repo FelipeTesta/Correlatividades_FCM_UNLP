@@ -1,0 +1,165 @@
+digraph MainPage {
+  rankdir=TB;
+  bgcolor="#0d0d0d";
+  fontname="Arial";
+  fontcolor="#e5e5e5";
+  compound=true;
+  pad=0.5;
+  nodesep=0.6;
+  ranksep=0.8;
+
+  // ── Color Palette ──
+  // Green #22c55e  = approved/aprobada
+  // Orange #f97316 = regularized
+  // Yellow #facc15 = puede cursar
+  // Purple #a855f7 = optativa
+  // Cyan #22d3ee   = cursando
+  // White #e5e5e5  = default text
+
+  // ── Node Styles ──
+  node [style="filled,rounded", fontname="Arial", fontcolor="#e5e5e5"];
+
+  // Process nodes (rectangles)
+  node [fillcolor="#1a1a1a", color="#444", shape=box];
+
+  // Storage nodes (cylinders)
+  node [fillcolor="#111", color="#555", shape=cylinder, style=filled, width=1.2];
+
+  // Decision nodes (diamonds)
+  node [fillcolor="#1a1a1a", color="#facc15", shape=diamond, style=filled, width=1.5];
+
+  // ── Subgraph: Storage ──
+  subgraph cluster_storage {
+    label="Persistent Storage (localStorage)";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    ls_estados [label="estados\n{ CODE: 'aprobada'|'regularizada' }", fillcolor="#0d2818", color="#22c55e"];
+    ls_boxStates [label="boxStates\n{ BoxName: true|false }", fillcolor="#0d2818", color="#22c55e"];
+    ls_catedras [label="catedrasSeleccionadas\n{ CODE: catedra }", fillcolor="#0d2818", color="#22c55e"];
+    ls_cursando [label="cursando\n{ CODE: true }", fillcolor="#0d2818", color="#22d3ee"];
+    ls_proyectos [label="proyectosExtension\n[{ id, nombre, horas }]", fillcolor="#0d2818", color="#22c55e"];
+    ls_anio [label="anioIngreso\n(number)", fillcolor="#0d2818", color="#22c55e"];
+  }
+
+  // ── Subgraph: User Actions ──
+  subgraph cluster_actions {
+    label="User Actions";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    action_aprobar [label="✅ Aprobar\n(click button)", fillcolor="#003803", color="#22c55e", shape=box];
+    action_regularizar [label="🟨 Regularizar\n(click button)", fillcolor="#3a1a00", color="#f97316", shape=box];
+    action_resetear [label="🔄 Resetear\n(click button)", fillcolor="#1a1a1a", color="#666", shape=box];
+    action_toggleBox [label="▾/▸ Toggle Box\n(click header)", fillcolor="#1a1a1a", color="#555", shape=box];
+    action_export [label="💾 Exportar\n(download JSON)", fillcolor="#1a1a1a", color="#555", shape=box];
+    action_import [label="📂 Importar\n(upload JSON)", fillcolor="#1a1a1a", color="#555", shape=box];
+    action_calendario [label="📅 Calendario\n(finales popup)", fillcolor="#1a1a1a", color="#555", shape=box];
+  }
+
+  // ── Subgraph: Core Render Pipeline ──
+  subgraph cluster_render {
+    label="Render Pipeline (render())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    clear_lists [label="Clear all lists\n(innerHTML = '')", fillcolor="#1a1a1a", color="#666", shape=box];
+    calc_progress [label="calcularProgreso()\nPoint system:\nAnual=120, Cuatr=60\nBim=30, Optativa cap=270", fillcolor="#1a1a1a", color="#facc15", shape=box];
+    populate_lists [label="Populate lists by state\ncumpleRequisitos() →\n'Puede Cursar' vs 'No Puede Cursar'", fillcolor="#1a1a1a", color="#666", shape=box];
+    update_counters [label="actualizarContadores()\n[N] badges on all boxes", fillcolor="#1a1a1a", color="#666", shape=box];
+    restore_boxes [label="restoreBoxStates()\nCollapse/expand boxes", fillcolor="#1a1a1a", color="#666", shape=box];
+  }
+
+  // ── List IDs ──
+  subgraph cluster_lists {
+    label="Output Lists";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    list_aprobadas [label="aprobadas\n✅ Approved courses", fillcolor="#003803", color="#22c55e", shape=box];
+    list_puedeFinal [label="puedeFinal\n🟨 Regularized + ready for final", fillcolor="#3a1a00", color="#f97316", shape=box];
+    list_noPuedeFinal [label="noPuedeFinal\n🟨 Regularized + blocked final", fillcolor="#3a1a00", color="#f97316", shape=box];
+    list_pCursarOblig [label="puedeCursar-obligatorias\n🟡 Can start (obligatory)", fillcolor="#1a1a00", color="#facc15", shape=box];
+    list_pCursarOpt [label="puedeCursar-optativas\n🟡 Can start (optativa)", fillcolor="#1a001a", color="#a855f7", shape=box];
+    list_noPCursarOblig [label="noPuedeCursar-obligatorias\n🔴 Blocked (obligatory)", fillcolor="#1a0000", color="#ff4444", shape=box];
+    list_noPCursarOpt [label="noPuedeCursar-optativas\n🔴 Blocked (optativa)", fillcolor="#1a0000", color="#ff4444", shape=box];
+  }
+
+  // ── Progress Bar ──
+  subgraph cluster_progress {
+    label="Progress Bar Calculation";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    progress_points [label="Point accumulation:\n- anual → 120 pts\n- cuatrimestral → 60 pts\n- bimestral → 30 pts\n- optativa → horas (cap 270)\n\nTotal: sum all courses\nCumplido: sum approved/regularized\nPercentage: cumplido/total × 100", fillcolor="#1a1a1a", color="#22c55e", shape=box, style="filled,rounded"];
+  }
+
+  // ── Edges ──
+  // User actions → save → render
+  action_aprobar -> guardarLocalYRender [label="estado = 'aprobada'", fontcolor="#888", fontsize=10];
+  action_regularizar -> guardarLocalYRender [label="estado = 'regularizada'", fontcolor="#888", fontsize=10];
+  action_resetear -> guardarLocalYRender [label="delete estado", fontcolor="#888", fontsize=10];
+  action_toggleBox -> toggleSubsection [label="saveBoxState()", fontcolor="#888", fontsize=10];
+  action_export -> exportJSON [label="JSON.stringify all state", fontcolor="#888", fontsize=10];
+  action_import -> importJSON [label="FileReader → parse → save", fontcolor="#888", fontsize=10];
+  action_calendario -> mostrarPopupFinales [label="fetch finales.json\nparseFechaLocal()", fontcolor="#888", fontsize=10];
+
+  // Central sync function
+  guardarLocalYRender [label="guardarLocalYRender()\nCentral sync function", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+
+  // Save pipeline
+  guardarLocalYRender -> save_estados [label="JSON.stringify → setItem", fontcolor="#888", fontsize=10];
+  guardarLocalYRender -> save_cursando [label="persist cursando", fontcolor="#888", fontsize=10];
+  guardarLocalYRender -> render [label="call render()", fontcolor="#888", fontsize=10, style=bold];
+
+  save_estados -> ls_estados [style=dashed, arrowhead=open, color="#444"];
+  save_cursando [label="localStorage.setItem()", fillcolor="#111", color="#22d3ee", shape=cylinder];
+
+  // Render pipeline edges
+  render -> clear_lists [label="step 1", fontcolor="#888", fontsize=9];
+  clear_lists -> calc_progress [label="step 2", fontcolor="#888", fontsize=9];
+  calc_progress -> populate_lists [label="step 3\ncumpleRequisitos()", fontcolor="#888", fontsize=9];
+  populate_lists -> update_counters [label="step 4", fontcolor="#888", fontsize=9];
+  update_counters -> restore_boxes [label="step 5", fontcolor="#888", fontsize=9];
+
+  // Render output → lists
+  populate_lists -> list_aprobadas [label="status = aprobada", fontcolor="#22c55e", fontsize=9];
+  populate_lists -> list_puedeFinal [label="regularizada + cumpleAprobar", fontcolor="#f97316", fontsize=9];
+  populate_lists -> list_noPuedeFinal [label="regularizada + !cumpleAprobar", fontcolor="#f97316", fontsize=9];
+  populate_lists -> list_pCursarOblig [label="!regularizada + !aprobada\n+ cumpleCursar + obligatoria", fontcolor="#facc15", fontsize=9];
+  populate_lists -> list_pCursarOpt [label="!regularizada + !aprobada\n+ cumpleCursar + optativa", fontcolor="#a855f7", fontsize=9];
+  populate_lists -> list_noPCursarOblig [label="!cumpleCursar + obligatoria", fontcolor="#ff4444", fontsize=9];
+  populate_lists -> list_noPCursarOpt [label="!cumpleCursar + optativa", fontcolor="#ff4444", fontsize=9];
+
+  // Progress bar
+  calc_progress -> progress_points [style=dashed, color="#666", arrowhead=open];
+
+  // Edge: save cursando state
+  save_cursando -> ls_cursando [style=dashed, arrowhead=open, color="#22d3ee"];
+
+  // Legend
+  render [label="render()\nSingle-pass rendering", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+  toggleSubsection [label="toggleSubsection()\nCollapse/expand box\nPreserve .box-count span", fillcolor="#1a1a1a", color="#555", shape=box];
+  exportJSON [label="exportarEstado()\nBlob → download link", fillcolor="#1a1a1a", color="#555", shape=box];
+  importJSON [label="importarEstado()\nFileReader → JSON.parse\n→ guardarLocalYRender()", fillcolor="#1a1a1a", color="#555", shape=box];
+  mostrarPopupFinales [label="mostrarPopupFinales()\nModal with:\nPróximas ↑\nAnteriores ↓", fillcolor="#1a1a1a", color="#555", shape=box];
+
+  // ── Finales JSON data source ──
+  finales_json [label="APP/finales/finales.json\n61 materias, Feb-Dec 2026", fillcolor="#111", color="#22d3ee", shape=cylinder, style=filled];
+  mostrarPopupFinales -> finales_json [style=dashed, arrowhead=open, color="#444"];
+
+  // Note: box state edges
+  toggleSubsection -> ls_boxStates [style=dashed, arrowhead=open, color="#444"];
+  restore_boxes -> ls_boxStates [style=dashed, arrowhead=open, color="#444"];
+}

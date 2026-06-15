@@ -662,6 +662,10 @@ function updateSvgDimensions() {
     var w = wrapper.scrollWidth;
     var h = wrapper.scrollHeight;
 
+    // Add extra padding for mobile card expansion (buttons appearing)
+    var extraPadding = 60;
+    h += extraPadding;
+
     svg.style.display = prevDisplay || '';
 
     svg.setAttribute('width', w);
@@ -679,9 +683,10 @@ function drawConnections() {
     var svg = getTreeSvg();
     if (!svg) return;
 
-    // Clear previous paths
-    while (svg.firstChild) {
-        svg.removeChild(svg.firstChild);
+    // Clear previous paths (preserve <defs> and other elements)
+    var oldPaths = svg.querySelectorAll('path.connection-line');
+    for (var i = oldPaths.length - 1; i >= 0; i--) {
+        oldPaths[i].remove();
     }
 
     // Use the SVG element itself as reference (not the wrapper)
@@ -896,9 +901,23 @@ function selectNode(codigo) {
         deselectAll();
         return;
     }
-
     selectedNode = codigo;
-    applySelectionVisuals();
+
+    // Add 'selected' class to the clicked node (for mobile action buttons)
+    var clickedNode = document.getElementById('tree-node-' + codigo);
+    if (clickedNode) clickedNode.classList.add('selected');
+
+    // Recalculate SVG immediately (no delay), then again after card expansion
+    requestAnimationFrame(function() {
+        updateSvgDimensions();
+        drawConnections();
+    });
+
+    // Second recalculation after card expansion transition completes
+    setTimeout(function() {
+        updateSvgDimensions();
+        drawConnections();
+    }, 300);
 }
 
 function findCorrelatives(codigo) {
@@ -946,13 +965,19 @@ function deselectAll() {
 
     var allNodes = document.querySelectorAll('.subject-node');
     for (var i = 0; i < allNodes.length; i++) {
-        allNodes[i].classList.remove('highlighted', 'dimmed');
+        allNodes[i].classList.remove('highlighted', 'dimmed', 'selected');
     }
 
     var allPaths = document.querySelectorAll('svg path.connection-line');
     for (var j = 0; j < allPaths.length; j++) {
         allPaths[j].classList.remove('highlighted', 'dimmed');
     }
+
+    // Recalculate SVG immediately
+    requestAnimationFrame(function() {
+        updateSvgDimensions();
+        drawConnections();
+    });
 }
 
 
@@ -986,6 +1011,16 @@ function applySelectionVisuals() {
         } else {
             path.classList.add('dimmed');
             path.classList.remove('highlighted');
+        }
+    }
+
+    // Ensure only selectedNode has the 'selected' class (for mobile action buttons)
+    for (var sn = 0; sn < allNodes.length; sn++) {
+        var nd = allNodes[sn];
+        if (nd.dataset.codigo === selectedNode) {
+            nd.classList.add('selected');
+        } else {
+            nd.classList.remove('selected');
         }
     }
 }

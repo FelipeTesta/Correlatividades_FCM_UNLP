@@ -1,0 +1,166 @@
+digraph StateManagement {
+  rankdir=TB;
+  bgcolor="#0d0d0d";
+  fontname="Arial";
+  fontcolor="#e5e5e5";
+  compound=true;
+  pad=0.5;
+  nodesep=0.6;
+  ranksep=0.7;
+
+  node [style="filled,rounded", fontname="Arial", fontcolor="#e5e5e5"];
+
+  // ── localStorage Schema Definitions ──
+  subgraph cluster_schemas {
+    label="localStorage Schema (shared between pages)";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    // Schema definitions in a table-like layout
+    schema_estados [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="6" BGCOLOR="#111">
+  <TR><TD COLSPAN="2" BGCOLOR="#003803"><B><FONT COLOR="#22c55e">estados</FONT></B></TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Key</TD><TD BGCOLOR="#1a1a1a">"COURSE_CODE" (e.g. "A0001")</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Value</TD><TD BGCOLOR="#1a1a1a">"aprobada" | "regularizada"</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Purpose</TD><TD BGCOLOR="#1a1a1a">Tracks approved/regularized courses</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Example</TD><TD BGCOLOR="#1a1a1a">{ "A0001": "aprobada", "BIOL9": "regularizada" }</TD></TR>
+</TABLE>
+>, shape=plain, fontsize=11];
+
+    schema_proyectos [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="6" BGCOLOR="#111">
+  <TR><TD COLSPAN="2" BGCOLOR="#1a1a1a"><B><FONT COLOR="#f97316">proyectosExtension</FONT></B></TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Type</TD><TD BGCOLOR="#1a1a1a">Array of objects</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Schema</TD><TD BGCOLOR="#1a1a1a">[{ id, nombre, horas }]</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Purpose</TD><TD BGCOLOR="#1a1a1a">Extension project tracking</TD></TR>
+</TABLE>
+>, shape=plain, fontsize=11];
+
+    schema_anio [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="6" BGCOLOR="#111">
+  <TR><TD COLSPAN="2" BGCOLOR="#1a1a1a"><B><FONT COLOR="#facc15">anioIngreso</FONT></B></TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Type</TD><TD BGCOLOR="#1a1a1a">Number</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Purpose</TD><TD BGCOLOR="#1a1a1a">Year of enrollment</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Example</TD><TD BGCOLOR="#1a1a1a">2022</TD></TR>
+</TABLE>
+>, shape=plain, fontsize=11];
+
+    schema_boxStates [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="6" BGCOLOR="#111">
+  <TR><TD COLSPAN="2" BGCOLOR="#1a1a1a"><B><FONT COLOR="#22d3ee">boxStates</FONT></B></TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Key</TD><TD BGCOLOR="#1a1a1a">"BoxName" (HTML box name)</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Value</TD><TD BGCOLOR="#1a1a1a">true (expanded) | false (collapsed)</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Purpose</TD><TD BGCOLOR="#1a1a1a">Persist collapsible box state</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Example</TD><TD BGCOLOR="#1a1a1a">{ "box-aprobadas": true, "box-cursar": false }</TD></TR>
+</TABLE>
+>, shape=plain, fontsize=11];
+
+    schema_catedras [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="6" BGCOLOR="#111">
+  <TR><TD COLSPAN="2" BGCOLOR="#1a1a1a"><B><FONT COLOR="#a855f7">catedrasSeleccionadas</FONT></B></TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Key</TD><TD BGCOLOR="#1a1a1a">"COURSE_CODE"</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Value</TD><TD BGCOLOR="#1a1a1a">"catedra_name" (string)</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Purpose</TD><TD BGCOLOR="#1a1a1a">Selected professor/chair per course</TD></TR>
+</TABLE>
+>, shape=plain, fontsize=11];
+
+    schema_cursando [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="6" BGCOLOR="#111">
+  <TR><TD COLSPAN="2" BGCOLOR="#003830"><B><FONT COLOR="#22d3ee">cursando</FONT></B></TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Key</TD><TD BGCOLOR="#1a1a1a">"COURSE_CODE"</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Value</TD><TD BGCOLOR="#1a1a1a">true (boolean)</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Purpose</TD><TD BGCOLOR="#1a1a1a">Currently enrolled (tree mode)</TD></TR>
+  <TR><TD BGCOLOR="#1a1a1a">Auto-clear</TD><TD BGCOLOR="#1a1a1a">resetearTodos(), removeSubjectState()</TD></TR>
+</TABLE>
+>, shape=plain, fontsize=11];
+  }
+
+  // ── State Flow Subgraph ──
+  subgraph cluster_flow {
+    label="State Mutation Flow";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    user_action [label="User Action\n(aprobada/regularizar/resetear\n/cursando toggle/import)", fillcolor="#1a1a1a", color="#facc15", shape=box];
+    mutate_state [label="Mutate JavaScript object\n(estados / cursando / etc.)", fillcolor="#1a1a1a", color="#666", shape=box];
+    json_stringify [label="JSON.stringify(state)", fillcolor="#1a1a1a", color="#666", shape=box];
+    set_item [label="localStorage.setItem(key, json)", fillcolor="#1a1a1a", color="#666", shape=box];
+    render_page [label="render() / initTree()\n(read fresh from localStorage)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+  }
+
+  // ── guardarLocalYRender ──
+  subgraph cluster_sync {
+    label="Central Sync: guardarLocalYRender()";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    sync_estados [label="localStorage.setItem('estados', ...)", fillcolor="#003803", color="#22c55e", shape=box];
+    sync_proyectos [label="localStorage.setItem('proyectosExtension', ...)", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    sync_cursando [label="localStorage.setItem('cursando', ...)", fillcolor="#003830", color="#22d3ee", shape=box];
+    sync_call_render [label="render() / initTree()", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="bold"];
+  }
+
+  // ── Export / Import Subgraph ──
+  subgraph cluster_io {
+    label="Export / Import";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    export_all [label="exportarEstado()\n1. Read all localStorage keys\n2. Download JSON file", fillcolor="#1a1a1a", color="#666", shape=box];
+    import_all [label="importarEstado()\n1. FileReader reads uploaded file\n2. JSON.parse()\n3. Validate structure\n4. guardarLocalYRender()", fillcolor="#1a1a1a", color="#666", shape=box];
+    reset_all [label="resetearTodos()\n1. Clear estados {}\n2. Clear cursando {}\n3. guardarLocalYRender()", fillcolor="#1a1a1a", color="#ff4444", shape=box];
+  }
+
+  // ── Shared State Note ──
+  subgraph cluster_sharing {
+    label="Cross-Page State Sharing";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    page_main [label="index.html\n(main dashboard)", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+    page_arbol [label="arbol.html\n(tree visualization)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    page_vacunas [label="vacunas.html\n(vaccination tracker)", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    shared_ls [label="=== localStorage ===\n(shared, same origin)\nestados ✅ cursando ✅\nboxStates ✅ anioIngreso ✅\nproyectosExtension ✅\ncatedrasSeleccionadas ✅", fillcolor="#111", color="#22c55e", shape=cylinder, style=filled];
+  }
+
+  // ── Edges: State Flow ──
+  user_action -> mutate_state;
+  mutate_state -> json_stringify;
+  json_stringify -> set_item;
+  set_item -> render_page;
+
+  // Edge: guardarLocalYRender detail
+  sync_estados -> sync_call_render [style=bold];
+  sync_proyectos -> sync_call_render [style=bold];
+  sync_cursando -> sync_call_render [style=bold];
+  sync_call_render -> render_page;
+
+  // Edge: Export/Import
+  export_all -> set_item [style=dashed, color="#888", arrowhead=open, label="reads", fontcolor="#888", fontsize=9];
+  import_all -> set_item [style=dashed, color="#888", arrowhead=open, label="writes all", fontcolor="#888", fontsize=9];
+  reset_all -> sync_estados [label="clear {}", fontcolor="#ff4444", fontsize=10];
+  reset_all -> sync_cursando [label="clear {}", fontcolor="#ff4444", fontsize=10];
+
+  // Edge: Cross-page sharing
+  page_main -> shared_ls [style=dashed, color="#22c55e", arrowhead=open, label="read/write"];
+  page_arbol -> shared_ls [style=dashed, color="#22d3ee", arrowhead=open, label="read/write"];
+  page_vacunas -> shared_ls [style=dashed, color="#f97316", arrowhead=open, label="read/write"];
+
+  // Edge: Schema to central sync
+  schema_estados -> sync_estados [style=dashed, color="#444", arrowhead=open];
+  schema_boxStates -> sync_estados [style=dashed, color="#444", arrowhead=open];
+  schema_cursando -> sync_cursando [style=dashed, color="#444", arrowhead=open];
+}

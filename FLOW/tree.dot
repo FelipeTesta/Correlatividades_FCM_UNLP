@@ -1,0 +1,195 @@
+digraph TreeMode {
+  rankdir=TB;
+  bgcolor="#0d0d0d";
+  fontname="Arial";
+  fontcolor="#e5e5e5";
+  compound=true;
+  pad=0.5;
+  nodesep=0.5;
+  ranksep=0.7;
+
+  // ── Color Palette ──
+  // Green #22c55e  = approved
+  // Orange #f97316 = regularized
+  // Yellow #facc15 = puede cursar
+  // Purple #a855f7 = optativa
+  // Cyan #22d3ee   = cursando
+  // Gray #666      = no puede cursar
+
+  node [style="filled,rounded", fontname="Arial", fontcolor="#e5e5e5"];
+
+  // ── Init Tree Subgraph ──
+  subgraph cluster_init {
+    label="Tree Initialization (initTree())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    load_state [label="Load state from localStorage\n(estados, cursando)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    load_state -> create_years [label="for year 1..6", fontcolor="#888", fontsize=10];
+    create_years [label="Create year sections\n.year-section → Año 1..6", fillcolor="#1a1a1a", color="#666", shape=box];
+    create_years -> create_nodes [label="for each subject in year", fontcolor="#888", fontsize=10];
+    create_nodes [label="Create subject nodes\nNode: getSubjectStatus()\n- aprobada → #22c55e + glass\n- regularizada → #f97316\n- puede-cursar → #facc15\n- no-puede-cursar → #333\n- optativa-puede → #a855f7\n- optativa-no-puede → #581c87\n- cursando → #22d3ee + border anim", fillcolor="#1a1a1a", color="#666", shape=box];
+    create_nodes -> add_actions [label="Add ✅🟨🔄 + Cursando toggle", fontcolor="#888", fontsize=10];
+    add_actions [label="Add action buttons & toggles\n(shown on hover / selection)", fillcolor="#1a1a1a", color="#666", shape=box];
+    add_actions -> svg_setup [label="last step", fontcolor="#888", fontsize=10];
+    svg_setup [label="Setup SVG layer\n(absolute, z-index: 0)", fillcolor="#1a1a1a", color="#666", shape=box];
+    svg_setup -> update_svg_dim [label="updateSvgDimensions()", fontcolor="#888", fontsize=10];
+  }
+
+  // ── Node Selection Subgraph ──
+  subgraph cluster_selection {
+    label="Node Selection (Focus Mode)";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    node_click [label="User clicks node", fillcolor="#1a1a1a", color="#facc15", shape=box];
+    node_click -> selectNode [label="selectNode(codigo)", fontcolor="#888", fontsize=10];
+    selectNode [label="selectNode()\nToggle logic:\n- Same node clicked → deselect\n- Different node → switch selection\n- ESC or '✕ Limpar' → deselect", fillcolor="#1a1a1a", color="#facc15", shape=box];
+    selectNode -> drawConnections [label="recalculate paths", fontcolor="#888", fontsize=10];
+    drawConnections -> applyVisuals [label="applySelectionVisuals()", fontcolor="#888", fontsize=10];
+    applyVisuals [label="applySelectionVisuals()\n- Highlight selected node\n- Highlight direct correlatives\n(pre + dependent)\n- Dim all other nodes + paths\n- Show/hide action buttons (mobile)", fillcolor="#1a1a1a", color="#facc15", shape=box];
+
+    // SVG connection detail
+    drawConnections [label="drawConnections()\nSVG bezier curves\nBottom-center → Top-center", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+  }
+
+  // ── Connection Visual Styles ──
+  subgraph cluster_connections {
+    label="Connection Styles (getConnectionVisualStyle())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    style_gray [label="State 1: #666 solid\nMissing cursada\nCan't take course", fillcolor="#222", color="#666", shape=box];
+    style_white [label="State 2: #ffffff solid\nMissing final\nCan't take course", fillcolor="#222", color="#fff", shape=box];
+    style_green_dash [label="State 3: #22c55e dashed\nCan take course\nCan't take final", fillcolor="#003803", color="#22c55e", shape=box];
+    style_green_solid [label="State 4: #22c55e solid\nEverything met\nCan take final", fillcolor="#003803", color="#22c55e", shape=box];
+    style_purple [label="Optativa: #a855f7\n(any state above)", fillcolor="#1a001a", color="#a855f7", shape=box];
+  }
+
+  // ── Node Actions Subgraph ──
+  subgraph cluster_actions {
+    label="Node Actions";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    btn_aprobar [label="✅ Aprobar", fillcolor="#003803", color="#22c55e", shape=box];
+    btn_regularizar [label="🟨 Regularizar", fillcolor="#3a1a00", color="#f97316", shape=box];
+    btn_resetear [label="🔄 Resetear", fillcolor="#1a1a1a", color="#666", shape=box];
+    guardar_local [label="guardarLocalYRender()\n→ save to localStorage\n→ initTree() re-render", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+  }
+
+  // ── Cursando Toggle Subgraph ──
+  subgraph cluster_cursando {
+    label="Cursando Feature";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    cursando_toggle [label="User toggles 'Cursando'\nON on puede-cursar node", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    cursando_toggle -> cursando_save [label="save cursando state\nlocalStorage.cursando = { CODE: true }", fontcolor="#888", fontsize=10];
+    cursando_save [label="Save to localStorage", fillcolor="#111", color="#22d3ee", shape=cylinder];
+    cursando_save -> cursando_visual [label="re-render", fontcolor="#888", fontsize=10];
+    cursando_visual [label="Node visual update:\n- Cyan gradient bg (#22d3ee)\n- Rotating conic border\n  (white + cyan, glow)\n- Dependent nodes get\n  subtle b/w border (no glow)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    cursando_visual -> cursando_pending [label="dependent eval", fontcolor="#888", fontsize=10];
+    cursando_pending [label="cumpleRequisitosConCursando()\nSimulate prereqs as met", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    cursando_clear [label="Auto-cleared on:\n- resetearTodos()\n- removeSubjectState()", fillcolor="#1a1a1a", color="#666", shape=box];
+  }
+
+  // ── Optativas Toggle Subgraph ──
+  subgraph cluster_optativas_toggle {
+    label="Optativas Toggle";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    opt_toggle [label="User clicks 'Optativas' toggle", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    opt_toggle -> opt_hide [label="Toggle OFF", fontcolor="#888", fontsize=10];
+    opt_toggle -> opt_show [label="Toggle ON", fontcolor="#888", fontsize=10];
+    opt_hide [label="Hide:\n- .subjects-row.optativas\n- .optativa-label elements", fillcolor="#1a001a", color="#a855f7", shape=box];
+    opt_show [label="Show:\n- .subjects-row.optativas\n- .optativa-label elements", fillcolor="#1a001a", color="#a855f7", shape=box];
+    opt_hide -> update_svg_dim;
+    opt_show -> update_svg_dim;
+    update_svg_dim [label="updateSvgDimensions()\n(measure scroll, avoid feedback loop)", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+    update_svg_dim -> drawConnections;
+  }
+
+  // ── Zoom Subgraph ──
+  subgraph cluster_zoom {
+    label="Zoom Controls";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    zoom_in [label="Zoom In (+)\nscale × 1.1", fillcolor="#1a1a1a", color="#666", shape=box];
+    zoom_out [label="Zoom Out (-)\nscale × 0.9", fillcolor="#1a1a1a", color="#666", shape=box];
+    zoom_reset [label="Zoom Reset\nscale = 1.0", fillcolor="#1a1a1a", color="#666", shape=box];
+    zoom_apply [label="CSS transform: scale(Z)\non .zoom-container\nRange: 30% – 300%", fillcolor="#1a1a1a", color="#666", shape=box];
+    zoom_apply -> update_svg_dim [label="recalculate SVG bounds", fontcolor="#888", fontsize=10];
+  }
+
+  // ── Event Listeners ──
+  subgraph cluster_events {
+    label="Event Listeners";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    scroll_listener [label="Scroll (tree-wrapper)\n→ drawConnections() only\n(registered once at DOMContentLoaded)", fillcolor="#1a1a1a", color="#666", shape=box];
+    resize_listener [label="Resize (window)\n→ updateSvgDimensions()\n→ drawConnections()", fillcolor="#1a1a1a", color="#666", shape=box];
+    esc_listener [label="ESC key\n→ deselect all", fillcolor="#1a1a1a", color="#666", shape=box];
+  }
+
+  // ── SVG Architecture ──
+  subgraph cluster_svg {
+    label="SVG Connector Architecture";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    svg_layer [label="SVG element\nposition: absolute\ntop: 0; left: 0\nwidth: scrollWidth\nheight: scrollHeight\nz-index: 0\npointer-events: none", fillcolor="#111", color="#555", shape=box];
+    svg_measure [label="updateSvgDimensions():\n1. Hide SVG (display:none)\n2. Measure scrollWidth/scrollHeight\n3. Restore SVG (display:block)\n4. Set SVG width/height\nAvoids feedback loop", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    svg_coords [label="Coordinate calculation:\nnodeRect = node.getBoundingClientRect()\nsvgRect = svg.getBoundingClientRect()\nx = nodeRect.left - svgRect.left\ny = nodeRect.bottom - svgRect.top", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    svg_draw [label="Draw bezier path:\nM x1,y1 C x1,midY x2,midY x2,y2\n+ arrowhead marker", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+  }
+
+  // ── Edges ──
+  NodeActions: btn_aprobar -> guardar_local [label="set 'aprobada'", fontcolor="#22c55e", fontsize=10];
+  btn_regularizar -> guardar_local [label="set 'regularizada'", fontcolor="#f97316", fontsize=10];
+  btn_resetear -> guardar_local [label="delete estado", fontcolor="#666", fontsize=10];
+  guardar_local -> load_state [label="initTree() re-render", fontcolor="#888", fontsize=10, style=bold];
+
+  // Cursando edges
+  cursando_clear -> cursando_toggle [style=dashed, color="#666", arrowhead=open];
+  cursando_pending -> update_svg_dim [style=dashed, color="#22d3ee", arrowhead=open];
+
+  // SVG architecture edges
+  update_svg_dim -> svg_measure [style=dashed, color="#888", arrowhead=open];
+  svg_measure -> svg_coords [style=dashed, color="#888", arrowhead=open];
+  svg_coords -> svg_draw [style=dashed, color="#888", arrowhead=open];
+  svg_draw -> drawConnections;
+
+  // Event listeners
+  scroll_listener -> drawConnections [style=dashed, color="#666", arrowhead=open];
+  resize_listener -> update_svg_dim [style=dashed, color="#666", arrowhead=open];
+  esc_listener -> selectNode [style=dashed, color="#666", arrowhead=open, label="deselect all"];
+
+  // Zoom edges
+  zoom_in -> zoom_apply;
+  zoom_out -> zoom_apply;
+  zoom_reset -> zoom_apply;
+}

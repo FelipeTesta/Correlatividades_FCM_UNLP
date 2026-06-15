@@ -437,6 +437,11 @@ html, body {
     max-height: 30px;
 }
 
+/* Make action buttons appear instantly when node is selected via click */
+.subject-node.selected .node-actions {
+    transition: none;
+}
+
 .node-btn {
     background: none;
     border: none;
@@ -548,7 +553,6 @@ html, body {
 
 svg path.connection-line {
     opacity: 0;
-    transition: opacity 0.3s ease, stroke-width 0.3s ease;
 }
 
 svg path.connection-line.dimmed {
@@ -789,7 +793,7 @@ svg path.connection-line.highlighted {
     }
 
     .tree-wrapper {
-        padding: 8px 4px;
+        padding: 8px 4px 60px;
     }
 
     .year-section {
@@ -818,6 +822,7 @@ svg path.connection-line.highlighted {
         min-width: 65px;
         max-width: 110px;
         min-height: 40px;
+        margin: 0 2px 8px 2px;
     }
 
     .node-content {
@@ -855,10 +860,11 @@ svg path.connection-line.highlighted {
         transition: opacity 0.2s ease, max-height 0.2s ease;
     }
 
-    /* Show buttons when node is highlighted (selected/tapped) */
-    .subject-node.highlighted .node-actions {
+    /* Show buttons only on the selected (clicked) node, not all highlighted */
+    .subject-node.selected .node-actions {
         opacity: 1;
         max-height: 30px;
+        transition: none;
     }
 
     .node-btn {

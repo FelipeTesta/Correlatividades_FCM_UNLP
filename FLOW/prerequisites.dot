@@ -1,0 +1,142 @@
+digraph Prerequisites {
+  rankdir=TB;
+  bgcolor="#0d0d0d";
+  fontname="Arial";
+  fontcolor="#e5e5e5";
+  compound=true;
+  pad=0.5;
+  nodesep=0.5;
+  ranksep=0.7;
+
+  node [style="filled,rounded", fontname="Arial", fontcolor="#e5e5e5"];
+
+  // ── Data Source ──
+  subgraph cluster_data {
+    label="Subject Data (APP/materias.js)";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    materias_data [label=<
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="4" BGCOLOR="#111">
+  <TR><TD BGCOLOR="#1a1a1a"><B>Field</B></TD><TD BGCOLOR="#1a1a1a"><B>Description</B></TD></TR>
+  <TR><TD>codigo</TD><TD>Unique ID (e.g. "A0001")</TD></TR>
+  <TR><TD>nombre</TD><TD>Display name (e.g. "Anatomía")</TD></TR>
+  <TR><TD>anio</TD><TD>Recommended year (1-6)</TD></TR>
+  <TR><TD>categoria</TD><TD>anual / cuatrimestral / bimestral / optativa</TD></TR>
+  <TR><TD>horas</TD><TD>Total hours (optativas)</TD></TR>
+  <TR><TD>paraCursar</TD><TD>Prerequisites to START the course</TD></TR>
+  <TR><TD>paraAprobar</TD><TD>Prerequisites to TAKE THE FINAL</TD></TR>
+</TABLE>
+>, shape=plain, fontsize=10];
+  }
+
+  // ── Core Functions ──
+  subgraph cluster_core {
+    label="Core Prerequisite Functions";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    cumpleRequisitos [label="cumpleRequisitos(lista)\nParameters:\n- paraCursar[] or paraAprobar[]\n- Optional: materia (for self-ref)\n\nLogic:\nFor each requirement:\n- Check condicion in localStorage.estados\n- 'aprobada' → must be 'aprobada'\n- 'regularizada' → 'aprobada' OR 'regularizada'\n- Special: OPT-HORAS → check horas total\n\nReturns: boolean", fillcolor="#1a1a1a", color="#facc15", shape=box, style="filled,rounded,bold"];
+
+    resolverRequisitos [label="resolverRequisitosTransitivos(requisitos)\nRecursive prerequisite chain resolution\n\nLogic:\n1. For each requirement, find the course in materias[]\n2. Recursively resolve its own paraCursar\n3. Flatten into a single array of { materia, condicion }\n\nReturns: [req1, req2, ..., reqN]\n(all transitive dependencies)", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+
+    calcularProgreso [label="calcularProgreso(materia, listaRequisitos?)\nProgress calculation for a single course\n\nLogic:\n1. If no lista, resolve requisitos transitivos\n2. Count cumplidos: check each req vs estados\n3. Count total: length of requisitos\n4. faltantes: array of unmet reqs\n\nReturns: { cumplidos, total, faltantes[] }", fillcolor="#1a1a1a", color="#22c55e", shape=box, style="filled,rounded,bold"];
+
+    countMissing [label="countMissingPrerequisites(codigo, visited?)\n🔴 Fork for 🟡 indicator\n\nCount exact number of missing\nprerequisites recursively.\nUsed by tree mode to show 🟡\non nodes with exactly 1 missing req.\n\nIncludes OPT-HORAS check.", fillcolor="#1a1a1a", color="#facc15", shape=box, style="filled,rounded,bold"];
+
+    getSubjectStatus [label="getSubjectStatus(codigo)\nCombined course status resolution\n\nLogic:\n1. Check localStorage.estados[codigo]\n2. If 'aprobada' → return 'aprobada'\n3. If 'regularizada' → return 'regularizada'\n4. Check cumpleRequisitos(paraCursar)\n5. If es optativa + cumple → 'optativa-puede-cursar'\n6. If es optativa + !cumple → 'optativa-no-puede-cursar'\n7. If obligatoria + cumple → 'puede-cursar'\n8. If obligatoria + !cumple → 'no-puede-cursar'", fillcolor="#1a1a1a", color="#a855f7", shape=box, style="filled,rounded,bold"];
+  }
+
+  // ── Requirement Types ──
+  subgraph cluster_types {
+    label="Two Requirement Types";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    paraCursar [label="paraCursar\n(Prerequisites to START course)\n\nUsed by:\n- cumpleRequisitos()\n  → 'Puede Cursar' check\n- countMissingPrerequisites()\n  → 🟡 indicator\n- resolverRequisitosTransitivos()\n  → progress calculation\n\nExample:\n{ materia: \"BIOL9\", condicion: \"aprobada\" }\n{ materia: \"H0001\", condicion: \"regularizada\" }", fillcolor="#1a1a1a", color="#facc15", shape=box];
+
+    paraAprobar [label="paraAprobar\n(Prerequisites to TAKE FINAL)\n\nUsed by:\n- cumpleRequisitos()\n  → 'Puede Final' check\n- getConnectionVisualStyle()\n  → SVG line state (white)\n\nSame format as paraCursar.\nOften identical, can differ\n(e.g. EP001: paraCursar=regularizada,\n paraAprobar=aprobada)", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+  }
+
+  // ── Condition Types ──
+  subgraph cluster_conditions {
+    label="Condition Types";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    cond_aprobada [label="condicion: 'aprobada'\n✅ Must be fully approved\n(has taken + passed final)\n\nlocalStorage check:\nestados[CODE] === 'aprobada'", fillcolor="#003803", color="#22c55e", shape=box];
+
+    cond_regularizada [label="condicion: 'regularizada'\n🟨 Must have cursada approved\n(attended, may or may not have final)\n\nlocalStorage check:\nestados[CODE] === 'aprobada' OR\nestados[CODE] === 'regularizada'", fillcolor="#3a1a00", color="#f97316", shape=box];
+
+    opt_horas [label="OPT-HORAS (special)\nOptativa hours requirement\n\nLogic:\nSum all 'aprobada' optativa.horas\nCheck if >= required hours", fillcolor="#1a001a", color="#a855f7", shape=box];
+  }
+
+  // ── Connection Visual Logic ──
+  subgraph cluster_visual {
+    label="Connection Visual Style (getConnectionVisualStyle())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    visual_decision [label="Evaluate both requirement types:\nparaCursar + paraAprobar\nsimultaneously", fillcolor="#1a1a1a", color="#facc15", shape=diamond];
+
+    // The 4 visual states
+    visual_1 [label="State 1: #666 SOLID\n!cumpleRequisitos(paraCursar)\n→ Missing Cursada\n→ Can't take the course", fillcolor="#222", color="#666", shape=box];
+    visual_2 [label="State 2: #ffffff SOLID\ncumpleRequisitos(paraCursar)\nAND !cumpleRequisitos(paraAprobar)\n→ Missing Final\n→ Can't take course", fillcolor="#222", color="#fff", shape=box];
+    visual_3 [label="State 3: #22c55e DASHED\ncumpleRequisitos(paraCursar)\nAND cumpleRequisitos(paraAprobar)\nBUT reg-dependent doesn't have final\n→ Can take course, can't take final", fillcolor="#003803", color="#22c55e", shape=box];
+    visual_4 [label="State 4: #22c55e SOLID\nEverything met\n→ Can take final", fillcolor="#003803", color="#22c55e", shape=box];
+
+    visual_opt [label="If dependent is optativa\nALL states get purple color\nstroke: #a855f7\n(keeps same style/dash)", fillcolor="#1a001a", color="#a855f7", shape=box];
+  }
+
+  // ── Edges ──
+  // Data → functions
+  materias_data -> cumpleRequisitos [style=dashed, color="#888", arrowhead=open];
+  materias_data -> resolverRequisitos [style=dashed, color="#888", arrowhead=open];
+  materias_data -> countMissing [style=dashed, color="#888", arrowhead=open];
+  materias_data -> getSubjectStatus [style=dashed, color="#888", arrowhead=open];
+
+  // getSubjectStatus → uses cumpleRequisitos internally
+  getSubjectStatus -> cumpleRequisitos [style=dashed, color="#a855f7", arrowhead=open, label="calls", fontcolor="#888", fontsize=9];
+
+  // cumpleRequisitos reads from localStorage
+  ls_estados [label="localStorage.estados\n{ CODE: 'aprobada'|'regularizada' }", fillcolor="#0d2818", color="#22c55e", shape=cylinder, style=filled];
+  cumpleRequisitos -> ls_estados [style=dashed, color="#444", arrowhead=open, label="reads", fontcolor="#888", fontsize=9];
+
+  // Function interdependencies
+  resolverRequisitos -> calcularProgreso [style=dashed, color="#22d3ee", arrowhead=open, label="provides list", fontcolor="#888", fontsize=9];
+  cumpleRequisitos -> calcularProgreso [style=dashed, color="#22c55e", arrowhead=open, label="counts cumplidos", fontcolor="#888", fontsize=9];
+  countMissing -> cumpleRequisitos [style=dashed, color="#facc15", arrowhead=open, label="calls recursively", fontcolor="#888", fontsize=9];
+
+  // Requirement types → cumpleRequisitos
+  paraCursar -> cumpleRequisitos [label="primary input", fontcolor="#facc15", fontsize=10];
+  paraAprobar -> cumpleRequisitos [label="also uses", fontcolor="#22c55e", fontsize=10];
+
+  // Condition types → cumpleRequisitos
+  cond_aprobada -> cumpleRequisitos [style=dashed, color="#22c55e", arrowhead=open];
+  cond_regularizada -> cumpleRequisitos [style=dashed, color="#f97316", arrowhead=open];
+  opt_horas -> countMissing [style=dashed, color="#a855f7", arrowhead=open];
+
+  // Visual style evaluation
+  paraCursar -> visual_decision [label="evaluate first", fontcolor="#888", fontsize=9];
+  paraAprobar -> visual_decision [label="evaluate second", fontcolor="#888", fontsize=9];
+  visual_decision -> visual_1 [label="!paraCursar", fontcolor="#666", fontsize=9];
+  visual_decision -> visual_2 [label="paraCursar ✓\n!paraAprobar", fontcolor="#fff", fontsize=9];
+  visual_decision -> visual_3 [label="both met\nbut dependent reg.", fontcolor="#22c55e", fontsize=9];
+  visual_decision -> visual_4 [label="all met", fontcolor="#22c55e", fontsize=9];
+  visual_1 -> visual_opt [style=dashed, color="#a855f7", arrowhead=open, label="if optativa", fontcolor="#888", fontsize=9];
+  visual_2 -> visual_opt [style=dashed, color="#a855f7", arrowhead=open, label="if optativa", fontcolor="#888", fontsize=9];
+  visual_3 -> visual_opt [style=dashed, color="#a855f7", arrowhead=open, label="if optativa", fontcolor="#888", fontsize=9];
+  visual_4 -> visual_opt [style=dashed, color="#a855f7", arrowhead=open, label="if optativa", fontcolor="#888", fontsize=9];
+}
