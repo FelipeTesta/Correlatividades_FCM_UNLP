@@ -706,7 +706,7 @@ svg path.connection-line.highlighted {
 }
 
 /* ============================= */
-/* LEGEND BUTTON                 */
+/* LEGEND BUTTON & CARTELERA BTN */
 /* ============================= */
 
 .btn-legend {
@@ -721,6 +721,27 @@ svg path.connection-line.highlighted {
     transition: all 0.2s ease;
 }
 .btn-legend:hover {
+    background-color: #ffffff11;
+    border-color: #666;
+    color: #e5e5e5;
+}
+
+.btn-cartelera {
+    background-color: transparent;
+    border: 1px solid #444;
+    color: #999;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.btn-cartelera:hover {
     background-color: #ffffff11;
     border-color: #666;
     color: #e5e5e5;
@@ -771,6 +792,13 @@ svg path.connection-line.highlighted {
         font-size: 11px;
         padding: 8px 10px;
         min-height: 44px;
+    }
+
+    .btn-cartelera {
+        font-size: 11px;
+        padding: 8px 10px;
+        min-height: 44px;
+        order: 10;
     }
 
     .zoom-controls button {

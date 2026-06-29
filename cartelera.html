@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cartelera - Correlatividades Medicina UNLP</title>
+    <link rel="stylesheet" href="APP/cartelera.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <a href="arbol.html" class="btn-back">← Volver al Árbol</a>
+        <h1>📋 Cartelera</h1>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+        <div class="filter-group">
+            <button class="filter-btn active" data-days="365" aria-pressed="true">365 días</button>
+            <button class="filter-btn" data-days="30" aria-pressed="false">30 días</button>
+            <button class="filter-btn" data-days="7" aria-pressed="false">7 días</button>
+        </div>
+        <div class="group-toggle">
+            <button class="group-btn active" data-mode="subject" aria-pressed="true">Por materia</button>
+            <button class="group-btn" data-mode="chrono" aria-pressed="false">Cronológico</button>
+        </div>
+        <button id="refreshBtn">🔄 Actualizar</button>
+        <button id="markAllBtn">👁 todas lidas</button>
+    </div>
+
+    <!-- Status Area -->
+    <div id="status"></div>
+
+    <!-- Catedra Selector (hidden by default) -->
+    <div id="catedraSelector" style="display:none;"></div>
+
+    <!-- Results Container -->
+    <div id="results"></div>
+
+    <script src="APP/materias.js"></script>
+    <script src="APP/cartelera_ids.js"></script>
+    <script src="APP/cartelera.js"></script>
+
+</body>
+</html>
