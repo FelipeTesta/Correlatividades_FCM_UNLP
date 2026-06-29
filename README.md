@@ -25,6 +25,11 @@ Visualiza las correlatividades de la carrera de Medicina: selecciona las materia
 | `arbol.html` | Modo Árbol (vista de correlatividades) |
 | `arbol.js` | Lógica del Modo Árbol |
 | `arbol.css` | Estilos del Modo Árbol |
+| `cartelera.html` | Página Cartelera (verificar publicaciones de cátedras) |
+| `APP/cartelera.js` | Lógica de Cartelera (fetch, parse, render, cache) |
+| `APP/cartelera.css` | Estilos de Cartelera (tema oscuro, cards, spinner) |
+| `APP/cartelera_ids.js` | Mapeo cátedra→ID de cartelera (67 entries) |
+| `worker.js` | Cloudflare Worker proxy (referencia, deploy separado) |
 | `vacunas.html` | Seguimiento de vacunas |
 | `APP/finales/finales.json` | Fechas de finales |
 | `REF/correlativas optativas/optativas.csv` | Datos de referencia (CSV) |

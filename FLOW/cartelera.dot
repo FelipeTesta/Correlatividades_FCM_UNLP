@@ -1,0 +1,211 @@
+digraph Cartelera {
+  rankdir=TB;
+  bgcolor="#0d0d0d";
+  fontname="Arial";
+  fontcolor="#e5e5e5";
+  compound=true;
+  pad=0.5;
+  nodesep=0.5;
+  ranksep=0.7;
+
+  // ── Color Palette ──
+  // Green #22c55e  = success/approved
+  // Orange #f97316 = regularized
+  // Cyan #22d3ee   = cursando/active
+  // Purple #a855f7 = optativa
+  // Red #ff4444    = error
+
+  node [style="filled,rounded", fontname="Arial", fontcolor="#e5e5e5"];
+
+  // Process nodes
+  node [fillcolor="#1a1a1a", color="#444", shape=box];
+
+  // Storage nodes (cylinders)
+  node [fillcolor="#111", color="#555", shape=cylinder, style=filled, width=1.2];
+
+  // ── Entry Point Subgraph ──
+  subgraph cluster_entry {
+    label="Entry Point";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    arbol_button [label="arbol.html\n'📋 Verificar Cartelera'\nbutton click", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    entry [label="cartelera.html\nStandalone page\n(shares localStorage)", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+  }
+
+  // ── State Sources Subgraph ──
+  subgraph cluster_sources {
+    label="State Sources (localStorage)";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    ls_cursando [label="cursando\n{ CODE: true }\n→ Currently enrolled", fillcolor="#003830", color="#22d3ee", shape=cylinder];
+    ls_estados [label="estados\n{ CODE: 'regularizada' }\n→ Has cursada approved", fillcolor="#0d2818", color="#f97316", shape=cylinder];
+    ls_catedras [label="catedrasSeleccionadas\n{ CODE: catedra_name }", fillcolor="#0d2818", color="#22c55e", shape=cylinder];
+    ls_finales [label="APP/finales/finales.json\nCatedra names by subject", fillcolor="#111", color="#22d3ee", shape=cylinder];
+  }
+
+  // ── Resolution Subgraph ──
+  subgraph cluster_resolve {
+    label="Cátedra Resolution (resolveCatedraForCode())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    resolve_start [label="For each active subject code:\ncursando[] + regularizada[]\n(precedence: cursando > regular)", fillcolor="#1a1a1a", color="#facc15", shape=box];
+    resolve_catedra [label="Lookup:\ncatedrasSeleccionadas[CODE]\n→ catedra name", fillcolor="#1a1a1a", color="#666", shape=box];
+    resolve_finales [label="Match catedra name in\nfinales.json → cartelera ID", fillcolor="#1a1a1a", color="#666", shape=box];
+    resolve_fallback [label="Fallback chain:\nCARTELERA_FALLBACK_CATEDRAS\nfor SEM91 (6 opt) & P9001", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    resolve_ids [label="Get cartelera ID from\nCARTELERA_IDS[subjectCode]", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+    resolve_multi [label="Multiple catedras?\n→ Show selector dropdown\n(name via getSubjectName())", fillcolor="#1a1a1a", color="#facc15", shape=diamond];
+  }
+
+  // ── Fetch Subgraph ──
+  subgraph cluster_fetch {
+    label="Fetch Pipeline (fetchCatedra())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    check_cache [label="Check sessionStorage\ncarteleraCache[catedraUrl]\n30min expiry", fillcolor="#1a1a1a", color="#22d3ee", shape=diamond];
+    cache_hit [label="Use cached HTML\n(no network)", fillcolor="#003803", color="#22c55e", shape=box];
+    fetch_proxy [label="Fetch via Cloudflare Worker\nCARTELERA_PROXY\n→ cartelera.med.unlp.edu.ar", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    abort_controller [label="AbortController\n15s timeout\n(no infinite spinner)", fillcolor="#1a1a1a", color="#ff4444", shape=box];
+    cache_store [label="Store HTML in\nsessionStorage carteleraCache\n+ timestamp", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+  }
+
+  // ── Parse Subgraph ──
+  subgraph cluster_parse {
+    label="HTML Parser (parsePublications())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    dom_parse [label="DOMParser on HTML text\n→ document", fillcolor="#1a1a1a", color="#666", shape=box];
+    extract_cards [label="Query .ribbon-wrapper.card\n→ extract each card", fillcolor="#1a1a1a", color="#666", shape=box];
+    extract_fields [label="Extract fields:\n- title (h3.media-heading)\n- date (.published)\n- description (.ribbon-description)\n- professor (.pub-professor)\n- image (img[src])\n- modificada (.pub-modificada)", fillcolor="#1a1a1a", color="#666", shape=box];
+    classify_type [label="Classify publication type:\nAvisos / Exámenes / Notas / Otros\n(keyword matching in title/desc)", fillcolor="#1a1a1a", color="#facc15", shape=box];
+  }
+
+  // ── Render Subgraph ──
+  subgraph cluster_render {
+    label="Render Pipeline (render())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    check_errors [label="Early exit:\nanyErrorOverall?\n→ Show error message\n(not generic empty)", fillcolor="#1a1a1a", color="#ff4444", shape=diamond];
+    apply_filters [label="Apply date filter:\ncarteleraFilterDays\n365d / 30d / 7d\n(persisted in localStorage)", fillcolor="#1a1a1a", color="#666", shape=box];
+    mode_materia [label="Mode: Por materia (default)\nGroup by subject\nheaders: cyan cursando,\norange regularizada\nPer-subject collapse ▾/▸\n(carteleraCollapsedSubjects)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    mode_crono [label="Mode: Cronológico\nFlat timeline by date\nBadges: subject name +\norigin (Cursando/Regularizada)", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    apply_readstate [label="Apply read state:\ncarteleraLeidas[pubId]\n→ collapse read cards\n→ dimmify", fillcolor="#1a1a1a", color="#666", shape=box];
+    render_output [label="Render cards to DOM\n.spinner hidden\n.publications-container filled", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+  }
+
+  // ─── UI Elements Subgraph ──
+  subgraph cluster_ui {
+    label="UI Elements";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    ui_selector [label="Cátedra Selector\n(dropdown per subject)\nShows subject NAME", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    ui_filters [label="Filter Buttons\n365d | 30d | 7d\npersist in localStorage", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+    ui_mode [label="Mode Toggle\nPor materia | Cronológico", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    ui_refresh [label="Refresh Button\n(catedrasLoaded guard\n→ blocked until finales.json)", fillcolor="#1a1a1a", color="#666", shape=box];
+    ui_actions [label="👁 lido (per pub)\n👁 todas lidas (toggle)\nCollapsible sections\n(h2 cursando/regularizada)", fillcolor="#1a1a1a", color="#facc15", shape=box];
+  }
+
+  // ── localStorage Keys Subgraph ──
+  subgraph cluster_lskeys {
+    label="Cartelera localStorage Keys";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#333";
+    style=dashed;
+
+    lsk_cursando [label="cursando\n{ CODE: true }", fillcolor="#003830", color="#22d3ee", shape=cylinder];
+    lsk_estados [label="estados\n{ CODE: 'regularizada' }", fillcolor="#0d2818", color="#f97316", shape=cylinder];
+    lsk_catedras [label="catedrasSeleccionadas\n{ CODE: catedra }", fillcolor="#0d2818", color="#22c55e", shape=cylinder];
+    lsk_filter [label="carteleraFilterDays\nnumber: 365|30|7", fillcolor="#1a1a1a", color="#22c55e", shape=cylinder];
+    lsk_leidas [label="carteleraLeidas\n{ pubId: true }", fillcolor="#1a1a1a", color="#666", shape=cylinder];
+    lsk_collapsed [label="carteleraCollapsed\n{ section: bool }", fillcolor="#1a1a1a", color="#666", shape=cylinder];
+    lsk_collapsed_subj [label="carteleraCollapsedSubjects\n{ CODE: bool }", fillcolor="#1a1a1a", color="#666", shape=cylinder];
+    lsk_cache [label="sessionStorage\ncarteleraCache\n{ url: { html, timestamp } }", fillcolor="#1a1a1a", color="#22d3ee", shape=cylinder];
+  }
+
+  // ── Edges: Flow ──
+  arbol_button -> entry [label="window.open('cartelera.html')", fontcolor="#888", fontsize=10, style=bold];
+
+  // State sources
+  entry -> ls_cursando [style=dashed, color="#22d3ee", arrowhead=open];
+  entry -> ls_estados [style=dashed, color="#f97316", arrowhead=open];
+  entry -> ls_catedras [style=dashed, color="#22c55e", arrowhead=open];
+
+  // Resolution pipeline
+  resolve_start -> resolve_catedra;
+  resolve_catedra -> resolve_finales;
+  resolve_finales -> resolve_fallback [label="if not found", fontcolor="#888", fontsize=9];
+  resolve_fallback -> resolve_ids;
+  resolve_ids -> resolve_multi;
+  resolve_multi -> ui_selector [label="if >1 catedra", fontcolor="#888", fontsize=9];
+
+  // Data into resolution
+  ls_cursando -> resolve_start [style=dashed, color="#22d3ee", arrowhead=open, label="active codes", fontcolor="#888", fontsize=9];
+  ls_estados -> resolve_start [style=dashed, color="#f97316", arrowhead=open, label="regularizadas", fontcolor="#888", fontsize=9];
+  ls_catedras -> resolve_catedra [style=dashed, color="#22c55e", arrowhead=open];
+  ls_finales -> resolve_finales [style=dashed, color="#22d3ee", arrowhead=open];
+
+  // Fetch pipeline
+  resolve_ids -> check_cache;
+  check_cache -> cache_hit [label="has valid cache", fontcolor="#22c55e", fontsize=9];
+  check_cache -> fetch_proxy [label="cache miss/expired", fontcolor="#22d3ee", fontsize=9];
+  fetch_proxy -> abort_controller [label="parallel timeout", fontcolor="#888", fontsize=9, style=dashed];
+  fetch_proxy -> cache_store;
+  cache_store -> dom_parse;
+
+  // Parse pipeline
+  cache_hit -> dom_parse;
+  dom_parse -> extract_cards;
+  extract_cards -> extract_fields;
+  extract_fields -> classify_type;
+
+  // Render pipeline
+  resolve_all [label="resolveAndFetch()\nMain orchestrator\ncombine cursando+regularizada\nresolve → fetch → parse", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
+  classify_type -> resolve_all;
+  resolve_all -> check_errors;
+  check_errors -> apply_filters [label="no errors", fontcolor="#22c55e", fontsize=9];
+  apply_filters -> mode_materia;
+  apply_filters -> mode_crono;
+  mode_materia -> apply_readstate;
+  mode_crono -> apply_readstate;
+  apply_readstate -> render_output;
+
+  // UI interactions
+  ui_selector -> resolve_multi [style=dashed, color="#22d3ee", arrowhead=open, label="change catedra", fontcolor="#888", fontsize=9];
+  ui_filters -> apply_filters [style=dashed, color="#22c55e", arrowhead=open, label="change filter", fontcolor="#888", fontsize=9];
+  ui_mode -> mode_materia [style=dashed, color="#f97316", arrowhead=open, label="toggle mode", fontcolor="#888", fontsize=9];
+  ui_mode -> mode_crono [style=dashed, color="#f97316", arrowhead=open, label="toggle mode", fontcolor="#888", fontsize=9];
+  ui_refresh -> check_cache [style=dashed, color="#666", arrowhead=open, label="clear cache → refetch", fontcolor="#888", fontsize=9];
+  ui_actions -> apply_readstate [style=dashed, color="#facc15", arrowhead=open, label="mark read", fontcolor="#888", fontsize=9];
+
+  // localStorage persistence
+  ui_filters -> lsk_filter [style=dashed, color="#22c55e", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
+  ui_actions -> lsk_leidas [style=dashed, color="#666", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
+  ui_actions -> lsk_collapsed [style=dashed, color="#666", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
+  mode_materia -> lsk_collapsed_subj [style=dashed, color="#22d3ee", arrowhead=open, label="save collapse", fontcolor="#888", fontsize=9];
+  fetch_proxy -> lsk_cache [style=dashed, color="#22d3ee", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
+}
