@@ -1201,6 +1201,10 @@ const CARTELERA_NOTIFY_ENDPOINT = "https://cartelera-proxy.felipestesta.workers.
 const NOTIFY_EMAIL_KEY = "carteleraNotifyEmail";
 
 function populateNotifySubjects() {
+  if (!catedrasLoaded || !catedrasData) {
+    alert('Cargando datos de cátedras, intenta nuevamente en unos segundos.');
+    return;
+  }
   var container = document.getElementById("notifySubjects");
   if (!container) return;
   container.innerHTML = "";
@@ -1288,23 +1292,31 @@ function handleNotifySubscribe() {
     subscribeBtn.textContent = "Enviando...";
   }
 
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 15000);
+
   fetch(CARTELERA_NOTIFY_ENDPOINT + "/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: email, codes: codes })
+    body: JSON.stringify({ email: email, codes: codes }),
+    signal: controller.signal
   })
     .then(function (r) {
+      clearTimeout(timeoutId);
       if (!r.ok) throw new Error("HTTP " + r.status);
       return r.json();
     })
     .then(function () {
+      clearTimeout(timeoutId);
       alert("✓ Suscripción confirmada. Recibirás un email diario cuando haya novedades.");
       closeNotifyModal();
     })
     .catch(function (err) {
+      clearTimeout(timeoutId);
       alert("Error al suscribir: " + (err.message || "desconocido"));
     })
     .finally(function () {
+      clearTimeout(timeoutId);
       if (subscribeBtn) {
         subscribeBtn.disabled = false;
         subscribeBtn.textContent = "Suscribirme";

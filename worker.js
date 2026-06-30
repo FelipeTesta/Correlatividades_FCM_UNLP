@@ -27,6 +27,7 @@ export default {
             status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
           });
         }
+        if (typeof rawEmail !== 'string') return new Response(JSON.stringify({error:'email must be a string'}), {status:400, headers:{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'}});
         const email = rawEmail.toLowerCase().trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -110,7 +111,12 @@ export default {
     if (!id) return new Response('missing id', { status: 400, headers: { 'Access-Control-Allow-Origin': '*' } });
     let target = `https://cartelera.med.unlp.edu.ar/catedra/${id}`;
     if (tag) target += `/etiqueta/${tag}`;
-    const html = await (await fetch(target)).text();
+    let html;
+    try {
+      html = await (await fetch(target)).text();
+    } catch (err) {
+      return new Response('proxy error: ' + (err.message || 'fetch failed'), {status:502, headers:{'Access-Control-Allow-Origin':'*','Content-Type':'text/plain'}});
+    }
     return new Response(html, {
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -183,28 +189,29 @@ function escapeHtml(str) {
 }
 
 function parseCatedraHtml(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const cards = doc.querySelectorAll('.ribbon-wrapper.card');
   const results = [];
-  cards.forEach(card => {
-    const titleEl = card.querySelector('.card-title a');
-    const title = titleEl ? titleEl.textContent.trim() : '';
-    const dateEl = card.querySelector('p.card-text i.fa-calendar-alt');
-    let dateStr = '';
-    if (dateEl && dateEl.parentElement) {
-      dateStr = dateEl.parentElement.textContent.trim();
-    }
+  // Split by ribbon-wrapper card blocks
+  const blocks = html.split(/class="ribbon-wrapper card"/);
+  for (let i = 1; i < blocks.length; i++) {
+    const block = blocks[i];
+    // Extract title: text inside first <a> within card-title
+    const titleMatch = block.match(/class="card-title"[^>]*>[\s\S]*?<a[^>]*>(.*?)<\/a>/);
+    const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '').trim() : '';
+    // Extract date: text after fa-calendar-alt </i>
+    const dateMatch = block.match(/fa-calendar-alt[^>]*><\/i>\s*([^<]+)/);
+    const dateStr = dateMatch ? dateMatch[1].trim() : '';
     if (title && dateStr) {
       results.push({ title, date: dateStr });
     }
-  });
+  }
   return results;
 }
 
 async function fetchCatedraPubs(id) {
   const url = `https://cartelera.med.unlp.edu.ar/catedra/${id}`;
-  const html = await (await fetch(url)).text();
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('Upstream HTTP ' + r.status);
+  const html = await r.text();
   return parseCatedraHtml(html);
 }
 
