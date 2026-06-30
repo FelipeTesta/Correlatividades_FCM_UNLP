@@ -208,4 +208,118 @@ digraph Cartelera {
   ui_actions -> lsk_collapsed [style=dashed, color="#666", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
   mode_materia -> lsk_collapsed_subj [style=dashed, color="#22d3ee", arrowhead=open, label="save collapse", fontcolor="#888", fontsize=9];
   fetch_proxy -> lsk_cache [style=dashed, color="#22d3ee", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
+
+  // ══════════════════════════════════════════════════════════════
+  // EMAIL NOTIFICATION FLOW
+  // ══════════════════════════════════════════════════════════════
+
+  // ── Email Notification (Worker Config) Subgraph ──
+  subgraph cluster_email_worker {
+    label="Email Notification (Worker Config)";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    kv_subs [label="KV CARTELERA_SUBS\nkey=email (lowercase normalized)\nvalue={codes, names}\n(backward-compat: legacy array)", fillcolor="#2d1028", color="#a855f7", shape=cylinder];
+    kv_snapshots [label="KV CARTELERA_SNAPSHOTS\nkey=catedraID\nvalue=full pubs array\n(NOT slice 5 — slice 5 only\nfor welcome display)", fillcolor="#2d1028", color="#a855f7", shape=cylinder];
+    secret_resend [label="Secret: RESEND_API_KEY\n(Resend email API)", fillcolor="#1a1a1a", color="#ff4444", shape=cylinder];
+    cron_trigger [label="Cron Trigger: 0 8 * * *\n(1x/day 8am)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+
+    helper_parse [label="parseCatedraHtml(html)\nregex-based (NOT DOMParser)\nsplit 'ribbon-wrapper.card'\nextract: title, date, link\n(<a> href, handles absolute URLs)", fillcolor="#1a1a1a", color="#666", shape=box];
+    helper_fetch [label="fetchCatedraPubs(id)\nfetch + parseCatedraHtml\n→ [{title, date, link}]", fillcolor="#1a1a1a", color="#666", shape=box];
+    helper_send [label="sendEmail(to, subject, html, env)\nvia Resend API\nshows subject names (not ID)\nclickable pub links\nunsubscribe link footer\nsecurity: escapeHtml on IDs", fillcolor="#1a1a1a", color="#666", shape=box];
+    helper_welcome [label="buildWelcomeHtml(catedraPubs, names)\nlatest 5 pubs per catedra\nsubject names + clickable links", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+  }
+
+  // ── Email Routes Subgraph ──
+  subgraph cluster_email_routes {
+    label="Subscribe / Unsubscribe Routes";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    route_subscribe [label="POST /subscribe\naccept: {email, codes, names}\nvalidate email (regex + lowercase)\nOVERWRITE subs KV (not merge)\nPromise.allSettled parallel fetch\nstore full pubs in snapshots KV\nsend welcome email (latest 5/catedra)\nreturn {ok, welcomeEmailSent}\nsecurity: escapeHtml, CORS headers", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    route_unsubscribe [label="POST /unsubscribe\naccept: {email}\ndelete KV key by email", fillcolor="#1a1a1a", color="#ff4444", shape=box];
+    route_health [label="GET /health\nreturn {ok, cron}", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+    route_proxy [label="GET ?id=\nexisting proxy to\ncartelera.med.unlp.edu.ar\n(unchanged)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    route_cors [label="OPTIONS\nCORS preflight handler", fillcolor="#1a1a1a", color="#666", shape=box];
+  }
+
+  // ── Email Cron Handler Subgraph ──
+  subgraph cluster_email_cron {
+    label="Cron Handler (scheduled())";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    cron_list_subs [label="List all CARTELERA_SUBS keys\n(max 1000, paginated)", fillcolor="#1a1a1a", color="#666", shape=box];
+    cron_parse [label="Parse each subscription\narray OR {codes, names}\n(backward-compat)", fillcolor="#1a1a1a", color="#facc15", shape=diamond];
+    cron_build_map [label="Build catedra→emails[] map\nfor efficient iteration", fillcolor="#1a1a1a", color="#666", shape=box];
+    cron_diff [label="For each catedra with subs:\nfetchCatedraPubs(id)\ndiff vs CARTELERA_SNAPSHOTS\nPromise.allSettled parallel fetch", fillcolor="#1a1a1a", color="#a855f7", shape=diamond];
+    cron_send [label="If new pubs:\nsend email to ALL subscribers\nper-email try/catch\n(one bad email doesn't break batch)\nescapeHtml on IDs in HTML", fillcolor="#1a1a1a", color="#ff4444", shape=box];
+    cron_update [label="Update KV snapshot\nONLY if email sent OK\n(failed send → retry next cron)", fillcolor="#003803", color="#22c55e", shape=box];
+  }
+
+  // ── Email Client UI Subgraph ──
+  subgraph cluster_email_client {
+    label="Email Notification (Client UI)";
+    fontcolor="#888";
+    fontname="Arial";
+    color="#444";
+    style=filled;
+    fillcolor="#0a0a0a";
+
+    notify_button [label="🔔 Notificarme button\nin controls-bar", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    notify_modal [label="Notification Modal:\n- Email input field\n- #notifySubjects checkboxes\n  (subject name via getSubjectName\n   value=catedraID\n   dataset.subjectName stored)\n- Suscribirme button\n- ✕ Close\n- Remover mi email\n  (hold-to-confirm 1s\n   CSS progress bar)\ncatedrasLoaded guard\n(blocked until finales.json)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    notify_subscribe [label="handleNotifySubscribe()\nPOST /subscribe\nAbortController 15s timeout\ntouchInProgress guard\n(prevents double-fire)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    notify_unsubscribe [label="handleNotifyUnsubscribe()\nPOST /unsubscribe\nclear localStorage\ncarteleraNotifyEmail", fillcolor="#1a1a1a", color="#ff4444", shape=box];
+    notify_ls [label="localStorage\ncarteleraNotifyEmail\nstring (email address)", fillcolor="#1a1a1a", color="#a855f7", shape=cylinder];
+  }
+
+  // ── Edges: Email Notification ──
+
+  // Worker config edges
+  cron_trigger -> kv_subs [style=dashed, color="#a855f7", arrowhead=open, label="reads", fontcolor="#888", fontsize=9];
+  cron_trigger -> kv_snapshots [style=dashed, color="#a855f7", arrowhead=open, label="reads/writes", fontcolor="#888", fontsize=9];
+  helper_fetch -> helper_parse [label="uses", fontcolor="#888", fontsize=9];
+
+  // Route edges
+  route_subscribe -> kv_subs [style=dashed, color="#a855f7", arrowhead=open, label="overwrite", fontcolor="#888", fontsize=9];
+  route_subscribe -> kv_snapshots [style=dashed, color="#a855f7", arrowhead=open, label="store full pubs", fontcolor="#888", fontsize=9];
+  route_subscribe -> helper_fetch [style=dashed, color="#a855f7", arrowhead=open, label="parallel fetch", fontcolor="#888", fontsize=9];
+  route_subscribe -> helper_welcome [style=dashed, color="#22c55e", arrowhead=open, label="build email", fontcolor="#888", fontsize=9];
+  route_subscribe -> helper_send [style=dashed, color="#ff4444", arrowhead=open, label="send welcome", fontcolor="#888", fontsize=9];
+  route_unsubscribe -> kv_subs [style=dashed, color="#ff4444", arrowhead=open, label="delete key", fontcolor="#888", fontsize=9];
+  route_proxy -> fetch_proxy [style=dashed, color="#22d3ee", arrowhead=open, label="same worker", fontcolor="#888", fontsize=9, constraint=false];
+
+  // Cron handler edges
+  cron_list_subs -> kv_subs [style=dashed, color="#a855f7", arrowhead=open, label="list keys", fontcolor="#888", fontsize=9];
+  cron_list_subs -> cron_parse;
+  cron_parse -> cron_build_map;
+  cron_build_map -> cron_diff;
+  cron_diff -> helper_fetch [style=dashed, color="#a855f7", arrowhead=open, label="fetch pubs", fontcolor="#888", fontsize=9];
+  cron_diff -> kv_snapshots [style=dashed, color="#a855f7", arrowhead=open, label="get snapshot", fontcolor="#888", fontsize=9];
+  cron_diff -> cron_send [label="new pubs found", fontcolor="#22c55e", fontsize=9];
+  cron_send -> helper_send [style=dashed, color="#ff4444", arrowhead=open, label="send email", fontcolor="#888", fontsize=9];
+  cron_send -> cron_update [label="email sent OK", fontcolor="#22c55e", fontsize=9];
+  cron_update -> kv_snapshots [style=dashed, color="#22c55e", arrowhead=open, label="update snapshot", fontcolor="#888", fontsize=9];
+
+  // Client UI edges
+  entry -> notify_button [style=dashed, color="#a855f7", arrowhead=open, label="contains 🔔", fontcolor="#888", fontsize=9];
+  notify_button -> notify_modal [label="click → open modal", fontcolor="#888", fontsize=9];
+  notify_subscribe -> notify_modal [style=dashed, color="#a855f7", arrowhead=open, label="email input +\ncheckboxes read", fontcolor="#888", fontsize=9, dir=back];
+  notify_modal -> resolve_start [style=dashed, color="#a855f7", arrowhead=open, label="read active subjects", fontcolor="#888", fontsize=9];
+  notify_modal -> resolve_multi [style=dashed, color="#a855f7", arrowhead=open, label="read catedra options", fontcolor="#888", fontsize=9];
+  notify_modal -> notify_subscribe [label="Suscribirme click", fontcolor="#888", fontsize=9];
+  notify_modal -> notify_unsubscribe [label="Remover (hold 1s)", fontcolor="#888", fontsize=9];
+  notify_subscribe -> route_subscribe [style=dashed, color="#a855f7", arrowhead=open, label="POST /subscribe", fontcolor="#888", fontsize=9];
+  notify_unsubscribe -> route_unsubscribe [style=dashed, color="#ff4444", arrowhead=open, label="POST /unsubscribe", fontcolor="#888", fontsize=9];
+  notify_subscribe -> notify_ls [style=dashed, color="#a855f7", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
+  notify_unsubscribe -> notify_ls [style=dashed, color="#ff4444", arrowhead=open, label="clear", fontcolor="#888", fontsize=9];
 }

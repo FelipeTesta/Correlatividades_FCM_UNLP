@@ -133,6 +133,7 @@ digraph StateManagement {
     page_main [label="index.html\n(main dashboard)", fillcolor="#1a1a1a", color="#22c55e", shape=box];
     page_arbol [label="arbol.html\n(tree visualization)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
     page_vacunas [label="vacunas.html\n(vaccination tracker)", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    page_cartelera [label="cartelera.html\n(exam board viewer)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
     shared_ls [label="=== localStorage ===\n(shared, same origin)\nestados ✅ cursando ✅\nboxStates ✅ anioIngreso ✅\nproyectosExtension ✅\ncatedrasSeleccionadas ✅", fillcolor="#111", color="#22c55e", shape=cylinder, style=filled];
   }
 
