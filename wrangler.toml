@@ -10,8 +10,8 @@ crons = ["0 8 * * *"]
 
 [[kv_namespaces]]
 binding = "CARTELERA_SUBS"
-id = "REPLACE_WITH_KV_ID_SUBS"
+id = "060bce2011564bf59da4e2178a925e6c"
 
 [[kv_namespaces]]
 binding = "CARTELERA_SNAPSHOTS"
-id = "REPLACE_WITH_KV_ID_SNAPSHOTS"
+id = "46fa48b250524b4d986b39647c95e66f"
