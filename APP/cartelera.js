@@ -131,6 +131,43 @@ document.addEventListener("DOMContentLoaded", function () {
       closeNotifyModal();
     });
   }
+
+  // Hold-to-confirm unsubscribe button
+  var unsubscribeBtn = document.getElementById("notifyUnsubscribeBtn");
+  if (unsubscribeBtn) {
+    var holdTimer = null;
+    var touchInProgress = false;
+    function startHold(e) {
+      if (e.type === 'touchstart') {
+        touchInProgress = true;
+      } else if (touchInProgress) {
+        return; // synthesized mousedown after touchend — ignore
+      }
+      e.preventDefault();
+      unsubscribeBtn.classList.add("holding");
+      holdTimer = setTimeout(function () {
+        handleNotifyUnsubscribe();
+        unsubscribeBtn.classList.remove("holding");
+        touchInProgress = false;
+      }, 1000);
+    }
+    function cancelHold() {
+      if (holdTimer) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+      unsubscribeBtn.classList.remove("holding");
+      if (touchInProgress) {
+        setTimeout(function () { touchInProgress = false; }, 500);
+      }
+    }
+    unsubscribeBtn.addEventListener("mousedown", startHold);
+    unsubscribeBtn.addEventListener("touchstart", startHold, { passive: false });
+    unsubscribeBtn.addEventListener("mouseup", cancelHold);
+    unsubscribeBtn.addEventListener("mouseleave", cancelHold);
+    unsubscribeBtn.addEventListener("touchend", cancelHold);
+    unsubscribeBtn.addEventListener("touchcancel", cancelHold);
+  }
 });
 
 function loadCatedrasData() {
@@ -1234,6 +1271,7 @@ function populateNotifySubjects() {
     checkbox.checked = true;
 
     var subjName = getSubjectName(code) || code;
+    checkbox.dataset.subjectName = subjName;
     label.appendChild(checkbox);
     label.appendChild(document.createTextNode(" " + subjName + " (" + resolved.name + ")"));
 
@@ -1271,11 +1309,14 @@ function handleNotifySubscribe() {
     return;
   }
 
-  // Gather checked catedra IDs
+  // Gather checked catedra IDs + names
   var checkboxes = document.querySelectorAll("#notifySubjects .notify-subject-checkbox:checked");
   var codes = [];
+  var names = {};
   checkboxes.forEach(function (cb) {
     codes.push(cb.value);
+    var subjName = cb.dataset.subjectName || cb.value;
+    names[cb.value] = subjName;
   });
 
   if (codes.length === 0) {
@@ -1298,7 +1339,7 @@ function handleNotifySubscribe() {
   fetch(CARTELERA_NOTIFY_ENDPOINT + "/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: email, codes: codes }),
+    body: JSON.stringify({ email: email, codes: codes, names: names }),
     signal: controller.signal
   })
     .then(function (r) {
@@ -1315,11 +1356,58 @@ function handleNotifySubscribe() {
       clearTimeout(timeoutId);
       alert("Error al suscribir: " + (err.message || "desconocido"));
     })
-    .finally(function () {
+      .finally(function () {
       clearTimeout(timeoutId);
       if (subscribeBtn) {
         subscribeBtn.disabled = false;
         subscribeBtn.textContent = "Suscribirme";
+      }
+    });
+}
+
+function handleNotifyUnsubscribe() {
+  var emailInput = document.getElementById("notifyEmail");
+  var email = emailInput ? emailInput.value.trim() : "";
+  if (!email || !email.includes("@")) {
+    alert("Por favor ingresa tu email para cancelar la suscripción.");
+    return;
+  }
+
+  var unsubscribeBtn = document.getElementById("notifyUnsubscribeBtn");
+  if (unsubscribeBtn) {
+    unsubscribeBtn.disabled = true;
+    unsubscribeBtn.textContent = "Enviando...";
+  }
+
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 15000);
+
+  fetch(CARTELERA_NOTIFY_ENDPOINT + "/unsubscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email }),
+    signal: controller.signal
+  })
+    .then(function (r) {
+      clearTimeout(timeoutId);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function () {
+      clearTimeout(timeoutId);
+      try { localStorage.removeItem(NOTIFY_EMAIL_KEY); } catch (e) {}
+      alert("✓ Email removido. No recibirás más notificaciones.");
+      closeNotifyModal();
+    })
+    .catch(function (err) {
+      clearTimeout(timeoutId);
+      alert("Error al cancelar suscripción: " + (err.message || "desconocido"));
+    })
+    .finally(function () {
+      clearTimeout(timeoutId);
+      if (unsubscribeBtn) {
+        unsubscribeBtn.disabled = false;
+        unsubscribeBtn.textContent = "Remover mi email";
       }
     });
 }

@@ -21,7 +21,7 @@ export default {
     if (url.pathname === '/subscribe' && request.method === 'POST') {
       try {
         const body = await request.json();
-        const { email: rawEmail, codes } = body;
+        const { email: rawEmail, codes, names } = body;
         if (!rawEmail || !codes || !Array.isArray(codes)) {
           return new Response(JSON.stringify({ error: 'email and codes[] required' }), {
             status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
@@ -36,7 +36,7 @@ export default {
           });
         }
         // Store subscription first (always, even if welcome email fails)
-        await env.CARTELERA_SUBS.put(email, JSON.stringify(codes));
+        await env.CARTELERA_SUBS.put(email, JSON.stringify({ codes, names: names || {} }));
 
         // Fetch latest pubs per catedra + initialize snapshots (parallel)
         const catedraPubs = {};
@@ -57,7 +57,7 @@ export default {
         if (Object.keys(catedraPubs).length > 0) {
           try {
             const subject = '🔔 Cartelera UNLP - Suscripción confirmada';
-            const html = buildWelcomeHtml(catedraPubs);
+            const html = buildWelcomeHtml(catedraPubs, names || {});
             await sendEmail(email, subject, html, env);
             welcomeEmailSent = true;
           } catch (e) {
@@ -132,16 +132,23 @@ export default {
 
     // Build catedraID -> [emails] map
     const catedraEmails = {};
+    const catedraNames = {};
     for (const key of subsList.keys) {
       const email = key.name;
       let codes = [];
+      let names = {};
       try {
         const raw = await env.CARTELERA_SUBS.get(email);
-        if (raw) codes = JSON.parse(raw);
+        if (raw) {
+          const subData = JSON.parse(raw);
+          codes = Array.isArray(subData) ? subData : (subData.codes || []);
+          names = Array.isArray(subData) ? {} : (subData.names || {});
+        }
       } catch (e) { console.error('KV get error for ' + email + ': ' + e.message); continue; }
       codes.forEach(id => {
         if (!catedraEmails[id]) catedraEmails[id] = [];
         catedraEmails[id].push(email);
+        if (!catedraNames[id] && names[id]) catedraNames[id] = names[id];
       });
     }
 
@@ -160,10 +167,18 @@ export default {
         );
 
         if (newPubs.length > 0) {
-          const subject = 'Nueva publicación en tu cátedra - Cartelera UNLP';
-          const html = '<p>Nuevas publicaciones detectadas:</p><ul>' +
-            newPubs.map(p => '<li><strong>' + escapeHtml(p.title) + '</strong> - ' + escapeHtml(p.date) + '</li>').join('') +
-            '</ul><p><a href="https://cartelera.med.unlp.edu.ar/catedra/' + escapeHtml(id) + '">Ver cartelera</a></p>';
+          const displayName = catedraNames[id] || ('Cátedra ' + id);
+          const subject = 'Nueva publicación en ' + displayName + ' - Cartelera UNLP';
+          const html = '<h2>🔔 Cartelera UNLP</h2><p>Nuevas publicaciones en <strong>' + escapeHtml(displayName) + '</strong>:</p><ul>' +
+            newPubs.map(p => {
+              const pubLink = p.link ? (p.link.startsWith('http') ? p.link : 'https://cartelera.med.unlp.edu.ar' + p.link) : null;
+              const titleHtml = pubLink
+                ? '<a href="' + escapeHtml(pubLink) + '" style="color:#0066cc;text-decoration:none"><strong>' + escapeHtml(p.title) + '</strong></a>'
+                : '<strong>' + escapeHtml(p.title) + '</strong>';
+              return '<li>' + titleHtml + ' — ' + escapeHtml(p.date) + '</li>';
+            }).join('') +
+            '</ul><p><a href="https://cartelera.med.unlp.edu.ar/catedra/' + escapeHtml(id) + '">Ver cartelera completa</a></p>' +
+            '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
 
           for (const email of emails) {
             try {
@@ -194,14 +209,15 @@ function parseCatedraHtml(html) {
   const blocks = html.split(/class="ribbon-wrapper card"/);
   for (let i = 1; i < blocks.length; i++) {
     const block = blocks[i];
-    // Extract title: text inside first <a> within card-title
-    const titleMatch = block.match(/class="card-title"[^>]*>[\s\S]*?<a[^>]*>(.*?)<\/a>/);
-    const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '').trim() : '';
+    // Extract title + link: href and text inside first <a> within card-title
+    const titleMatch = block.match(/class="card-title"[^>]*>[\s\S]*?<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/);
+    const link = titleMatch ? titleMatch[1].trim() : '';
+    const title = titleMatch ? titleMatch[2].replace(/<[^>]*>/g, '').trim() : '';
     // Extract date: text after fa-calendar-alt </i>
     const dateMatch = block.match(/fa-calendar-alt[^>]*><\/i>\s*([^<]+)/);
     const dateStr = dateMatch ? dateMatch[1].trim() : '';
     if (title && dateStr) {
-      results.push({ title, date: dateStr });
+      results.push({ title, date: dateStr, link });
     }
   }
   return results;
@@ -236,16 +252,21 @@ async function sendEmail(to, subject, html, env) {
   }
 }
 
-function buildWelcomeHtml(catedraPubs) {
+function buildWelcomeHtml(catedraPubs, names) {
   let html = '<h2>🔔 Cartelera UNLP</h2><p>¡Suscripción confirmada! Estas son las publicaciones recientes de tus cátedras:</p>';
   for (const [id, pubs] of Object.entries(catedraPubs)) {
+    const displayName = names[id] || ('Cátedra ' + id);
     html += '<div style="margin-bottom:16px;padding:12px;background:#f5f5f5;border-radius:8px">';
-    html += '<h3 style="margin:0 0 8px">Cátedra ' + escapeHtml(id) + '</h3><ul style="margin:0">';
+    html += '<h3 style="margin:0 0 8px">' + escapeHtml(displayName) + '</h3><ul style="margin:0">';
     pubs.forEach(p => {
-      html += '<li><strong>' + escapeHtml(p.title) + '</strong> — ' + escapeHtml(p.date) + '</li>';
+      const pubLink = p.link ? (p.link.startsWith('http') ? p.link : 'https://cartelera.med.unlp.edu.ar' + p.link) : null;
+      const titleHtml = pubLink
+        ? '<a href="' + escapeHtml(pubLink) + '" style="color:#0066cc;text-decoration:none"><strong>' + escapeHtml(p.title) + '</strong></a>'
+        : '<strong>' + escapeHtml(p.title) + '</strong>';
+      html += '<li>' + titleHtml + ' — ' + escapeHtml(p.date) + '</li>';
     });
     html += '</ul></div>';
   }
-  html += '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita Cartelera UNLP y haz clic en "🔔 Notificarme".</p>';
+  html += '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
   return html;
 }

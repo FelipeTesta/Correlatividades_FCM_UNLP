@@ -763,6 +763,54 @@ h1 {
   cursor: not-allowed;
 }
 
+.unsubscribe-btn {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px solid #663333;
+  color: #aa6666;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.15s, border-color 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.unsubscribe-btn:hover {
+  border-color: #ff4444;
+  color: #ff6666;
+}
+
+.unsubscribe-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.unsubscribe-btn .hold-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: #ff4444;
+  transition: width 1s linear;
+}
+
+.unsubscribe-btn.holding {
+  border-color: #ff4444;
+  color: #ff4444;
+}
+
+.unsubscribe-btn.holding .hold-progress {
+  width: 100%;
+}
+
 /* Mobile responsive */
 @media (max-width: 600px) {
   .modal-content {
@@ -774,5 +822,11 @@ h1 {
     width: 44px;
     height: 44px;
     font-size: 1rem;
+  }
+
+  .unsubscribe-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+    min-height: 44px;
   }
 }
