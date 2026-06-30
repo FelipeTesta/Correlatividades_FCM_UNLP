@@ -27,6 +27,7 @@
         </div>
         <button id="refreshBtn">🔄 Actualizar</button>
         <button id="markAllBtn">👁 todas lidas</button>
+        <button id="notifyBtn">🔔 Notificarme</button>
     </div>
 
     <!-- Status Area -->
@@ -41,6 +42,18 @@
     <script src="APP/materias.js"></script>
     <script src="APP/cartelera_ids.js"></script>
     <script src="APP/cartelera.js"></script>
+
+    <!-- Notify Modal -->
+    <div id="notifyModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <h2>🔔 Recibir notificaciones</h2>
+        <p>Recibe un email cuando haya nuevas publicaciones en tus cátedras (chequeo diario a las 8am).</p>
+        <input type="email" id="notifyEmail" placeholder="tu@email.com" />
+        <div id="notifySubjects"></div>
+        <button id="notifySubscribeBtn">Suscribirme</button>
+        <button id="notifyCloseBtn" class="modal-close">✕</button>
+      </div>
+    </div>
 
 </body>
 </html>

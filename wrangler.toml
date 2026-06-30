@@ -1,0 +1,17 @@
+# Run: wrangler kv:namespace create CARTELERA_SUBS / CARTELERA_SNAPSHOTS to get IDs.
+# Set secret: wrangler secret put RESEND_API_KEY
+
+name = "cartelera-proxy"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[triggers]
+crons = ["0 8 * * *"]
+
+[[kv_namespaces]]
+binding = "CARTELERA_SUBS"
+id = "REPLACE_WITH_KV_ID_SUBS"
+
+[[kv_namespaces]]
+binding = "CARTELERA_SNAPSHOTS"
+id = "REPLACE_WITH_KV_ID_SNAPSHOTS"

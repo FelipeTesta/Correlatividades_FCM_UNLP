@@ -107,6 +107,30 @@ document.addEventListener("DOMContentLoaded", function () {
       marcarTodasLeidas();
     });
   }
+
+  // Notify button
+  var notifyBtn = document.getElementById("notifyBtn");
+  if (notifyBtn) {
+    notifyBtn.addEventListener("click", function () {
+      openNotifyModal();
+    });
+  }
+
+  // Notify subscribe
+  var notifySubscribeBtn = document.getElementById("notifySubscribeBtn");
+  if (notifySubscribeBtn) {
+    notifySubscribeBtn.addEventListener("click", function () {
+      handleNotifySubscribe();
+    });
+  }
+
+  // Notify close
+  var notifyCloseBtn = document.getElementById("notifyCloseBtn");
+  if (notifyCloseBtn) {
+    notifyCloseBtn.addEventListener("click", function () {
+      closeNotifyModal();
+    });
+  }
 });
 
 function loadCatedrasData() {
@@ -441,6 +465,42 @@ function resolveCatedraForCode(codigo) {
 
   // Multiple catedras, needs user selection
   return { name: codigo, id: null, error: null, needsSelection: true, options: catedraNames };
+}
+
+// =============================
+// CATEDRA OPTIONS HELPERS
+// =============================
+
+function getCatedraOptionsForCode(code) {
+  var data = catedrasData[code];
+  if (data) {
+    return Object.keys(data);
+  }
+  var fallback = CARTELERA_FALLBACK_CATEDRAS[code];
+  if (fallback && fallback.length > 0) {
+    return fallback;
+  }
+  return [];
+}
+
+function openCatedraSelectorForCode(code) {
+  var options = getCatedraOptionsForCode(code);
+  if (options.length <= 1) return;
+
+  var pendingList = [{ codigo: code, options: options, source: "change" }];
+  renderCatedraSelector(pendingList);
+
+  // Add close button after renderCatedraSelector (which sets innerHTML)
+  var closeBtn = document.createElement("button");
+  closeBtn.className = "selector-close-btn";
+  closeBtn.textContent = "✕ Cerrar";
+  closeBtn.addEventListener("click", function () {
+    selectorEl.style.display = "none";
+    selectorEl.innerHTML = "";
+  });
+  selectorEl.insertBefore(closeBtn, selectorEl.firstChild);
+
+  selectorEl.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 // =============================
@@ -887,6 +947,22 @@ function renderSubjectMode(subjectData) {
       }; }(code));
       section.appendChild(title);
 
+      // Catedra change button (only if multiple options)
+      var catedraOptions = getCatedraOptionsForCode(code);
+      if (catedraOptions.length > 1) {
+        var subjName = getSubjectName(code) || code;
+        var changeBtn = document.createElement("button");
+        changeBtn.className = "catedra-change-btn";
+        changeBtn.textContent = "⚙";
+        changeBtn.title = "Alterar cátedra";
+        changeBtn.setAttribute("aria-label", "Alterar cátedra para " + subjName);
+        changeBtn.addEventListener("click", function(cod) { return function(e) {
+          e.stopPropagation();
+          openCatedraSelectorForCode(cod);
+        }; }(code));
+        title.appendChild(changeBtn);
+      }
+
       // Skip pubs if collapsed
       if (isSubjectCollapsed(code)) {
         group.appendChild(section);
@@ -1115,4 +1191,123 @@ function showEmpty(msg) {
   empty.className = "empty";
   empty.textContent = msg;
   resultsEl.appendChild(empty);
+}
+
+// =============================
+// NOTIFY / SUBSCRIPTION
+// =============================
+
+const CARTELERA_NOTIFY_ENDPOINT = "https://cartelera-proxy.felipestesta.workers.dev";
+const NOTIFY_EMAIL_KEY = "carteleraNotifyEmail";
+
+function populateNotifySubjects() {
+  var container = document.getElementById("notifySubjects");
+  if (!container) return;
+  container.innerHTML = "";
+
+  var cursando = getCursandoCodes();
+  var regular = getRegularizadaCodes();
+  var all = cursando.concat(regular);
+  // deduplicate
+  var seen = {};
+  all = all.filter(function (c) {
+    if (seen[c]) return false;
+    seen[c] = true;
+    return true;
+  });
+
+  all.forEach(function (code) {
+    var resolved = resolveCatedraForCode(code);
+    if (!resolved || !resolved.id) return; // skip if no resolved catedra
+
+    var label = document.createElement("label");
+    label.className = "notify-subject-label";
+
+    var checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = String(resolved.id);
+    checkbox.className = "notify-subject-checkbox";
+    checkbox.checked = true;
+
+    var subjName = getSubjectName(code) || code;
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(" " + subjName + " (" + resolved.name + ")"));
+
+    container.appendChild(label);
+  });
+}
+
+function openNotifyModal() {
+  var modal = document.getElementById("notifyModal");
+  if (!modal) return;
+
+  // Pre-fill email
+  var emailInput = document.getElementById("notifyEmail");
+  if (emailInput) {
+    try {
+      var savedEmail = localStorage.getItem(NOTIFY_EMAIL_KEY);
+      if (savedEmail) emailInput.value = savedEmail;
+    } catch (e) {}
+  }
+
+  populateNotifySubjects();
+  modal.style.display = "flex";
+}
+
+function closeNotifyModal() {
+  var modal = document.getElementById("notifyModal");
+  if (modal) modal.style.display = "none";
+}
+
+function handleNotifySubscribe() {
+  var emailInput = document.getElementById("notifyEmail");
+  var email = emailInput ? emailInput.value.trim() : "";
+  if (!email || !email.includes("@")) {
+    alert("Por favor ingresa un email válido.");
+    return;
+  }
+
+  // Gather checked catedra IDs
+  var checkboxes = document.querySelectorAll("#notifySubjects .notify-subject-checkbox:checked");
+  var codes = [];
+  checkboxes.forEach(function (cb) {
+    codes.push(cb.value);
+  });
+
+  if (codes.length === 0) {
+    alert("Selecciona al menos una cátedra.");
+    return;
+  }
+
+  // Persist email
+  try { localStorage.setItem(NOTIFY_EMAIL_KEY, email); } catch (e) {}
+
+  var subscribeBtn = document.getElementById("notifySubscribeBtn");
+  if (subscribeBtn) {
+    subscribeBtn.disabled = true;
+    subscribeBtn.textContent = "Enviando...";
+  }
+
+  fetch(CARTELERA_NOTIFY_ENDPOINT + "/subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email, codes: codes })
+  })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function () {
+      alert("✓ Suscripción confirmada. Recibirás un email diario cuando haya novedades.");
+      closeNotifyModal();
+    })
+    .catch(function (err) {
+      alert("Error al suscribir: " + (err.message || "desconocido"));
+    })
+    .finally(function () {
+      if (subscribeBtn) {
+        subscribeBtn.disabled = false;
+        subscribeBtn.textContent = "Suscribirme";
+      }
+    });
 }
