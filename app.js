@@ -1464,3 +1464,37 @@ document.addEventListener('keydown', function(e) {
         }
     }
 });
+
+// Hold-to-confirm for resetear button
+(function() {
+    var btn = document.getElementById('btnResetear');
+    if (!btn) return;
+    var timer = null;
+    var holding = false;
+
+    function startHold(e) {
+        if (e.type === 'touchstart') e.preventDefault();
+        holding = true;
+        btn.classList.add('holding');
+        timer = setTimeout(function() {
+            if (holding) {
+                btn.classList.remove('holding');
+                holding = false;
+                resetearTodos();
+            }
+        }, 1500);
+    }
+
+    function cancelHold() {
+        holding = false;
+        btn.classList.remove('holding');
+        if (timer) { clearTimeout(timer); timer = null; }
+    }
+
+    btn.addEventListener('mousedown', startHold);
+    btn.addEventListener('mouseup', cancelHold);
+    btn.addEventListener('mouseleave', cancelHold);
+    btn.addEventListener('touchstart', startHold, {passive: false});
+    btn.addEventListener('touchend', cancelHold);
+    btn.addEventListener('touchcancel', cancelHold);
+})();

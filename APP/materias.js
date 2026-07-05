@@ -166,7 +166,7 @@ const materias = [
     {materia:"B0001",condicion:"aprobada"}
   ]
 },
-{ codigo:"P9002", nombre:"Psiquiatría - Módulo II", anio:4, categoria:"bimestral", horas:40,
+{ codigo:"P9002", nombre:"Psiquiatría - Módulo II", anio:5, categoria:"bimestral", horas:40,
   paraCursar:[
     {materia:"P9001",condicion:"regularizada"}
   ],
@@ -185,7 +185,7 @@ const materias = [
     {materia:"S0003",condicion:"regularizada"}
   ]
 },
-{ codigo:"TX001", nombre:"Toxicología", anio:4, categoria:"bimestral", horas:25,
+{ codigo:"TX001", nombre:"Toxicología", anio:5, categoria:"bimestral", horas:25,
   paraCursar:[
     {materia:"PT001",condicion:"regularizada"},
     {materia:"SEM91",condicion:"regularizada"}
@@ -227,7 +227,7 @@ const materias = [
     {materia:"SEM91",condicion:"aprobada"}
   ]
 },
-{ codigo:"DL001", nombre:"Deontología Médica y Medicina Legal", anio:4, categoria:"bimestral", horas:50,
+{ codigo:"DL001", nombre:"Deontología Médica y Medicina Legal", anio:5, categoria:"bimestral", horas:50,
   paraCursar:[
     {materia:"PT001",condicion:"regularizada"},
     {materia:"SEM91",condicion:"regularizada"}

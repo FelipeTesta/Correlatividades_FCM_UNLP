@@ -105,6 +105,84 @@ export default {
       });
     }
 
+    // POST /test-send — send a test email to verify Resend works
+    if (url.pathname === '/test-send' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const { email: rawEmail } = body;
+        if (!rawEmail) return new Response(JSON.stringify({ error: 'email required' }), { status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+        const email = rawEmail.toLowerCase().trim();
+        
+        const subject = '🔔 Test - Cartelera UNLP';
+        const html = '<h2>🔔 Cartelera UNLP</h2><p>Este es un email de prueba. Si lo recibes, las notificaciones por email funcionan correctamente.</p><p>Próximamente recibirás emails cuando haya nuevas publicaciones en tus cátedras suscritas.</p><hr><p style="color:#888;font-size:12px">Cartelera UNLP - Test</p>';
+        
+        await sendEmail(email, subject, html, env);
+        return new Response(JSON.stringify({ ok: true, message: 'Test email sent to ' + email }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // GET /test-cron — diagnostic endpoint (simulates scheduled run, doesn't send emails)
+    if (url.pathname === '/test-cron') {
+      try {
+        const results = [];
+        let subsList;
+        try { subsList = await env.CARTELERA_SUBS.list(); } catch (e) { throw new Error('KV list error: ' + e.message); }
+
+        for (const key of subsList.keys) {
+          const email = key.name;
+          let codes = [];
+          let names = {};
+          try {
+            const raw = await env.CARTELERA_SUBS.get(email);
+            if (raw) {
+              const subData = JSON.parse(raw);
+              codes = Array.isArray(subData) ? subData : (subData.codes || []);
+              names = Array.isArray(subData) ? {} : (subData.names || {});
+            }
+          } catch (e) { results.push({ email, error: 'KV get parse error: ' + e.message }); continue; }
+
+          for (const catedraId of codes) {
+            const info = { email, catedraId, name: (names || {})[catedraId] || 'unknown' };
+            try {
+              const pubs = await fetchCatedraPubs(catedraId);
+              info.fetchedPubs = pubs.length;
+              info.parseSuccess = true;
+
+              const snapshotRaw = await env.CARTELERA_SNAPSHOTS.get(catedraId);
+              const snapshot = snapshotRaw ? JSON.parse(snapshotRaw) : [];
+              info.snapshotExists = !!snapshotRaw;
+              info.snapshotPubs = snapshot.length;
+
+              const newPubs = pubs.filter(p => !snapshot.some(s => s.title === p.title && s.date === p.date));
+              info.newPubs = newPubs.length;
+              info.newPubsTitles = newPubs.map(p => p.title + ' (' + p.date + ')');
+            } catch (e) {
+              info.error = e.message;
+              info.parseSuccess = false;
+            }
+            results.push(info);
+          }
+        }
+
+        return new Response(JSON.stringify({
+          ok: true,
+          resendConfigured: !!env.RESEND_API_KEY,
+          totalSubscriptions: subsList.keys.length,
+          results
+        }, null, 2), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
     // Default: proxy behavior (existing)
     const id = url.searchParams.get('id');
     const tag = url.searchParams.get('tag');
@@ -180,16 +258,22 @@ export default {
             '</ul><p><a href="https://cartelera.med.unlp.edu.ar/catedra/' + escapeHtml(id) + '">Ver cartelera completa</a></p>' +
             '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
 
+          let anyEmailSent = false;
           for (const email of emails) {
             try {
               await sendEmail(email, subject, html, env);
+              anyEmailSent = true;
             } catch (e) {
               console.error('Email send failed for ' + email + ': ' + e.message);
             }
           }
 
-          // Update snapshot (store full array to avoid false flags)
-          await env.CARTELERA_SNAPSHOTS.put(id, JSON.stringify(pubs));
+          // Only update snapshot if at least one email was delivered
+          if (anyEmailSent) {
+            await env.CARTELERA_SNAPSHOTS.put(id, JSON.stringify(pubs));
+          } else {
+            console.error('All emails failed for catedra ' + id + ', snapshot NOT updated — will retry next cron');
+          }
         }
       } catch (e) {
         console.error('Error checking catedra ' + id + ': ' + e.message);

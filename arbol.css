@@ -164,7 +164,6 @@ html, body {
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
-    z-index: 1;
 }
 
 /* ============================= */
@@ -437,6 +436,11 @@ html, body {
     max-height: 30px;
 }
 
+/* Selected node above SVG */
+.subject-node.selected {
+    z-index: 2;
+}
+
 /* Make action buttons appear instantly when node is selected via click */
 .subject-node.selected .node-actions {
     transition: none;
@@ -542,13 +546,31 @@ html, body {
 }
 
 .subject-node.dimmed {
-    opacity: 0.15;
+    opacity: 0.35;
     pointer-events: none;
 }
 
 .subject-node.highlighted {
     opacity: 1;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+    z-index: 2;
+}
+
+/* Highlighted: opaque backgrounds matching original visual appearance over #141414 base */
+.subject-node.highlighted.status-puede-cursar {
+    background-color: #302a14;
+}
+.subject-node.highlighted.status-no-puede-cursar {
+    background-color: #1c1c1c;
+}
+.subject-node.highlighted.status-optativa {
+    background-color: #2a1e36;
+}
+.subject-node.highlighted.status-optativa-puede-cursar {
+    background-color: #261c2f;
+}
+.subject-node.highlighted.status-optativa-no-puede-cursar {
+    background-color: #18161d;
 }
 
 svg path.connection-line {
@@ -573,7 +595,7 @@ svg path.connection-line.highlighted {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 0;
+    z-index: 1;
     pointer-events: none;
 }
 

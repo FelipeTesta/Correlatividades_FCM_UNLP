@@ -10,7 +10,7 @@
 
 <body>
 
-<h1>Medicina UNLP – Plan 2004</h1>
+<h1>Medicina UNLP – Plan 2023</h1>
 
 <div class="progress-container">
   <div class="progress-info">
@@ -28,18 +28,18 @@
 </div>
 
 <div class="top-bar">
-  <div class="top-bar-controls">
-    <label>Año de ingreso:</label>
-    <input type="number" id="anioIngreso" value="2023">
-    <span class="top-bar-divider">|</span>
-    <button class="btn-primary" onclick="guardarAnio()">Guardar</button>
-    <button class="btn-danger" onclick="resetearTodos()">↪ Resetear</button>
-    <span class="top-bar-divider">|</span>
+  <div class="top-bar-left">
     <button class="btn-primary" onclick="window.location.href='vacunas.html'">🛡️ Vacunas</button>
-    <span class="top-bar-divider">|</span>
     <button class="btn-primary" onclick="window.location.href='arbol.html'">🌳 Modo Árbol</button>
   </div>
-  <button id="btnHowToUse" class="btn-help" onclick="showHelpModal()">¿CÓMO USAR?</button>
+  <div class="year-input-group">
+    <label>Año de ingreso:</label>
+    <input type="number" id="anioIngreso" value="2023" onblur="guardarAnio()">
+  </div>
+  <div class="top-bar-right">
+    <button id="btnHowToUse" class="btn-help" onclick="showHelpModal()">¿CÓMO USAR?</button>
+    <button id="btnResetear" class="btn-reset-hold">⚠️ Resetear</button>
+  </div>
 </div>
 
 <div class="optativas-box">

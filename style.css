@@ -40,12 +40,13 @@ body {
 }
 
 /* ============================= */
-/* TÍTULOS */
+/* T├ìTULOS */
 /* ============================= */
 
 h1 {
     margin-bottom: 12px;
     font-weight: 600;
+    text-align: center;
 }
 
 h2 {
@@ -210,7 +211,7 @@ h2 {
 }
 
 
-/* texto de proyectos de extensión */
+/* texto de proyectos de extensi├│n */
 .extension-nombre {
     color: #86efac;
 }
@@ -224,66 +225,44 @@ h2 {
 /* TOP BAR VACUNAS */
 /* ============================= */
 
-.top-bar-vacunas {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 12px;
-    flex-wrap: nowrap;
-}
-
-.top-bar-controls {
+.top-bar-left,
+.top-bar-right {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.top-bar-controls label {
-    font-size: 12px;
-    color: #999;
+.year-input-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 10px;
 }
 
-.top-bar-divider {
-    color: #333;
-    margin: 0 4px;
+.year-input-group label {
+    font-size: 16px;
+    color: #ccc;
+    font-weight: 500;
 }
 
-.top-bar-controls button {
-    min-width: 100px;
-}
-
-.top-bar-controls input {
-    padding: 6px 8px;
-    border: 1px solid #222;
+.year-input-group input {
+    padding: 10px 12px;
+    border: 1px solid #333;
     background-color: #111;
     color: white;
-    border-radius: 4px;
-    font-size: 12px;
+    border-radius: 6px;
+    font-size: 16px;
     width: 80px;
+    text-align: center;
 }
 
-.btn-danger {
-    background-color: transparent !important;
-    border: 1px solid #444 !important;
-    color: #fff !important;
-    font-weight: bold;
-    font-size: 12px !important;
-    padding: 8px 16px !important;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-.btn-danger:hover {
-    background-color: #222 !important;
-    border-color: #666 !important;
+.year-input-group input:focus {
+    border-color: #22d3ee;
+    outline: none;
 }
 
 .btn-help {
-    margin-left: auto;
     background-color: transparent !important;
     border: 1px solid #333 !important;
     color: #22d3ee !important;
@@ -296,6 +275,47 @@ h2 {
 .btn-help:hover {
     background-color: #22d3ee11 !important;
     border-color: #22d3ee !important;
+}
+
+.btn-reset-hold {
+    position: relative;
+    overflow: hidden;
+    background-color: transparent !important;
+    border: 1px solid #444 !important;
+    color: #f87171 !important;
+    font-weight: bold;
+    font-size: 12px !important;
+    padding: 8px 16px !important;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: border-color 0.2s ease;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.btn-reset-hold::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: #ef4444;
+    transition: width 1.5s linear;
+}
+
+.btn-reset-hold.holding::after {
+    width: 100%;
+}
+
+.btn-reset-hold.holding {
+    border-color: #ef4444 !important;
+    background-color: #ef444411 !important;
+}
+
+.btn-reset-hold:hover {
+    border-color: #666 !important;
 }
 
 .btn-primary {
@@ -406,17 +426,17 @@ li.item-row {
     justify-content: space-between;
 }
 
-/* Progress fica à esquerda */
+/* Progress fica ├á esquerda */
 .info-row .progress {
     margin-right: auto;
 }
 
-/* Nome da matéria */
+/* Nome da mat├®ria */
 li span:first-child {
     flex: 1;
 }
 
-/* tag de año */
+/* tag de a├▒o */
 .anio-tag {
     font-size: 12px;
     color: #999;
@@ -428,7 +448,7 @@ li span:first-child {
 }
 
 /* ============================= */
-/* BOTÕES DE ESTADO */
+/* BOT├òES DE ESTADO */
 /* ============================= */
 
 .btn-warning-faltantes {
@@ -439,7 +459,7 @@ li span:first-child {
     font-size: 16px;
     padding: 0 4px !important;
     margin-left: 4px;
-    display: inline-block !important; /* Forçar exibição */
+    display: inline-block !important; /* For├ºar exibi├º├úo */
     vertical-align: middle;
 }
 
@@ -566,10 +586,10 @@ li button:hover {
     display: none;
 }
 
-/* estilos anteriores de ocultar botones están obsoletos; ahora el JS decide qué mostrar */
+/* estilos anteriores de ocultar botones est├ín obsoletos; ahora el JS decide qu├® mostrar */
 
 /* ============================= */
-/* REGULARIZADAS SUBDIVISÕES */
+/* REGULARIZADAS SUBDIVIS├òES */
 /* ============================= */
 
 .regularizadas-box {
@@ -579,19 +599,19 @@ li button:hover {
     border-radius: 4px;
 }
 
-/* Cada seção interna */
+/* Cada se├º├úo interna */
 .sub-section {
     margin-top: 4px;
 }
 
-/* Título interno menor */
+/* T├¡tulo interno menor */
 .sub-section h4 {
     margin-bottom: 8px;
     font-size: 15px;
     opacity: 0.8;
 }
 
-/* Header colapsável para subsections de optativas */
+/* Header colaps├ível para subsections de optativas */
 .collapsible-header {
     cursor: pointer;
     user-select: none;
@@ -606,7 +626,7 @@ li button:hover {
     opacity: 0.9;
 }
 
-/* Conteúdo colapsável dentro de sub-sections */
+/* Conte├║do colaps├ível dentro de sub-sections */
 .sub-content {
     overflow: hidden;
     max-height: none;
@@ -616,7 +636,7 @@ li button:hover {
         opacity 0.2s ease;
 }
 
-/* Quando sub-content está colapsado */
+/* Quando sub-content est├í colapsado */
 .sub-content.collapsed {
     max-height: 0;
     opacity: 0;
@@ -627,7 +647,7 @@ li button:hover {
     display: none;
 }
 
-/* Remove espaço se estiver vazio */
+/* Remove espa├ºo se estiver vazio */
 .sub-section ul:empty + * {
     margin-top: 0;
 }
@@ -739,7 +759,7 @@ li button:hover {
 }
 
 /* ============================= */
-/* BOX COLAPSÁVEL AJUSTADO */
+/* BOX COLAPS├üVEL AJUSTADO */
 /* ============================= */
 
 .box {
@@ -766,7 +786,7 @@ li button:hover {
     margin-left: 4px;
 }
 
-/* Conteúdo interno */
+/* Conte├║do interno */
 .box-content {
     overflow: hidden;
     max-height: none;
@@ -784,7 +804,7 @@ li button:hover {
     margin: 0;
 }
 
-/* 🔥 Reduz ainda mais o espaço quando fechado */
+/* ­ƒöÑ Reduz ainda mais o espa├ºo quando fechado */
 .box:has(.box-content.collapsed) {
     padding: 2px;
 }
@@ -809,6 +829,7 @@ li button:hover {
 .top-bar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
     margin-bottom: 12px;
 }
@@ -831,43 +852,45 @@ li button:hover {
         gap: 12px;
     }
 
-    .top-bar-controls {
+    .top-bar-left,
+    .top-bar-right {
         width: 100%;
-        justify-content: flex-start;
+        justify-content: center;
     }
 
-    .top-bar-controls label {
-        width: auto;
-        font-size: 14px; /* Aumentar legibilidade */
+    .year-input-group {
+        width: 100%;
+        justify-content: center;
     }
 
-    .top-bar-controls input {
-        flex: 0 0 80px;
-        min-height: 44px; /* Tamanho mínimo para toque */
-        font-size: 16px; /* Tamanho recomendado para inputs */
+    .year-input-group label {
+        font-size: 14px;
     }
 
-    .top-bar-divider {
-        display: none;
-    }
-
-    .top-bar-controls button {
-        flex: 1;
-        min-width: auto;
-        min-height: 44px; /* Tamanho mínimo para toque */
+    .year-input-group input {
         font-size: 16px;
+        min-height: 44px;
+    }
+
+    .top-bar-left button,
+    .top-bar-right button {
+        flex: 1;
+        min-height: 44px;
+        font-size: 14px;
+    }
+
+    .btn-reset-hold {
+        width: 100%;
     }
 
     .btn-help {
         width: 100%;
-        min-height: 44px;
-        font-size: 16px;
     }
 
     /* Optativas box */
     .optativas-box {
         flex-wrap: wrap;
-        padding: 12px; /* Mais espaçamento para toque */
+        padding: 12px; /* Mais espa├ºamento para toque */
     }
 
     .optativas-box span:first-child {
@@ -899,14 +922,14 @@ li button:hover {
     .extension-form input,
     .extension-form button {
         width: 100%;
-        min-height: 44px; /* Tamanho mínimo para toque */
+        min-height: 44px; /* Tamanho m├¡nimo para toque */
         font-size: 16px;
     }
 
     /* Inputs e buttons */
     select, input, button {
         max-width: 100%;
-        min-height: 44px; /* Tamanho mínimo para toque */
+        min-height: 44px; /* Tamanho m├¡nimo para toque */
         font-size: 16px;
     }
 
@@ -914,7 +937,7 @@ li button:hover {
     li {
         display: flex;
         flex-wrap: wrap;
-        padding: 12px; /* Mais espaçamento para toque */
+        padding: 12px; /* Mais espa├ºamento para toque */
         margin-bottom: 10px;
     }
 
@@ -967,7 +990,7 @@ li button:hover {
         font-size: 14px;
     }
 
-    /* Right group com botões alinhado à direita */
+    /* Right group com bot├Áes alinhado ├á direita */
     .right-group {
         display: flex;
         margin-left: auto;
@@ -982,11 +1005,11 @@ li button:hover {
 
     li button {
         width: auto;
-        min-height: 40px; /* Tamanho mínimo para toque */
+        min-height: 40px; /* Tamanho m├¡nimo para toque */
         font-size: 16px;
     }
 
-    /* Botões de ação específicos */
+    /* Bot├Áes de a├º├úo espec├¡ficos */
     .btn-warning-faltantes {
         min-width: 40px;
         min-height: 40px;
@@ -1003,7 +1026,7 @@ li button:hover {
 
     /* Boxes */
     .box {
-        padding: 12px; /* Mais espaçamento interno */
+        padding: 12px; /* Mais espa├ºamento interno */
         margin-bottom: 12px;
     }
 
@@ -1013,7 +1036,7 @@ li button:hover {
     }
 
     h1 {
-        font-size: 22px; /* Título maior para mobile */
+        font-size: 22px; /* T├¡tulo maior para mobile */
         text-align: center;
     }
     

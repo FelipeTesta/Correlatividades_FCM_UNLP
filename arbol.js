@@ -148,11 +148,11 @@ function initTree() {
         zoomContainer.appendChild(section);
     }
 
-    // Create SVG overlay (sibling to zoomContainer, inside wrapper)
+    // Create SVG overlay (inside zoomContainer for correct z-index stacking)
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', 'tree-svg');
     svg.setAttribute('id', 'treeSvg');
-    wrapper.appendChild(svg);
+    zoomContainer.appendChild(svg);
 
     // Apply current zoom level
     applyZoomTransform();
