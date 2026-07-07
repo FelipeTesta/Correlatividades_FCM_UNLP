@@ -6,7 +6,7 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 
 ## Funcionalidades
 
-- **Seguimiento de materias**: Marca materias como aprobadas (✅) o regularizadas (🟨)
+- **Seguimiento de materias**: Marca materias como aprobadas (✅) o regularizadas (🟧)
 - **Progreso visual**: Barra de progreso con sistema de puntos por categoría (anual, cuatrimestral, bimestral, optativas)
 - **Modo Árbol**: Vista visual de árbol de correlatividades con líneas de conexión SVG, zoom, y selección interactiva
 - **Cursando**: Marca materias que estás cursando actualmente (toggle con animación cyan)
@@ -22,11 +22,11 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 
 ### Página principal (index.html)
 
-Marca tus materias como aprobadas (✅) o regularizadas (🟨). Las listas se actualizan automáticamente mostrando qué puedes cursar, qué no puedes cursar, y qué finales podes rendir. Consulta las fechas de exámenes con el botón de calendario. Exporta tu progreso para mantenerlo respaldado.
+Marca tus materias como aprobadas (✅) o regularizadas (🟧). Las listas se actualizan automáticamente mostrando qué puedes cursar, qué no puedes cursar, y qué finales podes rendir. Consulta las fechas de exámenes con el botón de calendario. Exporta tu progreso para mantenerlo respaldado.
 
 ### Modo Árbol (arbol.html)
 
-Vista visual de todas las correlatividades organizadas por año. Hacé click en una materia para destacar sus correlativas (prerrequisitos y dependientes). Usá los botones ✅🟨🔄 en cada nodo para cambiar el estado. Activá el toggle "Cursando" en las materias disponibles. Ajustá el zoom (30%–300%) y ocultá las optativas con el toggle correspondiente.
+Vista visual de todas las correlatividades organizadas por año. Hacé click en una materia para destacar sus correlativas (prerrequisitos y dependientes). Usá los botones ✅🟧🔄 en cada nodo para cambiar el estado. Activá el toggle "Cursando" en las materias disponibles. Ajustá el zoom (30%–300%) y ocultá las optativas con el toggle correspondiente.
 
 ### Cartelera (cartelera.html)
 
@@ -34,8 +34,13 @@ Muestra las publicaciones de las cátedras correspondientes a tus materias con e
 
 ## Versión
 
-v0.08 — Junio 2026
+v0.08 — Julho 2026
 
 ## Registro de cambios
+
+- **07/07/2026:** Botón "¿Cómo usar?" en Modo Árbol + leyenda actualizada con 🟡 + optimizaciones mobile UI/UX (touch-action, color-scheme, reduced-motion, modal responsive)
+- **05/07/2026:** Corrección plan estudios UNLP (RM 578/25) — DL001, TX001, P9002 movidas a 5° año
+- **30/06/2026:** Notificaciones por email + botón ⚙ Alterar cátedras
+- **29/06/2026:** Cartelera de cátedras (publicaciones, filtros, modos)
 
 Ver [LOG.md](LOG.md) para el historial completo de modificaciones.

@@ -333,7 +333,7 @@ function createSubjectNode(m) {
 function getStatusLabel(status) {
     var labels = {
         'aprobada': '✅ Aprobada',
-        'regularizada': '🟨 Regularizada',
+        'regularizada': '🟧 Regularizada',
         'puede-cursar': 'Puede cursar',
         'no-puede-cursar': 'No puede cursar',
         'optativa-puede-cursar': 'Optativa (puede cursar)',
@@ -1084,35 +1084,66 @@ function toggleOptativasVisibility() {
 }
 
 // ===============================
-// LEGEND AUTO-HIDE
+// LEGEND AUTO-HIDE WITH COUNTDOWN
 // ===============================
 
 var legendTimeout;
+var LEGEND_DURATION = 10000; // 10 seconds
 
 function autoHideLegend() {
     var legend = document.getElementById('treeLegend');
+    var overlay = document.getElementById('legendOverlay');
     if (legend) {
+        legend.classList.remove('visible');
         legend.classList.add('hidden');
+        if (overlay) overlay.classList.remove('visible');
+        flashLegendButton();
     }
+}
+
+function flashLegendButton() {
+    var btn = document.querySelector('.btn-legend');
+    if (!btn) return;
+    btn.classList.add('btn-legend-flash');
+    setTimeout(function() {
+        btn.classList.remove('btn-legend-flash');
+    }, 2000);
 }
 
 function toggleLegend() {
     var legend = document.getElementById('treeLegend');
+    var overlay = document.getElementById('legendOverlay');
     if (!legend) return;
     
     if (legend.classList.contains('hidden')) {
         legend.classList.remove('hidden');
+        legend.classList.add('visible');
+        if (overlay) overlay.classList.add('visible');
         // Reset auto-hide timer
         clearTimeout(legendTimeout);
-        legendTimeout = setTimeout(autoHideLegend, 10000);
+        legendTimeout = setTimeout(autoHideLegend, LEGEND_DURATION);
     } else {
+        legend.classList.remove('visible');
         legend.classList.add('hidden');
+        if (overlay) overlay.classList.remove('visible');
+        clearTimeout(legendTimeout);
+        flashLegendButton();
     }
 }
 
-// Auto-hide legend after 10 seconds
+// Auto-hide legend after 10 seconds on initial load
 document.addEventListener('DOMContentLoaded', function() {
-    legendTimeout = setTimeout(autoHideLegend, 10000);
+    legendTimeout = setTimeout(autoHideLegend, LEGEND_DURATION);
+});
+
+// Overlay click-to-dismiss for mobile legend
+document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('legendOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', function() {
+            toggleLegend();
+        });
+    }
 });
 
 // ===============================
@@ -1129,3 +1160,287 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
+// ===============================
+// MOBILE TOUCH-AND-HOLD FAB
+// ===============================
+
+(function() {
+    var LONG_PRESS_DURATION = 400; // ms
+    var LONG_PRESS_THRESHOLD = 10; // px movement allowed before cancel
+    var fabOverlay = null;
+    var fabContainer = null;
+    var longPressTimer = null;
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var longPressTarget = null;
+    var longPressCodigo = null;
+    var isLongPress = false;
+
+    function isMobileDevice() {
+        return window.matchMedia('(max-width: 768px)').matches;
+    }
+
+    function dismissFAB() {
+        if (fabOverlay) {
+            fabOverlay.remove();
+            fabOverlay = null;
+        }
+        if (fabContainer) {
+            fabContainer.remove();
+            fabContainer = null;
+        }
+        longPressTarget = null;
+        longPressCodigo = null;
+        isLongPress = false;
+    }
+
+    function cancelLongPress() {
+        if (longPressTimer) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+        }
+    }
+
+    function createFAB(nodeEl, codigo, nodeRect) {
+        dismissFAB();
+
+        // Get current status to determine which buttons to show
+        var status = getSubjectStatus(codigo);
+
+        // Create dark overlay (tap to dismiss)
+        fabOverlay = document.createElement('div');
+        fabOverlay.className = 'mobile-fab-overlay';
+        fabOverlay.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dismissFAB();
+        });
+        fabOverlay.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            dismissFAB();
+        });
+
+        // Create FAB container
+        fabContainer = document.createElement('div');
+        fabContainer.className = 'mobile-fab-container';
+
+        // Position above the node, centered
+        var fabX = nodeRect.left + nodeRect.width / 2;
+        var fabY = nodeRect.top - 8; // 8px above the node
+        fabContainer.style.left = fabX + 'px';
+        fabContainer.style.top = '0'; // will be set after measuring
+        fabContainer.style.bottom = 'auto';
+        document.body.appendChild(fabOverlay);
+        document.body.appendChild(fabContainer);
+
+        // Add buttons based on status
+        var buttons = [];
+
+        if (status !== 'aprobada') {
+            buttons.push({
+                emoji: '\u2705',
+                label: 'Aprobar',
+                cls: 'mobile-fab-btn-aprobar',
+                action: function() { setSubjectState(codigo, 'aprobada'); dismissFAB(); }
+            });
+        }
+
+        if (status !== 'regularizada') {
+            buttons.push({
+                emoji: '\uD83D\uDFE7',
+                label: 'Regularizar',
+                cls: 'mobile-fab-btn-regularizar',
+                action: function() { setSubjectState(codigo, 'regularizada'); dismissFAB(); }
+            });
+        }
+
+        if (status === 'aprobada' || status === 'regularizada') {
+            buttons.push({
+                emoji: '\uD83D\uDD04',
+                label: 'Resetear',
+                cls: 'mobile-fab-btn-reset',
+                action: function() { removeSubjectState(codigo); dismissFAB(); }
+            });
+        }
+
+        // Cursando toggle for puede-cursar nodes
+        var isCursandoStatus = (status === 'puede-cursar' || status === 'optativa-puede-cursar');
+        if (isCursandoStatus) {
+            var cursandoOn = isCursando(codigo);
+            buttons.push({
+                emoji: cursandoOn ? '\uD83D\uDD1B' : '\uD83D\uDFE6',
+                label: cursandoOn ? 'Cursando ON' : 'Cursando',
+                cls: 'mobile-fab-btn-cursando',
+                action: function() { toggleCursando(codigo); dismissFAB(); }
+            });
+        }
+
+        for (var i = 0; i < buttons.length; i++) {
+            var btn = document.createElement('button');
+            btn.className = 'mobile-fab-btn ' + buttons[i].cls;
+            btn.innerHTML = buttons[i].emoji + '<span class="mobile-fab-label">' + buttons[i].label + '</span>';
+            btn.setAttribute('aria-label', buttons[i].label);
+            btn.addEventListener('click', (function(action) {
+                return function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    action();
+                };
+            })(buttons[i].action));
+            // Prevent long-press from re-triggering on FAB buttons
+            btn.addEventListener('touchstart', function(e) { e.stopPropagation(); }, { passive: true });
+            fabContainer.appendChild(btn);
+        }
+
+        // Position: center horizontally above the node
+        requestAnimationFrame(function() {
+            var fabRect = fabContainer.getBoundingClientRect();
+            var centerX = nodeRect.left + nodeRect.width / 2;
+            var leftPos = centerX - fabRect.width / 2;
+
+            // Keep within viewport bounds
+            if (leftPos < 8) leftPos = 8;
+            if (leftPos + fabRect.width > window.innerWidth - 8) {
+                leftPos = window.innerWidth - fabRect.width - 8;
+            }
+
+            fabContainer.style.left = leftPos + 'px';
+
+            // Position above node if there's room, otherwise below
+            var topPos = nodeRect.top - fabRect.height - 8;
+            if (topPos < 8) {
+                topPos = nodeRect.bottom + 8;
+            }
+            fabContainer.style.top = topPos + 'px';
+        });
+    }
+
+    function handleTouchStart(e) {
+        if (!isMobileDevice()) return;
+        var nodeEl = e.target.closest('.subject-node');
+        if (!nodeEl) return;
+
+        cancelLongPress();
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        longPressTarget = nodeEl;
+        longPressCodigo = nodeEl.dataset.codigo;
+        isLongPress = false;
+
+        longPressTimer = setTimeout(function() {
+            isLongPress = true;
+            var rect = longPressTarget.getBoundingClientRect();
+            createFAB(longPressTarget, longPressCodigo, rect);
+        }, LONG_PRESS_DURATION);
+    }
+
+    function handleTouchMove(e) {
+        if (!longPressTarget) return;
+        var dx = e.touches[0].clientX - touchStartX;
+        var dy = e.touches[0].clientY - touchStartY;
+        if (Math.abs(dx) > LONG_PRESS_THRESHOLD || Math.abs(dy) > LONG_PRESS_THRESHOLD) {
+            cancelLongPress();
+        }
+    }
+
+    function handleTouchEnd(e) {
+        if (!longPressTarget) return;
+        cancelLongPress();
+
+        // If it was a short tap (not long press), let the normal click handler work
+        // by not preventing default
+        if (!isLongPress) {
+            // Normal tap — selectNode will be called by the click handler
+            longPressTarget = null;
+            longPressCodigo = null;
+            return;
+        }
+
+        // Long press was triggered — prevent the subsequent click
+        e.preventDefault();
+        longPressTarget = null;
+        longPressCodigo = null;
+    }
+
+    // Register touch events on the tree wrapper (delegation)
+    document.addEventListener('DOMContentLoaded', function() {
+        var wrapper = document.querySelector('.tree-wrapper');
+        if (!wrapper) return;
+
+        wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+        wrapper.addEventListener('touchmove', handleTouchMove, { passive: true });
+        wrapper.addEventListener('touchend', handleTouchEnd, { passive: false });
+        wrapper.addEventListener('touchcancel', function() { cancelLongPress(); }, { passive: true });
+    });
+})();
+
+// ===============================
+// TREE HELP MODAL
+// ===============================
+
+function showTreeHelpModal() {
+    var overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.onclick = function() { document.body.removeChild(overlay); };
+
+    var modal = document.createElement('div');
+    modal.className = 'modal-content';
+    modal.onclick = function(e) { e.stopPropagation(); };
+
+    // Close button
+    var btnX = document.createElement('button');
+    btnX.innerText = '\u00D7';
+    btnX.className = 'modal-close-x';
+    btnX.onclick = function() { document.body.removeChild(overlay); };
+    modal.appendChild(btnX);
+
+    var title = document.createElement('h3');
+    title.innerText = '\uD83C\uDF33 Modo \u00C1rbol \u2014 C\u00F3mo usar';
+    modal.appendChild(title);
+
+    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+    var items = [
+        '<b>\uD83D\uDD0D Navegaci\u00F3n:</b> Cada columna es un a\u00F1o (1\u00BA a 6\u00BA). Las filas muestran obligatorias y optativas.',
+        '<b>\uD83D\uDC46 Selecci\u00F3n:</b> Toca/haz clic en una materia para resaltar sus correlativas (prerrequisitos + dependientes). ESC o toca vac\u00EDo para deseleccionar.',
+        '<b>\u2705 \uD83D\uDFE8 \uD83D\uDD04 Acciones:</b>' + (isMobile
+            ? ' <i>Long-press</i> (mantener pulsado 400ms) sobre una materia para ver botones de Aprobar, Regularizar y Resetear.'
+            : ' Pasa el mouse sobre una materia para ver los botones de Aprobar, Regularizar y Resetear.'),
+        '<b>\uD83D\uDCAD Cursando:</b> En materias "Puede cursar", activa el interruptor para marcar que la est\u00E1s cursando. Las dependientes muestran un borde animado.',
+        '<b>\uD83D\uDD04 Zoom:</b> Usa los controles + \u2212 \u223C para alejar/acercar. Rango: 30%\u2013300%.',
+        '<b>\uD83D\uDCD0 Optativas:</b> El toggle "Optativas" muestra/oculta las materias optativas.',
+        '<b>\uD83D\uDFE1 \uD83D\uDFE1:</b> Aparece al lado de materias que faltan exactamente 1 requisito para poder cursar.',
+        '<b>\uD83D\uDCCA Leyenda:</b> El bot\u00F3n "Leyenda" muestra el significado de colores, l\u00EDneas e iconos.',
+        '<b>\uD83D\uDCCB Cartelera:</b> "Verificar Cartelera" muestra publicaciones de las c\u00E1tedras de materias en curso.'
+    ];
+
+    var list = document.createElement('ul');
+    for (var i = 0; i < items.length; i++) {
+        var li = document.createElement('li');
+        li.innerHTML = items[i];
+        li.style.background = 'transparent';
+        li.style.borderBottom = '1px solid #222';
+        li.style.padding = '12px 0';
+        list.appendChild(li);
+    }
+    modal.appendChild(list);
+
+    var btnClose = document.createElement('button');
+    btnClose.innerText = '\u00A1ENTENDIDO!';
+    btnClose.style.width = '100%';
+    btnClose.style.marginTop = '15px';
+    btnClose.style.padding = '10px';
+    btnClose.style.backgroundColor = '#22d3ee';
+    btnClose.style.color = '#000';
+    btnClose.style.fontWeight = 'bold';
+    btnClose.style.borderRadius = '4px';
+    btnClose.style.border = 'none';
+    btnClose.style.cursor = 'pointer';
+    btnClose.style.fontSize = '14px';
+    btnClose.onclick = function() { document.body.removeChild(overlay); };
+    modal.appendChild(btnClose);
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}

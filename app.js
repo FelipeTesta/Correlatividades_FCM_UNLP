@@ -851,7 +851,7 @@ infoText += materia.anio + "° Año";
 
         if (showRegularizada) {
             const btnRegularizada = document.createElement("button");
-            btnRegularizada.innerText = "🟨";
+            btnRegularizada.innerText = "🟧";
             btnRegularizada.onclick = () => {
                 estados[codigo] = "regularizada";
                 guardarLocalYRender();
@@ -1094,9 +1094,9 @@ function showHelpModal() {
     modal.appendChild(title);
 
     const items = [
-        "Los iconos ✅🟨🔄 son botones y sirven para marcar el estado de cada materia.",
+        "Los iconos ✅🟧🔄 son botones y sirven para marcar el estado de cada materia.",
         "✅ <b>Aprobada</b>: Ya rendiste el final y aprobaste la materia.",
-        "🟨 <b>Cursada</b>: Tiene la cursada aprobada pero te falta rendir el final.",
+        "🟧 <b>Cursada</b>: Tiene la cursada aprobada pero te falta rendir el final.",
         "🔄 <b>Resetear</b>: Quita el estado de la materia si la marcaste mal.",
         "⚠ <b>Info</b>: Haz clic para ver qué requisitos te faltan para cursar o rendir final.",
         "🗓 <b>Fechas de Final</b>: En materias regularizadas y optativas, muestra las próximas fechas de examen. Haz clic para ver todas las fechas y seleccionar una cátedra específica.",
