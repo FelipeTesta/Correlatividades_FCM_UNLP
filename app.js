@@ -931,9 +931,6 @@ infoText += materia.anio + "° Año";
                 if (proximas && proximas.length > 0) {
                     let textoFechas = esRegularizada ? "Finales: " : "Próxima final libre: ";
                     
-                    if (esRegularizada && catedraSel && materia) {
-                        textoFechas = materia.nombre + " - " + catedraSel + ": ";
-                    }
                     
                     textoFechas += proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
                     
@@ -952,8 +949,9 @@ infoText += materia.anio + "° Año";
                 
                 if (fechasSpan || tieneDatos) {
                     btnCalendario = document.createElement("button");
-                    btnCalendario.innerText = "🗓";
+                    btnCalendario.innerText = "🗓 Ver Fechas";
                     btnCalendario.className = "btn-calendario";
+                    btnCalendario.setAttribute('aria-label', 'Ver todas las fechas de final');
                     btnCalendario.title = "Ver todas las fechas";
                     btnCalendario.onclick = (e) => {
                         e.stopPropagation();
@@ -962,8 +960,9 @@ infoText += materia.anio + "° Año";
                 } else if (codigo && fechasFinales[codigo] && fechasFinales[codigo].length > 0) {
                     // Fallback: se tem datos pero no se mostró nada, igualmente mostrar botão
                     btnCalendario = document.createElement("button");
-                    btnCalendario.innerText = "🗓";
+                    btnCalendario.innerText = "🗓 Ver Fechas";
                     btnCalendario.className = "btn-calendario";
+                    btnCalendario.setAttribute('aria-label', 'Ver todas las fechas de final');
                     btnCalendario.title = "Ver todas las fechas";
                     btnCalendario.onclick = (e) => {
                         e.stopPropagation();

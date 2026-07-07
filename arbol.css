@@ -13,7 +13,6 @@ html, body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #000;
     color: #e5e5e5;
-    height: 100%;
     overflow-x: hidden;
     color-scheme: dark;
 }
@@ -158,7 +157,6 @@ html, body {
     background-color: #050505;
     position: relative;
     padding: 8px;
-    overscroll-behavior: contain;
 }
 
 /* ============================= */
@@ -718,6 +716,13 @@ svg path.connection-line.highlighted {
     display: block;
 }
 
+@media (min-width: 769px) {
+    .tree-legend-overlay,
+    .tree-legend-overlay.visible {
+        display: none !important;
+    }
+}
+
 .legend-close-x {
     position: absolute;
     top: 8px;
@@ -772,13 +777,19 @@ svg path.connection-line.highlighted {
 
 .toggle-switch {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 4px;
     cursor: pointer;
     font-size: 13px;
     color: #999;
     user-select: none;
     margin: 0 auto;
+    padding: 4px 8px;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background: transparent;
+    min-height: 37px;
 }
 
 .toggle-switch input {
@@ -786,10 +797,10 @@ svg path.connection-line.highlighted {
 }
 
 .toggle-slider {
-    width: 44px;
-    height: 24px;
+    width: 18px;
+    height: 28px;
     background-color: #333;
-    border-radius: 12px;
+    border-radius: 9px;
     position: relative;
     transition: background-color 0.3s ease;
 }
@@ -797,8 +808,8 @@ svg path.connection-line.highlighted {
 .toggle-slider::after {
     content: '';
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
     background-color: #e5e5e5;
     border-radius: 50%;
     top: 2px;
@@ -811,7 +822,7 @@ svg path.connection-line.highlighted {
 }
 
 .toggle-switch input:checked + .toggle-slider::after {
-    transform: translateX(20px);
+    transform: translateY(12px);
 }
 
 .toggle-label {
@@ -988,8 +999,8 @@ svg path.connection-line.highlighted {
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        gap: 6px;
-        padding: 8px;
+        gap: 4px;
+        padding: 4px 6px;
     }
 
     /* Row 1: ← Volver | 🌳 Modo Árbol | Zoom */
@@ -998,7 +1009,7 @@ svg path.connection-line.highlighted {
         order: 2;
         width: auto;
         flex: 0 0 auto;
-        font-size: 14px;
+        font-size: 13px;
         text-align: center;
         margin-bottom: 0;
     }
@@ -1013,33 +1024,38 @@ svg path.connection-line.highlighted {
     .btn-legend { order: 7; }
 
     .btn-back {
-        font-size: 13px;
-        padding: 8px 12px;
-        min-height: 44px;
+        font-size: 12px;
+        padding: 6px 10px;
+        min-height: 37px;
     }
 
     .btn-legend {
         font-size: 11px;
         padding: 8px 10px;
-        min-height: 44px;
+        min-height: 37px;
     }
 
     .btn-cartelera {
         font-size: 11px;
         padding: 8px 10px;
-        min-height: 44px;
+        min-height: 37px;
     }
 
     .btn-help {
         font-size: 11px;
         padding: 8px 10px;
-        min-height: 44px;
+        min-height: 37px;
     }
 
     .zoom-controls button {
-        width: 44px;
-        height: 44px;
+        width: 37px;
+        height: 37px;
         font-size: 16px;
+    }
+
+    .zoom-controls button:nth-of-type(1),
+    .zoom-controls button:nth-of-type(2) {
+        display: none;
     }
 
     #zoomLevel {
@@ -1052,7 +1068,7 @@ svg path.connection-line.highlighted {
     }
 
     .toggle-label {
-        font-size: 11px;
+        font-size: 10px;
     }
 
     .tree-wrapper {
@@ -1141,7 +1157,6 @@ svg path.connection-line.highlighted {
         border-radius: 0;
         box-shadow: none;
         animation: fabSlideIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        transform: translateX(-50%);
     }
 
     .mobile-fab-btn {
@@ -1202,8 +1217,8 @@ svg path.connection-line.highlighted {
     }
 
     @keyframes fabSlideIn {
-        from { opacity: 0; transform: translateX(-50%) scale(0.7) translateY(10px); }
-        to { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+        from { opacity: 0; transform: scale(0.7) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     /* Suppress iOS context menu on long press */

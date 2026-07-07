@@ -167,7 +167,6 @@ function initTree() {
     requestAnimationFrame(function() {
         applyCursandoEffects();
     });
-
 }
 
 // ===============================
@@ -1158,7 +1157,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, { passive: true });
     }
-
 });
 
 // ===============================
@@ -1175,6 +1173,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var touchStartY = 0;
     var longPressTarget = null;
     var longPressCodigo = null;
+    var pinchInitialDistance = 0;
+    var pinchInitialZoom = 1;
     var isLongPress = false;
 
     function isMobileDevice() {
@@ -1316,6 +1316,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function getTouchDistance(touches) {
+        var dx = touches[0].clientX - touches[1].clientX;
+        var dy = touches[0].clientY - touches[1].clientY;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     function handleTouchStart(e) {
         if (!isMobileDevice()) return;
         var nodeEl = e.target.closest('.subject-node');
@@ -1372,6 +1378,36 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.addEventListener('touchmove', handleTouchMove, { passive: true });
         wrapper.addEventListener('touchend', handleTouchEnd, { passive: false });
         wrapper.addEventListener('touchcancel', function() { cancelLongPress(); }, { passive: true });
+
+        // Pinch-to-zoom (2 fingers)
+        wrapper.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 2) {
+                pinchInitialDistance = getTouchDistance(e.touches);
+                pinchInitialZoom = currentZoom;
+                cancelLongPress();
+            }
+        }, { passive: true });
+
+        wrapper.addEventListener('touchmove', function(e) {
+            if (e.touches.length === 2 && pinchInitialDistance > 0) {
+                var dist = getTouchDistance(e.touches);
+                var ratio = dist / pinchInitialDistance;
+                var newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, pinchInitialZoom * ratio));
+                currentZoom = newZoom;
+                applyZoomTransform();
+                updateZoomDisplay();
+            }
+        }, { passive: true });
+
+        wrapper.addEventListener('touchend', function(e) {
+            if (e.touches.length < 2 && pinchInitialDistance > 0) {
+                pinchInitialDistance = 0;
+                requestAnimationFrame(function() {
+                    updateSvgDimensions();
+                    drawConnections();
+                });
+            }
+        }, { passive: true });
     });
 })();
 
