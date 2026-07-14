@@ -1150,6 +1150,9 @@ svg path.connection-line.highlighted {
         position: fixed;
         z-index: 1000;
         display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: calc(100vw - 16px);
         gap: 10px;
         padding: 4px;
         background: transparent;

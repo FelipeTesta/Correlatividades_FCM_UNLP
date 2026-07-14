@@ -1295,20 +1295,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Position: center horizontally above the node
         requestAnimationFrame(function() {
-            var fabRect = fabContainer.getBoundingClientRect();
+            // Use offsetWidth/offsetHeight (layout size, transform-agnostic)
+            // so measurement is correct even while fabSlideIn animation is
+            // mid-transform (scale 0.7). getBoundingClientRect returns the
+            // scaled-down size and causes off-screen overflow to the right.
+            var fabW = fabContainer.offsetWidth;
+            var fabH = fabContainer.offsetHeight;
             var centerX = nodeRect.left + nodeRect.width / 2;
-            var leftPos = centerX - fabRect.width / 2;
+            var leftPos = centerX - fabW / 2;
 
-            // Keep within viewport bounds
-            if (leftPos < 8) leftPos = 8;
-            if (leftPos + fabRect.width > window.innerWidth - 8) {
-                leftPos = window.innerWidth - fabRect.width - 8;
+            // Keep within viewport bounds (never negative)
+            if (leftPos + fabW > window.innerWidth - 8) {
+                leftPos = window.innerWidth - fabW - 8;
             }
+            if (leftPos < 8) leftPos = 8;
 
             fabContainer.style.left = leftPos + 'px';
 
             // Position above node if there's room, otherwise below
-            var topPos = nodeRect.top - fabRect.height - 8;
+            var topPos = nodeRect.top - fabH - 8;
             if (topPos < 8) {
                 topPos = nodeRect.bottom + 8;
             }
