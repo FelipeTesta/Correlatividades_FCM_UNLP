@@ -17,7 +17,11 @@
     <!-- Controls Bar -->
     <div class="controls-bar">
         <div class="filter-group">
-            <button class="filter-btn active" data-days="365" aria-pressed="true">365 días</button>
+            <div class="filter-days-wrap" id="daysWrap">
+                <input type="number" id="daysInput" class="filter-days-input" min="1" max="3650" value="90" aria-label="Cantidad de días" />
+                <span class="filter-days-suffix">dias</span>
+            </div>
+            <button class="filter-btn" data-days="60" aria-pressed="false">60 días</button>
             <button class="filter-btn" data-days="30" aria-pressed="false">30 días</button>
             <button class="filter-btn" data-days="7" aria-pressed="false">7 días</button>
         </div>
@@ -26,7 +30,7 @@
             <button class="group-btn" data-mode="chrono" aria-pressed="false">Cronológico</button>
         </div>
         <button id="refreshBtn">🔄 Actualizar</button>
-        <button id="markAllBtn">👁 todas lidas</button>
+        <button id="markAllBtn">👁 todas leídas</button>
         <button id="notifyBtn">🔔 Notificarme</button>
     </div>
 
@@ -50,6 +54,10 @@
         <p>Recibe un email cuando haya nuevas publicaciones en tus cátedras (chequeo diario a las 8am).</p>
         <input type="email" id="notifyEmail" placeholder="tu@email.com" />
         <div id="notifySubjects"></div>
+        <label class="notify-subject-label notify-home-label">
+          <input type="checkbox" id="notifyHomeCheckbox" class="notify-subject-checkbox" checked />
+          🏛 Avisos Generales de la Facultad
+        </label>
         <button id="notifySubscribeBtn">Suscribirme</button>
         <button id="notifyUnsubscribeBtn" class="unsubscribe-btn">
           <span class="unsubscribe-text">Remover mi email</span>

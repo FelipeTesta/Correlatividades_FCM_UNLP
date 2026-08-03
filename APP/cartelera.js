@@ -9,7 +9,13 @@ const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 const CARTELERA_FALLBACK_CATEDRAS = {
   "SEM91": ["Medicina Interna A", "Medicina Interna B", "Medicina Interna C", "Medicina Interna D", "Medicina Interna E", "Medicina Interna F"],
-  "P9001": ["Psiquiatría"]
+  "P9001": ["Psiquiatría"],
+  "HG001": ["Salud Pública"],
+  "C2001": ["Cirugía B"],
+  "BG008": ["Biología"],
+  "BG013": ["Biología"],
+  "EDS13": ["Educación para la Salud"],
+  "PINV": ["Seminarios de Investigación Científica"]
 };
 
 const LEIDAS_KEY = "carteleraLeidas";
@@ -17,16 +23,44 @@ const COLLAPSED_KEY = "carteleraCollapsed";
 const FILTER_DAYS_KEY = "carteleraFilterDays";
 const COLLAPSED_SUBJECTS_KEY = "carteleraCollapsedSubjects";
 
+const HOME_KEY = "__HOME__";
+const HOME_ID = "home";
+const HOME_LABEL = "Avisos Generales de la Facultad";
+
 // State
-let currentDays = 365;
+let currentDays = 90;
 try {
   var saved = parseInt(localStorage.getItem(FILTER_DAYS_KEY), 10);
-  if (saved === 365 || saved === 30 || saved === 7) currentDays = saved;
+  if (saved && saved > 0) currentDays = saved;
 } catch (e) {}
 let currentMode = "subject"; // "subject" or "chrono"
 let fetchedData = null; // { codigo: { catedraName, id, pubs: [...], error: null|string } }
 let catedrasData = {}; // loaded from finales.json { CODE: { "CatedraName": [...] } }
 var catedrasLoaded = false;
+
+// Centralized filter UI highlight (buttons + custom days wrapper)
+function syncFilterUI() {
+  var matched = false;
+  document.querySelectorAll(".filter-btn").forEach(function (b) {
+    var d = parseInt(b.getAttribute("data-days"), 10);
+    if (d === currentDays) {
+      b.classList.add("active");
+      b.setAttribute("aria-pressed", "true");
+      matched = true;
+    } else {
+      b.classList.remove("active");
+      b.setAttribute("aria-pressed", "false");
+    }
+  });
+  var wrap = document.getElementById("daysWrap");
+  if (wrap) {
+    if (matched) {
+      wrap.classList.remove("active");
+    } else {
+      wrap.classList.add("active");
+    }
+  }
+}
 
 // DOM refs
 const statusEl = document.getElementById("status");
@@ -44,10 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Attach event listeners
   document.querySelectorAll(".filter-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      document.querySelectorAll(".filter-btn").forEach(function (b) { b.classList.remove("active"); b.setAttribute("aria-pressed", "false"); });
-      btn.classList.add("active");
-      btn.setAttribute("aria-pressed", "true");
       currentDays = parseInt(btn.getAttribute("data-days"), 10);
+      var daysInput = document.getElementById("daysInput");
+      if (daysInput) { daysInput.value = currentDays; }
+      syncFilterUI();
       try { localStorage.setItem(FILTER_DAYS_KEY, String(currentDays)); } catch (e) {}
       if (fetchedData) {
         render();
@@ -55,17 +89,36 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Highlight the filter button matching persisted currentDays
-  document.querySelectorAll(".filter-btn").forEach(function (btn) {
-    var d = parseInt(btn.getAttribute("data-days"), 10);
-    if (d === currentDays) {
-      btn.classList.add("active");
-      btn.setAttribute("aria-pressed", "true");
-    } else {
-      btn.classList.remove("active");
-      btn.setAttribute("aria-pressed", "false");
+  // Custom days input: apply on change / Enter
+  var daysInput = document.getElementById("daysInput");
+  if (daysInput) {
+    function applyDaysInput() {
+      var val = parseInt(daysInput.value, 10);
+      if (val && val > 0) {
+        currentDays = val;
+        try { localStorage.setItem(FILTER_DAYS_KEY, String(currentDays)); } catch (e) {}
+        syncFilterUI();
+        if (fetchedData) {
+          render();
+        }
+      } else {
+        daysInput.value = currentDays;
+      }
     }
-  });
+    daysInput.addEventListener("change", applyDaysInput);
+    daysInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        applyDaysInput();
+        daysInput.blur();
+      }
+    });
+  }
+
+  // Sync days input with persisted currentDays
+  if (daysInput) { daysInput.value = currentDays; }
+
+  // Highlight the filter button matching persisted currentDays (or custom wrap)
+  syncFilterUI();
 
   document.querySelectorAll(".group-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
@@ -181,6 +234,8 @@ function loadCatedrasData() {
     })
     .catch(function () {
       setStatus("Error al cargar datos de materias. Intenta de nuevo.");
+      // Still fetch home publications even if finales.json fails (e.g. file:// CORS)
+      resolveAndFetch();
     });
 }
 
@@ -283,7 +338,7 @@ function desmarcarLeida(link) {
 
 function allVisibleRead() {
   if (!fetchedData) return false;
-  var cutoff = new Date(Date.now() - currentDays * 24 * 60 * 60 * 1000);
+  var cutoff = new Date(Date.now() - (currentDays + 3) * 24 * 60 * 60 * 1000);
   var leidas = getLeidas();
   var codes = Object.keys(fetchedData);
   for (var i = 0; i < codes.length; i++) {
@@ -302,13 +357,13 @@ function allVisibleRead() {
 function updateMarkAllBtn() {
   var markAllBtn = document.getElementById("markAllBtn");
   if (markAllBtn) {
-    markAllBtn.textContent = allVisibleRead() ? "👁 todas não lidas" : "👁 todas lidas";
+    markAllBtn.textContent = allVisibleRead() ? "👁 todas no leídas" : "👁 todas leídas";
   }
 }
 
 function marcarTodasLeidas() {
   if (!fetchedData) return;
-  var cutoff = new Date(Date.now() - currentDays * 24 * 60 * 60 * 1000);
+  var cutoff = new Date(Date.now() - (currentDays + 3) * 24 * 60 * 60 * 1000);
   var leidas = getLeidas();
   var codes = Object.keys(fetchedData);
 
@@ -452,6 +507,23 @@ function resolveCatedraId(name) {
   return null;
 }
 
+// Deduplicate catedra names that all resolve to the SAME cartelera ID
+// (e.g. "Ingles Médico-Regular" / "Ingles Médico-Libre" / "Ingles Médico" → one ID).
+// Returns array of { name, id } keeping the first name per distinct resolved ID.
+function dedupeCatedraNames(names) {
+  var byId = {};
+  var order = [];
+  (names || []).forEach(function (n) {
+    var rid = resolveCatedraId(n);
+    var key = (rid === null || rid === undefined) ? "__null_" + n : String(rid);
+    if (!byId[key]) {
+      byId[key] = { name: n, id: rid };
+      order.push(key);
+    }
+  });
+  return order.map(function (k) { return byId[k]; });
+}
+
 function resolveCatedraForCode(codigo) {
   // Check localStorage selected catedra first
   var seleccionadas = getCatedrasSeleccionadas();
@@ -489,19 +561,27 @@ function resolveCatedraForCode(codigo) {
     return { name: codigo, id: null, error: "No hay cátedras definidas" };
   }
 
-  if (catedraNames.length === 1) {
-    var name = catedraNames[0];
-    // Auto-select: save to localStorage
-    guardarCatedraSeleccionada(codigo, name);
-    var id = resolveCatedraId(name);
-    if (!id) {
-      return { name: name, id: null, error: "No hay ID de cartelera para '" + name + "'" };
+  // Deduplicate variant keys that resolve to the same cartelera ID
+  var dedup = dedupeCatedraNames(catedraNames);
+  var distinctIds = {};
+  var hasUnresolved = false;
+  dedup.forEach(function (d) {
+    if (d.id === null || d.id === undefined) {
+      hasUnresolved = true;
+    } else {
+      distinctIds[d.id] = true;
     }
-    return { name: name, id: id, error: null };
+  });
+
+  // All variants map to a single cartelera ID → auto-select (no selector)
+  if (!hasUnresolved && Object.keys(distinctIds).length === 1) {
+    var auto = dedup[0];
+    guardarCatedraSeleccionada(codigo, auto.name);
+    return { name: auto.name, id: auto.id, error: null };
   }
 
-  // Multiple catedras, needs user selection
-  return { name: codigo, id: null, error: null, needsSelection: true, options: catedraNames };
+  // Multiple distinct cartelera IDs → needs user selection (deduped options)
+  return { name: codigo, id: null, error: null, needsSelection: true, options: dedup.map(function (d) { return d.name; }) };
 }
 
 // =============================
@@ -511,7 +591,7 @@ function resolveCatedraForCode(codigo) {
 function getCatedraOptionsForCode(code) {
   var data = catedrasData[code];
   if (data) {
-    return Object.keys(data);
+    return dedupeCatedraNames(Object.keys(data)).map(function (d) { return d.name; });
   }
   var fallback = CARTELERA_FALLBACK_CATEDRAS[code];
   if (fallback && fallback.length > 0) {
@@ -654,6 +734,7 @@ function tagColor(tag) {
     "Exámenes": "#ef4444",
     "Avisos": "#3b82f6",
     "Notas": "#22c55e",
+    "General": "#a855f7",
     "Otros": "#888"
   };
   return map[tag] || "#888";
@@ -664,6 +745,7 @@ function tagClassName(tag) {
     "Exámenes": "tag-examenes",
     "Avisos": "tag-avisos",
     "Notas": "tag-notas",
+    "General": "tag-general",
     "Otros": "tag-otros"
   };
   return map[tag] || "tag-otros";
@@ -744,6 +826,56 @@ function parseCatedraHtml(html) {
   return results;
 }
 
+function parseHomeHtml(html) {
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(html, "text/html");
+  // Home faculty publications use .card.card-outline-success (NOT .ribbon-wrapper.card)
+  var cards = doc.querySelectorAll(".card.card-outline-success");
+  var results = [];
+
+  cards.forEach(function (card) {
+    // Date inside .card-header h5
+    var dateStr = null;
+    var headerEl = card.querySelector(".card-header");
+    if (headerEl) dateStr = headerEl.textContent.trim();
+    if (dateStr && !dateStr.match(/\d{2}\/\d{2}\/\d{4}/)) dateStr = null;
+    if (!dateStr) return; // skip if no date
+    var date = parseDateDDMMYYYY(dateStr);
+    if (!date) return;
+
+    // Title and link (/noticia/N)
+    var titleEl = card.querySelector(".card-title a");
+    var title = titleEl ? titleEl.textContent.trim() : "Sin título";
+    var link = titleEl ? titleEl.getAttribute("href") : null;
+    var fullLink = link ? (link.startsWith("http") ? link : CARTELERA_BASE + link) : null;
+
+    // Subtitle
+    var subtitleEl = card.querySelector(".card-subtitle");
+    var subtitle = subtitleEl ? (subtitleEl.textContent.trim() || null) : null;
+    if (subtitle === "-") subtitle = null;
+
+    // Author (department)
+    var professor = null;
+    var profEl = card.querySelector("p.card-text.text-right");
+    if (profEl) {
+      var txt = profEl.textContent.trim();
+      if (txt && txt.length > 0) professor = txt;
+    }
+
+    results.push({
+      tag: "General",
+      date: date,
+      dateStr: formatDate(date),
+      title: title,
+      link: fullLink,
+      subtitle: subtitle,
+      professor: professor
+    });
+  });
+
+  return results;
+}
+
 // =============================
 // MAIN ORCHESTRATION
 // =============================
@@ -763,9 +895,7 @@ function resolveAndFetch() {
   if (codes.length === 0) {
     selectorEl.style.display = "none";
     setStatus("");
-    showEmpty("No hay materias con 'Cursando' activado ni materias 'Regularizadas'. Ve al Modo Árbol y activa el toggle Cursando o marca materias como Regularizadas.");
-    fetchedData = null;
-    return;
+    // No active subjects — still fetch and show general faculty publications (home)
   }
 
   // Resolve each code
@@ -784,6 +914,9 @@ function resolveAndFetch() {
     }
   });
 
+  // Always include home (general faculty publications)
+  resolved.push({ codigo: HOME_KEY, name: HOME_LABEL, id: HOME_ID, source: "home" });
+
   // Show selector if needed
   if (pending.length > 0) {
     renderCatedraSelector(pending);
@@ -791,18 +924,7 @@ function resolveAndFetch() {
     selectorEl.style.display = "none";
   }
 
-  if (resolved.length === 0) {
-    setStatus("");
-    if (pending.length > 0) {
-      showEmpty("Selecciona las cátedras arriba para ver sus publicaciones.");
-    } else {
-      showEmpty("No se pudieron resolver cátedras para las materias seleccionadas.");
-    }
-    fetchedData = null;
-    return;
-  }
-
-  // Show spinner
+  // Spinner
   var total = resolved.length;
   setSpinner("Obteniendo publicaciones... (0/" + total + ")");
 
@@ -810,9 +932,14 @@ function resolveAndFetch() {
   var settled = 0;
 
   var promises = resolved.map(function (item) {
-    return fetchCatedra(item.id)
-      .then(function (html) {
-        var pubs = parseCatedraHtml(html);
+    var fetchPromise;
+    if (item.codigo === HOME_KEY) {
+      fetchPromise = fetchCatedra(HOME_ID).then(function (html) { return parseHomeHtml(html); });
+    } else {
+      fetchPromise = fetchCatedra(item.id).then(function (html) { return parseCatedraHtml(html); });
+    }
+    return fetchPromise
+      .then(function (pubs) {
         fetchedData[item.codigo] = {
           catedraName: item.name,
           id: item.id,
@@ -864,7 +991,7 @@ function render() {
     return;
   }
 
-  var cutoff = new Date(Date.now() - currentDays * 24 * 60 * 60 * 1000);
+  var cutoff = new Date(Date.now() - (currentDays + 3) * 24 * 60 * 60 * 1000);
   var codes = Object.keys(fetchedData);
 
   // Build filtered pubs per code
@@ -1023,10 +1150,13 @@ function renderSubjectMode(subjectData) {
         section.appendChild(emptyNote);
       }
 
+      var grid = document.createElement("div");
+      grid.className = "cards-grid";
       data.pubs.forEach(function (pub) {
         var card = renderCard(pub, false);
-        section.appendChild(card);
+        grid.appendChild(card);
       });
+      section.appendChild(grid);
 
       group.appendChild(section);
     });
@@ -1034,6 +1164,49 @@ function renderSubjectMode(subjectData) {
     resultsEl.appendChild(group);
   }
 
+  // Render general faculty publications (home) section first
+  function renderHomeGroup() {
+    var home = subjectData[HOME_KEY];
+    if (!home) return;
+    if (home.pubs.length === 0 && !home.error) return;
+
+    var group = document.createElement("div");
+    group.className = "source-group";
+
+    var header = document.createElement("h2");
+    header.className = "source-header source-header-home";
+    if (isCollapsed("home")) header.classList.add("collapsed");
+    header.style.cursor = "pointer";
+    header.setAttribute("role", "button");
+    header.setAttribute("tabindex", "0");
+    var indicator = isCollapsed("home") ? "▸ " : "▾ ";
+    header.textContent = indicator + HOME_LABEL + " (" + home.pubs.length + ")";
+    header.addEventListener("click", function () { toggleCollapse("home"); });
+    header.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); header.click(); }
+    });
+    group.appendChild(header);
+
+    if (!isCollapsed("home")) {
+      if (home.error) {
+        var errNote = document.createElement("p");
+        errNote.className = "subject-error";
+        errNote.textContent = "⚠ " + home.error;
+        group.appendChild(errNote);
+      }
+      var grid = document.createElement("div");
+      grid.className = "cards-grid";
+      home.pubs.forEach(function (pub) {
+        var card = renderCard(pub, false);
+        grid.appendChild(card);
+      });
+      group.appendChild(grid);
+    }
+
+    resultsEl.appendChild(group);
+  }
+
+  renderHomeGroup();
   renderSourceGroup(cursandoCodes, "Cursando", "source-header-cursando");
   renderSourceGroup(regularCodes, "Regularizada", "source-header-regular");
 }
@@ -1047,9 +1220,9 @@ function renderChronoMode(subjectData) {
     data.pubs.forEach(function (pub) {
       allPubs.push({
         pub: pub,
-        catedraName: data.catedraName || code,
+        catedraName: data.catedraName || (code === HOME_KEY ? HOME_LABEL : code),
         source: data.source,
-        subjectName: getSubjectName(code)
+        subjectName: code === HOME_KEY ? HOME_LABEL : getSubjectName(code)
       });
     });
   });
@@ -1081,15 +1254,18 @@ function renderChronoMode(subjectData) {
     header.textContent = dateKey;
     group.appendChild(header);
 
+    var grid = document.createElement("div");
+    grid.className = "cards-grid";
     groups[dateKey].forEach(function (item) {
       var card = renderCard(item.pub, true, item.catedraName, item.subjectName);
       // Add source badge (Cursando / Regular)
       var srcBadge = document.createElement("span");
-      srcBadge.className = "pub-source " + (item.source === "cursando" ? "pub-source-cursando" : "pub-source-regular");
-      srcBadge.textContent = item.source === "cursando" ? "Cursando" : "Regular";
+      srcBadge.className = "pub-source " + (item.source === "cursando" ? "pub-source-cursando" : (item.source === "home" ? "pub-source-home" : "pub-source-regular"));
+      srcBadge.textContent = item.source === "cursando" ? "Cursando" : (item.source === "home" ? "General" : "Regular");
       card.insertBefore(srcBadge, card.firstChild);
-      group.appendChild(card);
+      grid.appendChild(card);
     });
+    group.appendChild(grid);
 
     resultsEl.appendChild(group);
   });
@@ -1319,8 +1495,12 @@ function handleNotifySubscribe() {
     names[cb.value] = subjName;
   });
 
-  if (codes.length === 0) {
-    alert("Selecciona al menos una cátedra.");
+  // General faculty publications opt-in (home)
+  var homeCheckbox = document.getElementById("notifyHomeCheckbox");
+  var home = !!(homeCheckbox && homeCheckbox.checked);
+
+  if (codes.length === 0 && !home) {
+    alert("Selecciona al menos una cátedra o los avisos generales.");
     return;
   }
 
@@ -1339,7 +1519,7 @@ function handleNotifySubscribe() {
   fetch(CARTELERA_NOTIFY_ENDPOINT + "/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: email, codes: codes, names: names }),
+    body: JSON.stringify({ email: email, codes: codes, names: names, home: home }),
     signal: controller.signal
   })
     .then(function (r) {

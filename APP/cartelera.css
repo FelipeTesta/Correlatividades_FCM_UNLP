@@ -96,7 +96,8 @@ h1 {
 
 .filter-btn,
 .group-btn,
-#refreshBtn {
+#refreshBtn,
+.filter-days-input {
     background-color: #1a1a1a;
     border: 1px solid #333;
     color: #999;
@@ -108,6 +109,38 @@ h1 {
     font-family: inherit;
 }
 
+.filter-days-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding-right: 10px;
+}
+
+.filter-days-input {
+    width: 70px;
+    text-align: center;
+    color: #e5e5e5;
+    border: none;
+    background: transparent;
+    padding: 6px 0;
+}
+
+.filter-days-input:focus {
+    outline: 2px solid #22d3ee;
+    outline-offset: 1px;
+    border-color: #22d3ee;
+}
+
+.filter-days-suffix {
+    font-size: 13px;
+    color: #e5e5e5;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 .filter-btn:hover:not(.active),
 .group-btn:hover:not(.active),
 #refreshBtn:hover {
@@ -116,10 +149,16 @@ h1 {
 }
 
 .filter-btn.active,
-.group-btn.active {
+.group-btn.active,
+.filter-days-wrap.active {
     background-color: #22d3ee;
     color: #000;
     border-color: #22d3ee;
+}
+
+.filter-days-wrap.active .filter-days-input {
+    color: #000;
+    background: transparent;
 }
 
 #refreshBtn {
@@ -300,6 +339,19 @@ h1 {
     color: #888;
 }
 
+.pub-tag.tag-general {
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+}
+
+.notify-home-label {
+    border-top: 1px solid #2a2a2a;
+    margin-top: 8px;
+    padding-top: 8px;
+    font-weight: 600;
+    color: #c084fc;
+}
+
 .pub-date {
     font-size: 12px;
     color: #888;
@@ -408,7 +460,9 @@ h1 {
 
     .filter-btn,
     .group-btn,
-    #refreshBtn {
+    #refreshBtn,
+    .filter-days-wrap,
+    .filter-days-input {
         font-size: 12px;
         padding: 10px 14px;
         flex: 1;
@@ -474,6 +528,12 @@ h1 {
   border-left-color: #f97316;
 }
 
+.source-header-home {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.08);
+  border-left-color: #a855f7;
+}
+
 /* Source badge in chrono mode cards */
 .pub-source {
   display: inline-block;
@@ -494,6 +554,11 @@ h1 {
 .pub-source-regular {
   color: #f97316;
   background: rgba(249, 115, 22, 0.15);
+}
+
+.pub-source-home {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.15);
 }
 
 /* Read (collapsed) publication cards */
@@ -829,4 +894,30 @@ h1 {
     font-size: 13px;
     min-height: 44px;
   }
+}
+
+/* ============================= */
+/* CARDS GRID LAYOUT             */
+/* ============================= */
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    align-items: start;
+    margin-top: 8px;
+}
+
+/* Override card margin inside grid */
+.cards-grid .pub-card {
+    margin: 0;
+    height: 100%;
+}
+
+/* Mobile responsive override */
+@media (max-width: 600px) {
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
 }

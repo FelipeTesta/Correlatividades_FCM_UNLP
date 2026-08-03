@@ -61,9 +61,10 @@ digraph Cartelera {
     resolve_start [label="For each active subject code:\ncursando[] + regularizada[]\n(precedence: cursando > regular)", fillcolor="#1a1a1a", color="#facc15", shape=box];
     resolve_catedra [label="Lookup:\ncatedrasSeleccionadas[CODE]\n→ catedra name", fillcolor="#1a1a1a", color="#666", shape=box];
     resolve_finales [label="Match catedra name in\nfinales.json → cartelera ID", fillcolor="#1a1a1a", color="#666", shape=box];
-    resolve_fallback [label="Fallback chain:\nCARTELERA_FALLBACK_CATEDRAS\nfor SEM91 (6 opt) & P9001", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    resolve_fallback [label="Fallback chain:\nCARTELERA_FALLBACK_CATEDRAS\n(HG001, C2001, BG008/BG013,\nEDS13, PINV + SEM91, P9001)", fillcolor="#1a1a1a", color="#f97316", shape=box];
     resolve_ids [label="Get cartelera ID from\nCARTELERA_IDS[subjectCode]", fillcolor="#1a1a1a", color="#22c55e", shape=box];
     resolve_multi [label="Multiple catedras?\n→ Show selector dropdown\n(name via getSubjectName())", fillcolor="#1a1a1a", color="#facc15", shape=diamond];
+    resolve_home [label="ALWAYS add home publications\nHOME_KEY=__HOME__ (id='home')\n'🏛 Avisos Generales de la Facultad'\nshown even with no active subjects", fillcolor="#1a1a1a", color="#a855f7", shape=box];
   }
 
   // ── Fetch Subgraph ──
@@ -92,7 +93,7 @@ digraph Cartelera {
     fillcolor="#0a0a0a";
 
     dom_parse [label="DOMParser on HTML text\n→ document", fillcolor="#1a1a1a", color="#666", shape=box];
-    extract_cards [label="Query .ribbon-wrapper.card\n→ extract each card", fillcolor="#1a1a1a", color="#666", shape=box];
+    extract_cards [label="Query .ribbon-wrapper.card\n(catedra) OR\n.card.card-outline-success (home)\n→ extract each card", fillcolor="#1a1a1a", color="#666", shape=box];
     extract_fields [label="Extract fields:\n- title (h3.media-heading)\n- date (.published)\n- description (.ribbon-description)\n- professor (.pub-professor)\n- image (img[src])\n- modificada (.pub-modificada)", fillcolor="#1a1a1a", color="#666", shape=box];
     classify_type [label="Classify publication type:\nAvisos / Exámenes / Notas / Otros\n(keyword matching in title/desc)", fillcolor="#1a1a1a", color="#facc15", shape=box];
   }
@@ -107,9 +108,10 @@ digraph Cartelera {
     fillcolor="#0a0a0a";
 
     check_errors [label="Early exit:\nanyErrorOverall?\n→ Show error message\n(not generic empty)", fillcolor="#1a1a1a", color="#ff4444", shape=diamond];
-    apply_filters [label="Apply date filter:\ncarteleraFilterDays\n365d / 30d / 7d\n(persisted in localStorage)", fillcolor="#1a1a1a", color="#666", shape=box];
-    mode_materia [label="Mode: Por materia (default)\nGroup by subject\nheaders: cyan cursando,\norange regularizada\nPer-subject collapse ▾/▸\n(carteleraCollapsedSubjects)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
-    mode_crono [label="Mode: Cronológico\nFlat timeline by date\nBadges: subject name +\norigin (Cursando/Regularizada)", fillcolor="#1a1a1a", color="#f97316", shape=box];
+    apply_filters [label="Apply date filter:\ncarteleraFilterDays\n365d / 30d / 7d\ncutoff: currentDays+3\n(persisted in localStorage)", fillcolor="#1a1a1a", color="#666", shape=box];
+    cards_grid [label="CSS Grid Layout\n.cards-grid wrapper\n3 render paths:\nrenderSourceGroup\nrenderHomeGroup\nrenderChronoMode\nauto-fill desktop, 1fr mobile", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+    mode_materia [label="Mode: Por materia (default)\nGroup by subject\nheaders: cyan cursando,\norange regularizada\npurple 🏛 home on top\nPer-subject collapse ▾/▸\n(carteleraCollapsedSubjects)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    mode_crono [label="Mode: Cronológico\nFlat timeline by date\nBadges: subject name +\norigin (Cursando/Regularizada)\nGeneral badge for home", fillcolor="#1a1a1a", color="#f97316", shape=box];
     apply_readstate [label="Apply read state:\ncarteleraLeidas[pubId]\n→ collapse read cards\n→ dimmify", fillcolor="#1a1a1a", color="#666", shape=box];
     render_output [label="Render cards to DOM\n.spinner hidden\n.publications-container filled", fillcolor="#1a1a1a", color="#22c55e", shape=box];
   }
@@ -123,7 +125,7 @@ digraph Cartelera {
     style=dashed;
 
     ui_selector [label="Cátedra Selector\n(dropdown per subject)\nShows subject NAME", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
-    ui_filters [label="Filter Buttons\n365d | 30d | 7d\npersist in localStorage", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+    ui_filters [label="Filter buttons 60/30/7d\n+ custom #daysInput (default 90d)\nsyncFilterUI() highlights active\n(preset button OR cyan wrap)", fillcolor="#1a1a1a", color="#22c55e", shape=box];
     ui_mode [label="Mode Toggle\nPor materia | Cronológico", fillcolor="#1a1a1a", color="#f97316", shape=box];
     ui_refresh [label="Refresh Button\n(catedrasLoaded guard\n→ blocked until finales.json)", fillcolor="#1a1a1a", color="#666", shape=box];
     ui_actions [label="👁 lido (per pub)\n👁 todas lidas (toggle)\nCollapsible sections\n(h2 cursando/regularizada)", fillcolor="#1a1a1a", color="#facc15", shape=box];
@@ -186,10 +188,14 @@ digraph Cartelera {
   // Render pipeline
   resolve_all [label="resolveAndFetch()\nMain orchestrator\ncombine cursando+regularizada\nresolve → fetch → parse", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
   classify_type -> resolve_all;
+  resolve_home -> resolve_all [label="always included", fontcolor="#a855f7", fontsize=9];
+  resolve_ids -> resolve_home;
+  resolve_multi -> resolve_home;
   resolve_all -> check_errors;
   check_errors -> apply_filters [label="no errors", fontcolor="#22c55e", fontsize=9];
-  apply_filters -> mode_materia;
-  apply_filters -> mode_crono;
+  apply_filters -> cards_grid;
+  cards_grid -> mode_materia;
+  cards_grid -> mode_crono;
   mode_materia -> apply_readstate;
   mode_crono -> apply_readstate;
   apply_readstate -> render_output;
@@ -227,8 +233,9 @@ digraph Cartelera {
     secret_resend [label="Secret: RESEND_API_KEY\n(Resend email API)", fillcolor="#1a1a1a", color="#ff4444", shape=cylinder];
     cron_trigger [label="Cron Trigger: 0 8 * * *\n(1x/day 8am)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
 
-    helper_parse [label="parseCatedraHtml(html)\nregex-based (NOT DOMParser)\nsplit 'ribbon-wrapper.card'\nextract: title, date, link\n(<a> href, handles absolute URLs)", fillcolor="#1a1a1a", color="#666", shape=box];
-    helper_fetch [label="fetchCatedraPubs(id)\nfetch + parseCatedraHtml\n→ [{title, date, link}]", fillcolor="#1a1a1a", color="#666", shape=box];
+    helper_parse [label="parseCatedraHtml(html)\nregex-based (NOT DOMParser)\nsplit 'ribbon-wrapper.card'\nextract: title, date, link\n(<a> href, handles absolute URLs)\n+ parseHomeHtml(html)\nsplit 'card.card-outline-success'\nhome faculty pubs (tag=General)", fillcolor="#1a1a1a", color="#666", shape=box];
+    helper_fetch [label="fetchCatedraPubs(id)\nfetch + parseCatedraHtml\n→ [{title, date, link}]\n+ fetchHomePubs()\nfetch root / + parseHomeHtml", fillcolor="#1a1a1a", color="#666", shape=box];
+    helper_home_email [label="buildHomeEmailSection(homePubs)\nHTML div for general pubs\n🏛 title, full links\n\nbuildWelcomeHtml(catedraPubs,names,homePubs)\n+ home section after intro", fillcolor="#2d1028", color="#a855f7", shape=box];
     helper_send [label="sendEmail(to, subject, html, env)\nvia Resend API\nshows subject names (not ID)\nclickable pub links\nunsubscribe link footer\nsecurity: escapeHtml on IDs", fillcolor="#1a1a1a", color="#666", shape=box];
     helper_welcome [label="buildWelcomeHtml(catedraPubs, names)\nlatest 5 pubs per catedra\nsubject names + clickable links", fillcolor="#1a1a1a", color="#22c55e", shape=box];
   }
@@ -242,10 +249,10 @@ digraph Cartelera {
     style=filled;
     fillcolor="#0a0a0a";
 
-    route_subscribe [label="POST /subscribe\naccept: {email, codes, names}\nvalidate email (regex + lowercase)\nOVERWRITE subs KV (not merge)\nPromise.allSettled parallel fetch\nstore full pubs in snapshots KV\nsend welcome email (latest 5/catedra)\nreturn {ok, welcomeEmailSent}\nsecurity: escapeHtml, CORS headers", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    route_subscribe [label="POST /subscribe\naccept: {email, codes, names, home}\nvalidate email (regex + lowercase)\nOVERWRITE subs KV (not merge)\n{code, names, home: bool}\nPromise.allSettled parallel fetch\nstore full pubs in snapshots KV\n+ fetchHomePubs + snapshot 'home'\nwelcome includes home pubs (opt-in)\nreturn {ok, welcomeEmailSent}\nsecurity: escapeHtml, CORS headers", fillcolor="#1a1a1a", color="#a855f7", shape=box];
     route_unsubscribe [label="POST /unsubscribe\naccept: {email}\ndelete KV key by email", fillcolor="#1a1a1a", color="#ff4444", shape=box];
     route_health [label="GET /health\nreturn {ok, cron}", fillcolor="#1a1a1a", color="#22c55e", shape=box];
-    route_proxy [label="GET ?id=\nexisting proxy to\ncartelera.med.unlp.edu.ar\n(unchanged)", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
+    route_proxy [label="GET ?id=\nproxy to cartelera.med.unlp.edu.ar\n?id=home → fetch racine /\n(else /catedra/ID)\n?tag= optional /etiqueta", fillcolor="#1a1a1a", color="#a855f7", shape=box];
     route_cors [label="OPTIONS\nCORS preflight handler", fillcolor="#1a1a1a", color="#666", shape=box];
   }
 
@@ -259,8 +266,9 @@ digraph Cartelera {
     fillcolor="#0a0a0a";
 
     cron_list_subs [label="List all CARTELERA_SUBS keys\n(max 1000, paginated)", fillcolor="#1a1a1a", color="#666", shape=box];
-    cron_parse [label="Parse each subscription\narray OR {codes, names}\n(backward-compat)", fillcolor="#1a1a1a", color="#facc15", shape=diamond];
-    cron_build_map [label="Build catedra→emails[] map\nfor efficient iteration", fillcolor="#1a1a1a", color="#666", shape=box];
+    cron_parse [label="Parse each subscription\narray OR {codes, names, home}\n(backward-compat)", fillcolor="#1a1a1a", color="#facc15", shape=diamond];
+    cron_build_map [label="Build catedra→emails[] map\n+ homeEmails[] (home opt-in)", fillcolor="#1a1a1a", color="#666", shape=box];
+    cron_home [label="Home pubs (1x, not per-catedra):\nfetchHomePubs()\ndiff vs snapshot 'home'\nsend to homeEmails[] subscribers\nsubject: 'Nueva publicación general…'", fillcolor="#2d1028", color="#a855f7", shape=diamond];
     cron_diff [label="For each catedra with subs:\nfetchCatedraPubs(id)\ndiff vs CARTELERA_SNAPSHOTS\nPromise.allSettled parallel fetch", fillcolor="#1a1a1a", color="#a855f7", shape=diamond];
     cron_send [label="If new pubs:\nsend email to ALL subscribers\nper-email try/catch\n(one bad email doesn't break batch)\nescapeHtml on IDs in HTML", fillcolor="#1a1a1a", color="#ff4444", shape=box];
     cron_update [label="Update KV snapshot\nONLY if email sent OK\n(failed send → retry next cron)", fillcolor="#003803", color="#22c55e", shape=box];
@@ -277,7 +285,8 @@ digraph Cartelera {
 
     notify_button [label="🔔 Notificarme button\nin controls-bar", fillcolor="#1a1a1a", color="#a855f7", shape=box];
     notify_modal [label="Notification Modal:\n- Email input field\n- #notifySubjects checkboxes\n  (subject name via getSubjectName\n   value=catedraID\n   dataset.subjectName stored)\n- Suscribirme button\n- ✕ Close\n- Remover mi email\n  (hold-to-confirm 1s\n   CSS progress bar)\ncatedrasLoaded guard\n(blocked until finales.json)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
-    notify_subscribe [label="handleNotifySubscribe()\nPOST /subscribe\nAbortController 15s timeout\ntouchInProgress guard\n(prevents double-fire)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    notify_subscribe [label="handleNotifySubscribe()\nPOST /subscribe\n{email, codes, names, home}\nAbortController 15s timeout\ntouchInProgress guard\n(prevents double-fire)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    home_optin [label="🏛 home opt-in checkbox\n#notifyHomeCheckbox (static)\ndefault checked", fillcolor="#2d1028", color="#a855f7", shape=box];
     notify_unsubscribe [label="handleNotifyUnsubscribe()\nPOST /unsubscribe\nclear localStorage\ncarteleraNotifyEmail", fillcolor="#1a1a1a", color="#ff4444", shape=box];
     notify_ls [label="localStorage\ncarteleraNotifyEmail\nstring (email address)", fillcolor="#1a1a1a", color="#a855f7", shape=cylinder];
   }
@@ -293,8 +302,9 @@ digraph Cartelera {
   route_subscribe -> kv_subs [style=dashed, color="#a855f7", arrowhead=open, label="overwrite", fontcolor="#888", fontsize=9];
   route_subscribe -> kv_snapshots [style=dashed, color="#a855f7", arrowhead=open, label="store full pubs", fontcolor="#888", fontsize=9];
   route_subscribe -> helper_fetch [style=dashed, color="#a855f7", arrowhead=open, label="parallel fetch", fontcolor="#888", fontsize=9];
-  route_subscribe -> helper_welcome [style=dashed, color="#22c55e", arrowhead=open, label="build email", fontcolor="#888", fontsize=9];
+  route_subscribe -> helper_welcome [style=dashed, color="#22c55e", arrowhead=open, label="build email (+home)", fontcolor="#888", fontsize=9];
   route_subscribe -> helper_send [style=dashed, color="#ff4444", arrowhead=open, label="send welcome", fontcolor="#888", fontsize=9];
+  route_subscribe -> helper_home_email [style=dashed, color="#a855f7", arrowhead=open, label="home section (opt-in)", fontcolor="#888", fontsize=9];
   route_unsubscribe -> kv_subs [style=dashed, color="#ff4444", arrowhead=open, label="delete key", fontcolor="#888", fontsize=9];
   route_proxy -> fetch_proxy [style=dashed, color="#22d3ee", arrowhead=open, label="same worker", fontcolor="#888", fontsize=9, constraint=false];
 
@@ -309,6 +319,10 @@ digraph Cartelera {
   cron_send -> helper_send [style=dashed, color="#ff4444", arrowhead=open, label="send email", fontcolor="#888", fontsize=9];
   cron_send -> cron_update [label="email sent OK", fontcolor="#22c55e", fontsize=9];
   cron_update -> kv_snapshots [style=dashed, color="#22c55e", arrowhead=open, label="update snapshot", fontcolor="#888", fontsize=9];
+  cron_build_map -> cron_home [label="if homeEmails[]>0", fontcolor="#a855f7", fontsize=9];
+  cron_home -> helper_fetch [style=dashed, color="#a855f7", arrowhead=open, label="fetchHomePubs", fontcolor="#888", fontsize=9];
+  cron_home -> kv_snapshots [style=dashed, color="#a855f7", arrowhead=open, label="get snapshot 'home'", fontcolor="#888", fontsize=9];
+  cron_home -> cron_send [label="new home pubs found", fontcolor="#a855f7", fontsize=9];
 
   // Client UI edges
   entry -> notify_button [style=dashed, color="#a855f7", arrowhead=open, label="contains 🔔", fontcolor="#888", fontsize=9];
@@ -316,6 +330,8 @@ digraph Cartelera {
   notify_subscribe -> notify_modal [style=dashed, color="#a855f7", arrowhead=open, label="email input +\ncheckboxes read", fontcolor="#888", fontsize=9, dir=back];
   notify_modal -> resolve_start [style=dashed, color="#a855f7", arrowhead=open, label="read active subjects", fontcolor="#888", fontsize=9];
   notify_modal -> resolve_multi [style=dashed, color="#a855f7", arrowhead=open, label="read catedra options", fontcolor="#888", fontsize=9];
+  notify_modal -> home_optin [label="🏛 checkbox opt-in\n'Avisos Generales'", fontcolor="#a855f7", fontsize=9];
+  home_optin -> route_subscribe [style=dashed, color="#a855f7", arrowhead=open, label="home: true", fontcolor="#888", fontsize=9];
   notify_modal -> notify_subscribe [label="Suscribirme click", fontcolor="#888", fontsize=9];
   notify_modal -> notify_unsubscribe [label="Remover (hold 1s)", fontcolor="#888", fontsize=9];
   notify_subscribe -> route_subscribe [style=dashed, color="#a855f7", arrowhead=open, label="POST /subscribe", fontcolor="#888", fontsize=9];
