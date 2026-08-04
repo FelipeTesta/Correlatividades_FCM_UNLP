@@ -42,6 +42,7 @@ v0.08 — Julho 2026
 - **03/08/2026 (2):** Sincronización materias↔cátedras: fallbacks añadidos (HG001, C2001, BG008, BG013, EDS13, PINV) y mensaje de error restaurado a "No hay datos de cátedras para este código" (PFOFO/TASPO sin cátedra).
 - **03/08/2026 (3):** Filtros cartelera: intervalo por defecto 365→90 días, campo personalizado con sufijo "dias" y resaltado cian cuando se usa un intervalo personalizado (syncFilterUI).
 - **03/08/2026 (4):** Cartelera cutoff+3 (intervalo real = mostrado+3 días, invisible) y diseño de cards en grilla CSS (auto-fill, mejor uso de espacio en desktop)
+- **03/08/2026 (5):** Sistema de auto-reload: version.json con hash de versión + script inline en las 3 páginas que recarga silenciosamente cuando detecta nueva versión
 - **14/07/2026:** Corrección de bug: FAB mobile (touch-and-hold) aparecía fuera de la pantalla en Modo Árbol — medición de dimensión durante animación causaba overflow; corregido con offsetWidth/offsetHeight + clamp + container flex-wrap
 - **07/07/2026:** Botón "¿Cómo usar?" en Modo Árbol + leyenda actualizada con 🟡 + optimizaciones mobile UI/UX (touch-action, color-scheme, reduced-motion, modal responsive)
 - **05/07/2026:** Corrección plan estudios UNLP (RM 578/25) — DL001, TX001, P9002 movidas a 5° año

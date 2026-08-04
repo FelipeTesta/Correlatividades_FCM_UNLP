@@ -148,5 +148,23 @@
 <script src="APP/materias.js"></script>
 <script src="app.js"></script>
 
+<script>
+(function(){
+  var KEY = 'lastVersion';
+  fetch('version.json?' + Date.now())
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      if (!data || !data.version) return;
+      var last = null;
+      try { last = localStorage.getItem(KEY); } catch(e) {}
+      if (last !== data.version) {
+        try { localStorage.setItem(KEY, data.version); } catch(e) {}
+        location.reload(true);
+      }
+    })
+    .catch(function(){});
+})();
+</script>
+
 </body>
 </html>
