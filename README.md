@@ -38,11 +38,14 @@ v0.08 — Julho 2026
 
 ## Registro de cambios
 
-- **03/08/2026:** Cartelera: publicaciones generales de la Facultad (home) en la página (sección "🏛 Avisos Generales de la Facultad") y en notificaciones de email (opt-in separado en el modal)
+- **04/08/2026:** Corregido PG001 (Psicología Médica, año 2): paraCursar vacío → requiere Anatomía regularizada. Añadido aviso de privacidad (banner fijo) en las 3 páginas HTML + CSS. (home) en la página (sección "🏛 Avisos Generales de la Facultad") y en notificaciones de email (opt-in separado en el modal)
 - **03/08/2026 (2):** Sincronización materias↔cátedras: fallbacks añadidos (HG001, C2001, BG008, BG013, EDS13, PINV) y mensaje de error restaurado a "No hay datos de cátedras para este código" (PFOFO/TASPO sin cátedra).
 - **03/08/2026 (3):** Filtros cartelera: intervalo por defecto 365→90 días, campo personalizado con sufijo "dias" y resaltado cian cuando se usa un intervalo personalizado (syncFilterUI).
 - **03/08/2026 (4):** Cartelera cutoff+3 (intervalo real = mostrado+3 días, invisible) y diseño de cards en grilla CSS (auto-fill, mejor uso de espacio en desktop)
 - **03/08/2026 (5):** Sistema de auto-reload: version.json con hash de versión + script inline en las 3 páginas que recarga silenciosamente cuando detecta nueva versión
+- **04/08/2026:** Corregido PG001 (Psicología Médica, año 2): paraCursar vacío → requiere Anatomía regularizada. Añadido aviso de privacidad (banner fijo) en las 3 páginas HTML + CSS.
+- **04/08/2026 (6):** Fix: PG001 (Psicología Médica) ahora requiere Anatomía regularizada para cursar + Aviso de privacidad en todas las páginas
+- **04/08/2026 (7):** FAB mobile: posicionamiento horizontal simplificado (CSS left/right en vez de JS pixel math). Help modal: reescrito a single-page, removida paginación y "Últimas Actualizaciones".
 - **14/07/2026:** Corrección de bug: FAB mobile (touch-and-hold) aparecía fuera de la pantalla en Modo Árbol — medición de dimensión durante animación causaba overflow; corregido con offsetWidth/offsetHeight + clamp + container flex-wrap
 - **07/07/2026:** Botón "¿Cómo usar?" en Modo Árbol + leyenda actualizada con 🟡 + optimizaciones mobile UI/UX (touch-action, color-scheme, reduced-motion, modal responsive)
 - **05/07/2026:** Corrección plan estudios UNLP (RM 578/25) — DL001, TX001, P9002 movidas a 5° año

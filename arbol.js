@@ -1225,12 +1225,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fabContainer = document.createElement('div');
         fabContainer.className = 'mobile-fab-container';
 
-        // Position above the node, centered
-        var fabX = nodeRect.left + nodeRect.width / 2;
-        var fabY = nodeRect.top - 8; // 8px above the node
-        fabContainer.style.left = fabX + 'px';
-        fabContainer.style.top = '0'; // will be set after measuring
-        fabContainer.style.bottom = 'auto';
+        // CSS handles left/right positioning via left:8px + right:8px
         document.body.appendChild(fabOverlay);
         document.body.appendChild(fabContainer);
 
@@ -1293,26 +1288,9 @@ document.addEventListener('DOMContentLoaded', function() {
             fabContainer.appendChild(btn);
         }
 
-        // Position: center horizontally above the node
+        // Position above node if room, else below. Left handled by CSS.
         requestAnimationFrame(function() {
-            // Use offsetWidth/offsetHeight (layout size, transform-agnostic)
-            // so measurement is correct even while fabSlideIn animation is
-            // mid-transform (scale 0.7). getBoundingClientRect returns the
-            // scaled-down size and causes off-screen overflow to the right.
-            var fabW = fabContainer.offsetWidth;
             var fabH = fabContainer.offsetHeight;
-            var centerX = nodeRect.left + nodeRect.width / 2;
-            var leftPos = centerX - fabW / 2;
-
-            // Keep within viewport bounds (never negative)
-            if (leftPos + fabW > window.innerWidth - 8) {
-                leftPos = window.innerWidth - fabW - 8;
-            }
-            if (leftPos < 8) leftPos = 8;
-
-            fabContainer.style.left = leftPos + 'px';
-
-            // Position above node if there's room, otherwise below
             var topPos = nodeRect.top - fabH - 8;
             if (topPos < 8) {
                 topPos = nodeRect.bottom + 8;

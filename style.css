@@ -35,6 +35,7 @@ html, body {
 body {
     font-family: Arial, Helvetica, sans-serif;
     margin: 12px;
+    padding-top: 32px;
     background-color: #000000;
     color: #e5e5e5;
 }
@@ -833,6 +834,24 @@ li button:hover {
     margin-bottom: 12px;
 }
 
+/* Hover effect on list items (desktop) */
+@media (min-width: 769px) {
+    .item-row:hover { background: rgba(255,255,255,0.06); }
+    li:not(.item-row):hover { background: rgba(255,255,255,0.06); }
+}
+
+/* Cursando active background — subtle, no animation */
+li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid rgba(34,211,238,0.4); }
+
+/* Cursando toggle on main page */
+.cursando-toggle-main { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #888; margin-left: 8px; white-space: nowrap; }
+.cursando-switch-main { position: relative; display: inline-block; width: 28px; height: 16px; }
+.cursando-switch-main input { opacity: 0; width: 0; height: 0; }
+.cursando-slider-main { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; border-radius: 16px; transition: background 0.2s; }
+.cursando-slider-main::before { content: ""; position: absolute; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: #999; border-radius: 50%; transition: transform 0.2s; }
+.cursando-switch-main input:checked + .cursando-slider-main { background-color: rgba(34,211,238,0.6); }
+.cursando-switch-main input:checked + .cursando-slider-main::before { transform: translateX(12px); background-color: #22d3ee; }
+
 @media (max-width: 768px) {
 
     body {
@@ -1052,5 +1071,11 @@ li button:hover {
         font-size: 14px;
         min-width: 50px;
     }
+
+    .cursando-toggle-main { font-size: 10px; gap: 2px; }
 }
+
+.privacy-notice { position:fixed; top:0; left:0; right:0; z-index:9999; text-align:center; font-size:12px; color:#aaa; background:rgba(0,0,0,0.92); padding:6px 12px; border-bottom:1px solid #222; display:flex; justify-content:center; align-items:center; gap:10px; }
+.privacy-close { background:none; border:none; color:#888; cursor:pointer; font-size:14px; padding:2px 6px; line-height:1; }
+.privacy-close:hover { color:#e5e5e5; }
 

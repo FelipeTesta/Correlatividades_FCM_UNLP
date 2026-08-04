@@ -63,7 +63,7 @@ const materias = [
   ]
 },
 { codigo:"PG001", nombre:"Psicología Médica", anio:2, categoria:"bimestral", horas:50,
-  paraCursar:[],
+  paraCursar:[{materia:"A0001",condicion:"regularizada"}],
   paraAprobar:[
     {materia:"A0001",condicion:"aprobada"}
   ]

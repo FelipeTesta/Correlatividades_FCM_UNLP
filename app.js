@@ -267,6 +267,15 @@ function resetearTodos() {
     render();
 }
 
+function toggleCursandoMain(code, checked) {
+    try {
+        var cursando = JSON.parse(localStorage.getItem('cursando') || '{}');
+        if (checked) cursando[code] = true; else delete cursando[code];
+        localStorage.setItem('cursando', JSON.stringify(cursando));
+    } catch(e) {}
+    guardarLocalYRender();
+}
+
 // ===============================
 // PROYECTOS DE EXTENSIÓN
 // ===============================
@@ -524,8 +533,15 @@ function actualizarBarraProgreso() {
             aprobadas += puntos;
         } else if (estado === "regularizada") {
             regularizadas += puntos;
-        } else if (cumpleRequisitos(m.paraCursar, m)) {
-            puedeCursar += puntos;
+        } else {
+            // Check cursando state — counts as progress
+            var isCursandoOn = false;
+            try { var cd = JSON.parse(localStorage.getItem('cursando') || '{}'); isCursandoOn = !!cd[m.codigo]; } catch(e) {}
+            if (isCursandoOn) {
+                aprobadas += puntos;
+            } else if (cumpleRequisitos(m.paraCursar, m)) {
+                puedeCursar += puntos;
+            }
         }
     });
     
@@ -868,6 +884,35 @@ infoText += materia.anio + "° Año";
             };
             rightGroup.appendChild(btnReset);
         }
+
+        // Cursando toggle for puede cursar items
+        if (id.startsWith("puedeCursar-")) {
+            var cursandoData;
+            try { cursandoData = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { cursandoData = {}; }
+            var isCursandoOn = !!cursandoData[codigo];
+
+            var toggleWrap = document.createElement("span");
+            toggleWrap.className = "cursando-toggle-main";
+            toggleWrap.setAttribute("data-code", codigo);
+
+            var switchLabel = document.createElement("label");
+            switchLabel.className = "cursando-switch-main";
+
+            var switchInput = document.createElement("input");
+            switchInput.type = "checkbox";
+            switchInput.checked = isCursandoOn;
+            switchInput.onchange = function() { toggleCursandoMain(codigo, this.checked); };
+            switchLabel.appendChild(switchInput);
+
+            var switchSlider = document.createElement("span");
+            switchSlider.className = "cursando-slider-main";
+            switchLabel.appendChild(switchSlider);
+
+            toggleWrap.appendChild(switchLabel);
+            toggleWrap.appendChild(document.createTextNode(" Cursando"));
+
+            rightGroup.appendChild(toggleWrap);
+        }
     }
 
     // Agregar elementos en orden diferente según el contexto
@@ -990,6 +1035,16 @@ infoText += materia.anio + "° Año";
         }
     }
 
+    // Apply cursando-active class for puede cursar items
+    if (codigo && id && (id === "puedeCursar" || id.startsWith("puedeCursar-"))) {
+        try {
+            var cursandoData = JSON.parse(localStorage.getItem('cursando') || '{}');
+            if (cursandoData[codigo]) {
+                li.classList.add("cursando-active");
+            }
+        } catch(e) {}
+    }
+
     document.getElementById(id).appendChild(li);
 }
 
@@ -1074,101 +1129,55 @@ if (!hasSeenHelp) {
 }
 
 function showHelpModal() {
-    const overlay = document.createElement("div");
+    var overlay = document.createElement("div");
     overlay.className = "modal-overlay";
-    overlay.onclick = () => document.body.removeChild(overlay);
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
 
-    const modal = document.createElement("div");
+    var modal = document.createElement("div");
     modal.className = "modal-content";
-    modal.onclick = (e) => e.stopPropagation();
 
-    const btnX = document.createElement("button");
-    btnX.innerText = "×";
-    btnX.className = "modal-close-x";
-    btnX.onclick = () => document.body.removeChild(overlay);
-    modal.appendChild(btnX);
-
-    const title = document.createElement("h3");
+    var title = document.createElement("h3");
     title.innerText = "¿Cómo usar este sitio?";
     modal.appendChild(title);
 
-    const items = [
-        "Los iconos ✅🟧🔄 son botones y sirven para marcar el estado de cada materia.",
-        "✅ <b>Aprobada</b>: Ya rendiste el final y aprobaste la materia.",
-        "🟧 <b>Cursada</b>: Tiene la cursada aprobada pero te falta rendir el final.",
-        "🔄 <b>Resetear</b>: Quita el estado de la materia si la marcaste mal.",
-        "⚠ <b>Info</b>: Haz clic para ver qué requisitos te faltan para cursar o rendir final.",
-        "🗓 <b>Fechas de Final</b>: En materias regularizadas y optativas, muestra las próximas fechas de examen. Haz clic para ver todas las fechas y seleccionar una cátedra específica.",
-        "Para optativas en 'Puede Cursar', solo se muestran las fechas de final libre."
-    ];
-    
-    // Obter logs recentes
-    const logs = [
-        "04/05/2026 - Actualización de fechas de finales y migración de registros",
-        "12/04/2026 - Reordenación, Colapsabilidad y Estilos en Vacunas"
+    var items = [
+        '✅ <b>Aprobar</b> — Marca la materia como aprobada (final rendido).',
+        '🟧 <b>Regularizar</b> — Marca la materia como cursada (falta rendir final).',
+        '🔄 <b>Resetear</b> — Quita el estado de la materia.',
+        '🟦 <b>Cursando</b> — Indica que estás cursando la materia este cuatrimestre (afecta la barra de progreso).',
+        '⚠️ Haz clic en el icono ⚠ para ver qué requisitos te faltan.',
+        '🗓️ <b>Ver Fechas</b> (📅) — Consulta las fechas de exámenes finales.',
+        '📋 <b>Cartelera</b> — Ver publicaciones y fechas de examen de las cátedras.',
+        '🌳 <b>Modo Árbol</b> — Vista alternativa de correlatividades.',
+        '💾 <b>Exportar/Importar</b> — Guarda o restaura tu progreso.'
     ];
 
-    let paginaAtual = 1;
+    var list = document.createElement("ul");
+    items.forEach(function(text) {
+        var li = document.createElement("li");
+        li.innerHTML = text;
+        li.style.background = "transparent";
+        li.style.borderBottom = "1px solid #222";
+        li.style.padding = "10px 0";
+        list.appendChild(li);
+    });
+    modal.appendChild(list);
 
-    function renderizarPagina(modal, btnSiguiente) {
-        // Limpar conteúdo existente exceto o X
-        const btnX = modal.querySelector('.modal-close-x');
-        const title = modal.querySelector('h3');
-        
-        // Remover todo o resto
-        const filhos = Array.from(modal.children);
-        filhos.forEach(filho => {
-            if (filho !== btnX && filho !== title) {
-                modal.removeChild(filho);
-            }
-        });
-
-        if (paginaAtual === 1) {
-            title.innerText = "¿Cómo usar este sitio?";
-            const list = document.createElement("ul");
-            items.forEach(text => {
-                const li = document.createElement("li");
-                li.innerHTML = text;
-                li.style.background = "transparent";
-                li.style.borderBottom = "1px solid #222";
-                li.style.padding = "12px 0";
-                list.appendChild(li);
-            });
-            modal.appendChild(list);
-            btnSiguiente.innerText = "SIGUIENTE";
-            btnSiguiente.onclick = () => { paginaAtual = 2; renderizarPagina(modal, btnSiguiente); };
-            modal.appendChild(btnSiguiente);
-        } else {
-            title.innerText = "Últimas Actualizaciones";
-            const list = document.createElement("ul");
-            logs.forEach(text => {
-                const li = document.createElement("li");
-                li.innerText = text;
-                li.style.background = "transparent";
-                li.style.borderBottom = "1px solid #222";
-                li.style.padding = "12px 0";
-                list.appendChild(li);
-            });
-            modal.appendChild(list);
-            btnSiguiente.innerText = "¡ENTENDIDO!";
-            btnSiguiente.onclick = () => document.body.removeChild(overlay);
-            modal.appendChild(btnSiguiente);
-        }
-    }
-
-    const btnSiguiente = document.createElement("button");
-    btnSiguiente.style.width = "100%";
-    btnSiguiente.style.marginTop = "15px";
-    btnSiguiente.style.padding = "10px";
-    btnSiguiente.style.backgroundColor = "#22d3ee";
-    btnSiguiente.style.color = "#000";
-    btnSiguiente.style.fontWeight = "bold";
-
-    renderizarPagina(modal, btnSiguiente);
-
+    var btnX = document.createElement("button");
+    btnX.innerText = "×";
+    btnX.className = "modal-close-x";
+    btnX.onclick = function() { document.body.removeChild(overlay); };
+    modal.appendChild(btnX);
 
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
+
+    document.addEventListener('keydown', function handler(e) {
+        if (e.key === 'Escape') {
+            document.body.removeChild(overlay);
+            document.removeEventListener('keydown', handler);
+        }
+    });
 }
 
 function actualizarHorasOptativas() {
