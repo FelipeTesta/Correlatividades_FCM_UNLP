@@ -895,7 +895,15 @@ function resolveAndFetch() {
   if (codes.length === 0) {
     selectorEl.style.display = "none";
     setStatus("");
-    // No active subjects — still fetch and show general faculty publications (home)
+    // No active subjects — fallback to first-year obligatorias (filter approved ones)
+    var estados = {};
+    try { estados = JSON.parse(localStorage.getItem("estados") || "{}"); } catch (e) {}
+    materias.forEach(function (m) {
+      if (m.anio === 1 && m.categoria !== "optativa" && estados[m.codigo] !== "aprobada") {
+        codeSourceMap[m.codigo] = "primero";
+      }
+    });
+    codes = Object.keys(codeSourceMap);
   }
 
   // Resolve each code
@@ -1051,6 +1059,7 @@ function renderSubjectMode(subjectData) {
   // Split by source
   var cursandoCodes = codes.filter(function (c) { return subjectData[c].source === "cursando"; });
   var regularCodes = codes.filter(function (c) { return subjectData[c].source === "regular"; });
+  var primeroCodes = codes.filter(function (c) { return subjectData[c].source === "primero"; });
 
   // Only render a source group if it has at least one code with pubs or an error
   function hasVisibleContent(groupCodes) {
@@ -1209,6 +1218,7 @@ function renderSubjectMode(subjectData) {
   renderHomeGroup();
   renderSourceGroup(cursandoCodes, "Cursando", "source-header-cursando");
   renderSourceGroup(regularCodes, "Regularizada", "source-header-regular");
+  renderSourceGroup(primeroCodes, "1er A\u00f1o", "source-header-primero");
 }
 
 function renderChronoMode(subjectData) {
@@ -1260,8 +1270,8 @@ function renderChronoMode(subjectData) {
       var card = renderCard(item.pub, true, item.catedraName, item.subjectName);
       // Add source badge (Cursando / Regular)
       var srcBadge = document.createElement("span");
-      srcBadge.className = "pub-source " + (item.source === "cursando" ? "pub-source-cursando" : (item.source === "home" ? "pub-source-home" : "pub-source-regular"));
-      srcBadge.textContent = item.source === "cursando" ? "Cursando" : (item.source === "home" ? "General" : "Regular");
+      srcBadge.className = "pub-source " + (item.source === "cursando" ? "pub-source-cursando" : (item.source === "home" ? "pub-source-home" : (item.source === "primero" ? "pub-source-primero" : "pub-source-regular")));
+      srcBadge.textContent = item.source === "cursando" ? "Cursando" : (item.source === "home" ? "General" : (item.source === "primero" ? "1er A\u00f1o" : "Regular"));
       card.insertBefore(srcBadge, card.firstChild);
       grid.appendChild(card);
     });

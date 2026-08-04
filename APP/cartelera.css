@@ -116,16 +116,18 @@ h1 {
     background-color: #1a1a1a;
     border: 1px solid #333;
     border-radius: 6px;
-    padding-right: 10px;
+    padding: 0 8px 0 4px;
 }
 
 .filter-days-input {
-    width: 70px;
+    width: 55px;
     text-align: center;
     color: #e5e5e5;
     border: none;
     background: transparent;
     padding: 6px 0;
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
 }
 
 .filter-days-input:focus {
@@ -534,6 +536,12 @@ h1 {
   border-left-color: #a855f7;
 }
 
+.source-header-primero {
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.08);
+  border-left-color: #facc15;
+}
+
 /* Source badge in chrono mode cards */
 .pub-source {
   display: inline-block;
@@ -559,6 +567,11 @@ h1 {
 .pub-source-home {
   color: #a855f7;
   background: rgba(168, 85, 247, 0.15);
+}
+
+.pub-source-primero {
+  color: #facc15;
+  background: rgba(250, 204, 21, 0.15);
 }
 
 /* Read (collapsed) publication cards */
