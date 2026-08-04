@@ -46,6 +46,7 @@ v0.08 — Julho 2026
 - **04/08/2026:** Corregido PG001 (Psicología Médica, año 2): paraCursar vacío → requiere Anatomía regularizada. Añadido aviso de privacidad (banner fijo) en las 3 páginas HTML + CSS.
 - **04/08/2026 (6):** Fix: PG001 (Psicología Médica) ahora requiere Anatomía regularizada para cursar + Aviso de privacidad en todas las páginas
 - **04/08/2026 (7):** FAB mobile: posicionamiento horizontal simplificado (CSS left/right en vez de JS pixel math). Help modal: reescrito a single-page, removida paginación y "Últimas Actualizaciones".
+- **04/08/2026 (8):** Fix privacy banner flash no PC: banner escondido inicialmente (display:none) + anti-loop no version auto-reload (3s cooldown).
 - **14/07/2026:** Corrección de bug: FAB mobile (touch-and-hold) aparecía fuera de la pantalla en Modo Árbol — medición de dimensión durante animación causaba overflow; corregido con offsetWidth/offsetHeight + clamp + container flex-wrap
 - **07/07/2026:** Botón "¿Cómo usar?" en Modo Árbol + leyenda actualizada con 🟡 + optimizaciones mobile UI/UX (touch-action, color-scheme, reduced-motion, modal responsive)
 - **05/07/2026:** Corrección plan estudios UNLP (RM 578/25) — DL001, TX001, P9002 movidas a 5° año
