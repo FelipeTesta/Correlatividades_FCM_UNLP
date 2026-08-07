@@ -171,7 +171,7 @@ export default {
               info.snapshotExists = !!snapshotRaw;
               info.snapshotPubs = snapshot.length;
 
-              const newPubs = pubs.filter(p => !snapshot.some(s => s.title === p.title && s.date === p.date));
+              const newPubs = pubs.filter(p => !snapshot.some(s => s.title === p.title && s.date === p.date && s.modified === p.modified));
               info.newPubs = newPubs.length;
               info.newPubsTitles = newPubs.map(p => p.title + ' (' + p.date + ')');
             } catch (e) {
@@ -187,7 +187,7 @@ export default {
           const homePubs = await fetchHomePubs();
           const homeSnapshotRaw = await env.CARTELERA_SNAPSHOTS.get('home');
           const homeSnapshot = homeSnapshotRaw ? JSON.parse(homeSnapshotRaw) : [];
-          const newHomePubs = homePubs.filter(p => !homeSnapshot.some(s => s.title === p.title && s.date === p.date));
+          const newHomePubs = homePubs.filter(p => !homeSnapshot.some(s => s.title === p.title && s.date === p.date && s.modified === p.modified));
           results.push({
             home: true,
             name: 'Avisos Generales de la Facultad',
@@ -208,6 +208,95 @@ export default {
           totalSubscriptions: subsList.keys.length,
           results
         }, null, 2), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // GET /test-edits — diagnostic for modification date tracking
+    if (url.pathname === '/test-edits') {
+      try {
+        const results = [];
+        let subsList;
+        try { subsList = await env.CARTELERA_SUBS.list(); } catch (e) { throw new Error('KV list error: ' + e.message); }
+
+        for (const key of subsList.keys) {
+          const email = key.name;
+          let codes = [];
+          let names = {};
+          try {
+            const raw = await env.CARTELERA_SUBS.get(email);
+            if (raw) {
+              const subData = JSON.parse(raw);
+              codes = Array.isArray(subData) ? subData : (subData.codes || []);
+              names = Array.isArray(subData) ? {} : (subData.names || {});
+            }
+          } catch (e) { results.push({ email, error: 'KV get parse error: ' + e.message }); continue; }
+
+          for (const catedraId of codes) {
+            const info = { email, catedraId, name: (names || {})[catedraId] || 'unknown' };
+            try {
+              const pubs = await fetchCatedraPubs(catedraId);
+              info.fetchedPubs = pubs.length;
+              info.pubsWithMod = pubs.filter(p => p.modified).length;
+
+              const snapshotRaw = await env.CARTELERA_SNAPSHOTS.get(catedraId);
+              const snapshot = snapshotRaw ? JSON.parse(snapshotRaw) : [];
+              info.snapshotExists = !!snapshotRaw;
+
+              // Find pubs where modified changed
+              const modifiedChanged = pubs.filter(p => {
+                if (!p.modified) return false;
+                const old = snapshot.find(s => s.title === p.title && s.date === p.date);
+                return !old || old.modified !== p.modified;
+              });
+              info.modifiedChanged = modifiedChanged.length;
+              info.modifiedChangedDetails = modifiedChanged.map(p => ({
+                title: p.title,
+                date: p.date,
+                currentModified: p.modified,
+                oldModified: (snapshot.find(s => s.title === p.title && s.date === p.date) || {}).modified || null
+              }));
+            } catch (e) {
+              info.error = e.message;
+            }
+            results.push(info);
+          }
+        }
+
+        // Home diagnostic
+        try {
+          const homePubs = await fetchHomePubs();
+          const homeSnapshotRaw = await env.CARTELERA_SNAPSHOTS.get('home');
+          const homeSnapshot = homeSnapshotRaw ? JSON.parse(homeSnapshotRaw) : [];
+          const homeModifiedChanged = homePubs.filter(p => {
+            if (!p.modified) return false;
+            const old = homeSnapshot.find(s => s.title === p.title && s.date === p.date);
+            return !old || old.modified !== p.modified;
+          });
+          results.push({
+            home: true,
+            name: 'Avisos Generales de la Facultad',
+            fetchedPubs: homePubs.length,
+            pubsWithMod: homePubs.filter(p => p.modified).length,
+            snapshotExists: !!homeSnapshotRaw,
+            modifiedChanged: homeModifiedChanged.length,
+            modifiedChangedDetails: homeModifiedChanged.map(p => ({
+              title: p.title,
+              date: p.date,
+              currentModified: p.modified,
+              oldModified: (homeSnapshot.find(s => s.title === p.title && s.date === p.date) || {}).modified || null
+            }))
+          });
+        } catch (e) {
+          results.push({ home: true, name: 'Avisos Generales de la Facultad', error: e.message });
+        }
+
+        return new Response(JSON.stringify({ ok: true, results }, null, 2), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
       } catch (e) {
         return new Response(JSON.stringify({ ok: false, error: e.message }), {
           status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
@@ -283,7 +372,7 @@ export default {
 
         // Find new publications
         const newPubs = pubs.filter(p =>
-          !snapshot.some(s => s.title === p.title && s.date === p.date)
+          !snapshot.some(s => s.title === p.title && s.date === p.date && s.modified === p.modified)
         );
 
         if (newPubs.length > 0) {
@@ -329,7 +418,7 @@ export default {
         const homeSnapshotRaw = await env.CARTELERA_SNAPSHOTS.get('home');
         const homeSnapshot = homeSnapshotRaw ? JSON.parse(homeSnapshotRaw) : [];
         const newHomePubs = homePubs.filter(p =>
-          !homeSnapshot.some(s => s.title === p.title && s.date === p.date)
+          !homeSnapshot.some(s => s.title === p.title && s.date === p.date && s.modified === p.modified)
         );
 
         if (newHomePubs.length > 0) {
@@ -381,8 +470,16 @@ function parseCatedraHtml(html) {
     // Extract date: text after fa-calendar-alt </i>
     const dateMatch = block.match(/fa-calendar-alt[^>]*><\/i>\s*([^<]+)/);
     const dateStr = dateMatch ? dateMatch[1].trim() : '';
+    // Extract modification text+time
+    let modified = null;
+    const modMatch = block.match(/text-muted[^>]*>\s*\*\s*Modificad[ao]\s+el\s+d[ií]a\s+(\d{2}\/\d{2}\/\d{4})\s*(\d{1,2}):(\d{2})?/i);
+    if (modMatch) {
+      modified = modMatch[1] + ' ' + (modMatch[2]||'00') + ':' + (modMatch[3]||'00');
+    }
     if (title && dateStr) {
-      results.push({ title, date: dateStr, link });
+      const pub = { title, date: dateStr, link };
+      if (modified) pub.modified = modified;
+      results.push(pub);
     }
   }
   return results;
@@ -417,8 +514,16 @@ function parseHomeHtml(html) {
     let professor = '';
     const profMatch = block.match(/class="card-text text-right"[^>]*>\s*([^<]+)/);
     if (profMatch) professor = profMatch[1].trim();
+    // Modification text+time
+    let modified = null;
+    const modMatch = block.match(/text-muted[^>]*>\s*\*\s*Modificad[ao]\s+el\s+d[ií]a\s+(\d{2}\/\d{2}\/\d{4})\s*(\d{1,2}):(\d{2})?/i);
+    if (modMatch) {
+      modified = modMatch[1] + ' ' + (modMatch[2]||'00') + ':' + (modMatch[3]||'00');
+    }
     if (title && dateStr) {
-      results.push({ title, date: dateStr, link, subtitle, professor });
+      const pub = { title, date: dateStr, link, subtitle, professor };
+      if (modified) pub.modified = modified;
+      results.push(pub);
     }
   }
   return results;

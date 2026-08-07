@@ -1,6 +1,9 @@
 /* ============================= */
 /* CARTELERA - MAIN LOGIC       */
 /* ============================= */
+/* localStorage keys: carteleraCache(session), carteleraLeidas, carteleraCollapsed,
+   carteleraFilterDays, carteleraCollapsedSubjects, carteleraNotifyEmail,
+   carteleraSubscribedSubjects */
 
 const CARTELERA_PROXY = "https://cartelera-proxy.felipestesta.workers.dev/";
 const CARTELERA_BASE = "https://cartelera.med.unlp.edu.ar";
@@ -22,6 +25,7 @@ const LEIDAS_KEY = "carteleraLeidas";
 const COLLAPSED_KEY = "carteleraCollapsed";
 const FILTER_DAYS_KEY = "carteleraFilterDays";
 const COLLAPSED_SUBJECTS_KEY = "carteleraCollapsedSubjects";
+const SUBSCRIBED_KEY = "carteleraSubscribedSubjects";
 
 const HOME_KEY = "__HOME__";
 const HOME_ID = "home";
@@ -169,6 +173,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Subscribe extra button
+  var subscribeBtn = document.getElementById("subscribeBtn");
+  if (subscribeBtn) {
+    subscribeBtn.addEventListener("click", function () {
+      openSubscribeModal();
+    });
+  }
+
   // Notify subscribe
   var notifySubscribeBtn = document.getElementById("notifySubscribeBtn");
   if (notifySubscribeBtn) {
@@ -281,6 +293,23 @@ function getRegularizadaCodes() {
   });
 }
 
+function getSubscribedCodes() {
+  try {
+    var raw = localStorage.getItem(SUBSCRIBED_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return [];
+}
+
+function saveSubscribedCodes(codes) {
+  var unique = [];
+  var seen = {};
+  (codes || []).forEach(function (c) {
+    if (!seen[c]) { seen[c] = true; unique.push(c); }
+  });
+  try { localStorage.setItem(SUBSCRIBED_KEY, JSON.stringify(unique)); } catch (e) {}
+}
+
 function guardarCatedraSeleccionada(codigo, catedraName) {
   var seleccionadas = {};
   try {
@@ -315,15 +344,22 @@ function getLeidas() {
   return {};
 }
 
-function isLeida(link) {
+function isLeida(link, currentModTimestamp) {
   if (!link) return false;
-  return !!getLeidas()[link];
+  var leidas = getLeidas();
+  var entry = leidas[link];
+  if (!entry) return false;
+  // backward compat: old format was boolean true
+  if (entry === true) return true;
+  // new format: { read: true, mod: "DD/MM/YYYY HH:MM" }
+  if (currentModTimestamp && entry.mod !== currentModTimestamp) return false;
+  return entry.read === true;
 }
 
-function marcarLeida(link) {
+function marcarLeida(link, modificadaTimestamp) {
   if (!link) return;
   var leidas = getLeidas();
-  leidas[link] = true;
+  leidas[link] = { read: true, mod: modificadaTimestamp || null };
   try { localStorage.setItem(LEIDAS_KEY, JSON.stringify(leidas)); } catch (e) {}
   render();
 }
@@ -347,7 +383,10 @@ function allVisibleRead() {
     for (var j = 0; j < pubs.length; j++) {
       var pub = pubs[j];
       if (pub.date >= cutoff && pub.link) {
-        if (!leidas[pub.link]) return false;
+        var entryVal = leidas[pub.link];
+        if (!entryVal) return false;
+        if (entryVal === true) continue; // backward compat: old boolean
+        if (!entryVal.read) return false;
       }
     }
   }
@@ -383,7 +422,8 @@ function marcarTodasLeidas() {
       var entry = fetchedData[code];
       (entry.pubs || []).forEach(function (pub) {
         if (pub.date >= cutoff && pub.link) {
-          leidas[pub.link] = true;
+          var modTs = pub.modificadaDate ? formatDateTime(pub.modificadaDate) : null;
+          leidas[pub.link] = { read: true, mod: modTs };
         }
       });
     });
@@ -729,6 +769,17 @@ function formatDate(date) {
   return (d < 10 ? "0" : "") + d + "/" + (m < 10 ? "0" : "") + m + "/" + y;
 }
 
+function formatDateTime(date) {
+  if (!date || isNaN(date.getTime())) return null;
+  var d = date.getDate();
+  var m = date.getMonth() + 1;
+  var y = date.getFullYear();
+  var h = date.getHours();
+  var min = date.getMinutes();
+  return (d < 10 ? "0" : "") + d + "/" + (m < 10 ? "0" : "") + m + "/" + y + " " +
+    (h < 10 ? "0" : "") + h + ":" + (min < 10 ? "0" : "") + min;
+}
+
 function tagColor(tag) {
   var map = {
     "Exámenes": "#ef4444",
@@ -806,9 +857,14 @@ function parseCatedraHtml(html) {
 
     // Modificada: p.card-text.text-right.text-muted
     var modificada = null;
+    var modificadaDate = null;
     var modEl = card.querySelector("p.card-text.text-right.text-muted");
     if (modEl) {
       modificada = modEl.textContent.trim();
+      var m = modificada.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{1,2}):(\d{2})?/);
+      if (m) {
+        modificadaDate = new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0));
+      }
     }
 
     results.push({
@@ -819,7 +875,8 @@ function parseCatedraHtml(html) {
       link: fullLink,
       subtitle: subtitle,
       professor: professor,
-      modificada: modificada
+      modificada: modificada,
+      modificadaDate: modificadaDate
     });
   });
 
@@ -862,6 +919,21 @@ function parseHomeHtml(html) {
       if (txt && txt.length > 0) professor = txt;
     }
 
+    // Modificada text (home cards may have modification text)
+    var modificada = null;
+    var modificadaDate = null;
+    var allTexts = card.querySelectorAll("p.card-text.text-right");
+    allTexts.forEach(function (p) {
+      var txt = p.textContent.trim();
+      if (/modificad[ao]/i.test(txt)) {
+        modificada = txt;
+        var m = txt.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{1,2}):(\d{2})?/);
+        if (m) {
+          modificadaDate = new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0));
+        }
+      }
+    });
+
     results.push({
       tag: "General",
       date: date,
@@ -869,7 +941,9 @@ function parseHomeHtml(html) {
       title: title,
       link: fullLink,
       subtitle: subtitle,
-      professor: professor
+      professor: professor,
+      modificada: modificada,
+      modificadaDate: modificadaDate
     });
   });
 
@@ -890,14 +964,25 @@ function resolveAndFetch() {
   regularCodes.forEach(function (c) {
     if (!codeSourceMap[c]) codeSourceMap[c] = "regular";
   });
+
+  // Add subscribed codes (extra subjects the user chose to follow)
+  var estados = {};
+  try { estados = JSON.parse(localStorage.getItem("estados") || "{}"); } catch (e) {}
+  var subscribedCodes = getSubscribedCodes();
+  subscribedCodes.forEach(function (code) {
+    if (codeSourceMap[code]) return; // already present
+    if (estados[code] === "aprobada") return; // already approved
+    var resolved = resolveCatedraForCode(code);
+    if (!resolved || resolved.error) return; // can't resolve catedra
+    codeSourceMap[code] = "subscribed";
+  });
+
   var codes = Object.keys(codeSourceMap);
 
   if (codes.length === 0) {
     selectorEl.style.display = "none";
     setStatus("");
     // No active subjects — fallback to first-year obligatorias (filter approved ones)
-    var estados = {};
-    try { estados = JSON.parse(localStorage.getItem("estados") || "{}"); } catch (e) {}
     materias.forEach(function (m) {
       if (m.anio === 1 && m.categoria !== "optativa" && estados[m.codigo] !== "aprobada") {
         codeSourceMap[m.codigo] = "primero";
@@ -1060,6 +1145,7 @@ function renderSubjectMode(subjectData) {
   var cursandoCodes = codes.filter(function (c) { return subjectData[c].source === "cursando"; });
   var regularCodes = codes.filter(function (c) { return subjectData[c].source === "regular"; });
   var primeroCodes = codes.filter(function (c) { return subjectData[c].source === "primero"; });
+  var subscribedCodes = codes.filter(function (c) { return subjectData[c].source === "subscribed"; });
 
   // Only render a source group if it has at least one code with pubs or an error
   function hasVisibleContent(groupCodes) {
@@ -1076,15 +1162,16 @@ function renderSubjectMode(subjectData) {
     var group = document.createElement("div");
     group.className = "source-group";
 
+    var sourceKey = headerClass.replace("source-header-", "");
+
     var header = document.createElement("h2");
     header.className = "source-header " + headerClass;
-    if (isCollapsed(headerClass === "source-header-cursando" ? "cursando" : "regular")) {
+    if (isCollapsed(sourceKey)) {
       header.classList.add("collapsed");
     }
     header.style.cursor = "pointer";
     header.setAttribute("role", "button");
     header.setAttribute("tabindex", "0");
-    var sourceKey = headerClass === "source-header-cursando" ? "cursando" : "regular";
     var indicator = isCollapsed(sourceKey) ? "▸ " : "▾ ";
     header.textContent = indicator + headerText + " (" + groupCodes.length + ")";
     header.addEventListener("click", function () { toggleCollapse(sourceKey); });
@@ -1099,7 +1186,25 @@ function renderSubjectMode(subjectData) {
       return;
     }
 
-    groupCodes.forEach(function (code) {
+    // Split codes: with-pubs first, without-pubs at end
+    var withPubsCodes = groupCodes.filter(function(c) {
+      var d = subjectData[c];
+      return d.pubs.length > 0 || d.error;
+    });
+    var withoutPubsCodes = groupCodes.filter(function(c) {
+      var d = subjectData[c];
+      return d.pubs.length === 0 && !d.error;
+    });
+
+    // Auto-collapse all without-pubs subjects
+    var collapsedData = getCollapsedSubjects();
+    withoutPubsCodes.forEach(function(code) {
+      collapsedData[code] = true;
+    });
+    try { localStorage.setItem(COLLAPSED_SUBJECTS_KEY, JSON.stringify(collapsedData)); } catch (e) {}
+
+    // === Render subjects WITH publications ===
+    withPubsCodes.forEach(function (code) {
       var data = subjectData[code];
       var subjName = getSubjectName(code) || data.catedraName || code;
 
@@ -1112,28 +1217,61 @@ function renderSubjectMode(subjectData) {
       title.style.cursor = "pointer";
       title.setAttribute("role", "button");
       title.setAttribute("tabindex", "0");
-      var indicator = isSubjectCollapsed(code) ? "▸ " : "▾ ";
-      title.textContent = indicator + subjName + " (" + data.pubs.length + ")";
       title.addEventListener("click", function (cod) { return function () { toggleSubjectCollapse(cod); }; }(code));
       title.addEventListener("keydown", function (cod) { return function (e) {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleSubjectCollapse(cod); }
       }; }(code));
+
+      // Text span
+      var indicator = isSubjectCollapsed(code) ? "▸ " : "▾ ";
+      var textSpan = document.createElement("span");
+      textSpan.textContent = indicator + subjName + " (" + data.pubs.length + ")";
+      title.appendChild(textSpan);
+
+      // Button group
+      var btnGroup = document.createElement("span");
+      btnGroup.style.cssText = "display:inline-flex;align-items:center;gap:2px;margin-left:8px;white-space:nowrap";
+
+      var catedraOptions = getCatedraOptionsForCode(code);
+      var hasMultipleCatedras = catedraOptions.length > 1;
+
+      if (hasMultipleCatedras || true) {
+        var pipe = document.createTextNode(" | ");
+        btnGroup.appendChild(pipe);
+
+        if (hasMultipleCatedras) {
+          var changeBtn = document.createElement("button");
+          changeBtn.className = "catedra-change-btn";
+          changeBtn.textContent = "⚙";
+          changeBtn.title = "Alterar cátedra";
+          changeBtn.setAttribute("aria-label", "Alterar cátedra para " + subjName);
+          changeBtn.addEventListener("click", function(cod) { return function(e) {
+            e.stopPropagation();
+            openCatedraSelectorForCode(cod);
+          }; }(code));
+          btnGroup.appendChild(changeBtn);
+        }
+
+        var linkBtn = document.createElement("button");
+        linkBtn.className = "catedra-change-btn";
+        linkBtn.textContent = "🔗";
+        linkBtn.title = "Abrir cartelera";
+        linkBtn.setAttribute("aria-label", "Abrir cartelera de " + subjName);
+        linkBtn.addEventListener("click", function(cod, cartId) { return function(e) {
+          e.stopPropagation();
+          var url = cartId === "home" ? "https://cartelera.med.unlp.edu.ar/" : "https://cartelera.med.unlp.edu.ar/catedra/" + cartId;
+          window.open(url, "_blank");
+        }; }(code, data.id));
+        btnGroup.appendChild(linkBtn);
+      }
+
+      title.appendChild(btnGroup);
       section.appendChild(title);
 
-      // Catedra change button (only if multiple options)
-      var catedraOptions = getCatedraOptionsForCode(code);
-      if (catedraOptions.length > 1) {
-        var subjName = getSubjectName(code) || code;
-        var changeBtn = document.createElement("button");
-        changeBtn.className = "catedra-change-btn";
-        changeBtn.textContent = "⚙";
-        changeBtn.title = "Alterar cátedra";
-        changeBtn.setAttribute("aria-label", "Alterar cátedra para " + subjName);
-        changeBtn.addEventListener("click", function(cod) { return function(e) {
-          e.stopPropagation();
-          openCatedraSelectorForCode(cod);
-        }; }(code));
-        title.appendChild(changeBtn);
+      // Expand subjects that have pubs (they might have been collapsed before)
+      if (collapsedData[code]) {
+        delete collapsedData[code];
+        try { localStorage.setItem(COLLAPSED_SUBJECTS_KEY, JSON.stringify(collapsedData)); } catch (e) {}
       }
 
       // Skip pubs if collapsed
@@ -1151,14 +1289,6 @@ function renderSubjectMode(subjectData) {
       }
 
       // Cards
-      if (data.pubs.length === 0 && !data.error) {
-        var emptyNote = document.createElement("p");
-        emptyNote.className = "subject-error";
-        emptyNote.textContent = "Sin publicaciones en este período.";
-        emptyNote.style.color = "#666";
-        section.appendChild(emptyNote);
-      }
-
       var grid = document.createElement("div");
       grid.className = "cards-grid";
       data.pubs.forEach(function (pub) {
@@ -1169,6 +1299,29 @@ function renderSubjectMode(subjectData) {
 
       group.appendChild(section);
     });
+
+    // === "Sin nuevas publicaciones" compact section (at bottom) ===
+    if (withoutPubsCodes.length > 0) {
+      var noPubsSection = document.createElement("div");
+      noPubsSection.className = "no-pubs-section";
+
+      var noPubsP = document.createElement("p");
+      noPubsP.className = "no-pubs-text";
+      var names = withoutPubsCodes.map(function(c) {
+        return getSubjectName(c) || subjectData[c].catedraName || c;
+      });
+      // Build text with each name clickable to expand
+      // Simple version: just list names
+      noPubsP.textContent = "Sin nuevas publicaciones (" + withoutPubsCodes.length + "): " + names.join(", ");
+      noPubsP.style.color = "#666";
+      noPubsP.style.fontSize = "12px";
+      noPubsP.style.fontStyle = "italic";
+      noPubsP.style.padding = "8px 12px";
+      noPubsP.style.margin = "4px 0";
+      noPubsSection.appendChild(noPubsP);
+
+      group.appendChild(noPubsSection);
+    }
 
     resultsEl.appendChild(group);
   }
@@ -1219,6 +1372,7 @@ function renderSubjectMode(subjectData) {
   renderSourceGroup(cursandoCodes, "Cursando", "source-header-cursando");
   renderSourceGroup(regularCodes, "Regularizada", "source-header-regular");
   renderSourceGroup(primeroCodes, "1er A\u00f1o", "source-header-primero");
+  renderSourceGroup(subscribedCodes, "Otras", "source-header-subscribed");
 }
 
 function renderChronoMode(subjectData) {
@@ -1238,12 +1392,16 @@ function renderChronoMode(subjectData) {
   });
 
   // Sort by date descending
-  allPubs.sort(function (a, b) { return b.pub.date - a.pub.date; });
+  allPubs.sort(function (a, b) {
+    var da = a.pub.modificadaDate || a.pub.date;
+    var db = b.pub.modificadaDate || b.pub.date;
+    return db - da;
+  });
 
   // Group by date (same day)
   var groups = {};
   allPubs.forEach(function (item) {
-    var key = item.pub.dateStr;
+    var key = item.pub.modificadaDate ? formatDate(item.pub.modificadaDate) : item.pub.dateStr;
     if (!groups[key]) groups[key] = [];
     groups[key].push(item);
   });
@@ -1268,11 +1426,19 @@ function renderChronoMode(subjectData) {
     grid.className = "cards-grid";
     groups[dateKey].forEach(function (item) {
       var card = renderCard(item.pub, true, item.catedraName, item.subjectName);
-      // Add source badge (Cursando / Regular)
+      // Insert source badge into card-header (after subject-name or first child)
       var srcBadge = document.createElement("span");
-      srcBadge.className = "pub-source " + (item.source === "cursando" ? "pub-source-cursando" : (item.source === "home" ? "pub-source-home" : (item.source === "primero" ? "pub-source-primero" : "pub-source-regular")));
-      srcBadge.textContent = item.source === "cursando" ? "Cursando" : (item.source === "home" ? "General" : (item.source === "primero" ? "1er A\u00f1o" : "Regular"));
-      card.insertBefore(srcBadge, card.firstChild);
+      srcBadge.className = "pub-source " + (item.source === "cursando" ? "pub-source-cursando" : (item.source === "home" ? "pub-source-home" : (item.source === "primero" ? "pub-source-primero" : (item.source === "subscribed" ? "pub-source-subscribed" : "pub-source-regular"))));
+      srcBadge.textContent = item.source === "cursando" ? "Cursando" : (item.source === "home" ? "General" : (item.source === "primero" ? "1er A\u00f1o" : (item.source === "subscribed" ? "Otras" : "Regular")));
+      var cardHeader = card.querySelector(".pub-card-header");
+      if (cardHeader) {
+        var subjName = cardHeader.querySelector(".pub-subject-name");
+        if (subjName && subjName.nextSibling) {
+          cardHeader.insertBefore(srcBadge, subjName.nextSibling);
+        } else {
+          cardHeader.insertBefore(srcBadge, cardHeader.firstChild);
+        }
+      }
       grid.appendChild(card);
     });
     group.appendChild(grid);
@@ -1289,24 +1455,35 @@ function renderCard(pub, showCatedra, catedraName, subjectName) {
   card.style.borderLeftWidth = "3px";
   card.style.borderLeftStyle = "solid";
 
-  var leida = isLeida(pub.link);
-  if (leida) {
-    card.classList.add("pub-read");
+  var modTs = pub.modificadaDate ? formatDateTime(pub.modificadaDate) : null;
+  var leida = isLeida(pub.link, modTs);
+  if (leida) { card.classList.add("pub-read"); }
+
+  // === HEADER: subject-name (chrono) + date (right) ===
+  var header = document.createElement("div");
+  header.className = "pub-card-header";
+
+  if (showCatedra && subjectName) {
+    var subjEl = document.createElement("span");
+    subjEl.className = "pub-subject-name";
+    subjEl.textContent = subjectName;
+    header.appendChild(subjEl);
   }
 
-  // Tag badge
-  var tagEl = document.createElement("span");
-  tagEl.className = "pub-tag " + tagClassName(pub.tag);
-  tagEl.textContent = pub.tag;
-  card.appendChild(tagEl);
-
-  // Date
+  // Date: show modified if exists, else original. Only ONE date.
   var dateEl = document.createElement("div");
   dateEl.className = "pub-date";
-  dateEl.textContent = "📅 " + pub.dateStr;
-  card.appendChild(dateEl);
+  if (pub.modificadaDate) {
+    dateEl.textContent = "\uD83D\uDCC5 " + formatDateTime(pub.modificadaDate);
+    dateEl.classList.add("pub-date-modified");
+  } else {
+    dateEl.textContent = "\uD83D\uDCC5 " + pub.dateStr;
+  }
+  header.appendChild(dateEl);
 
-  // Title with link
+  card.appendChild(header);
+
+  // === TITLE ===
   if (pub.link) {
     var titleLink = document.createElement("a");
     titleLink.className = "pub-title";
@@ -1322,62 +1499,54 @@ function renderCard(pub, showCatedra, catedraName, subjectName) {
     card.appendChild(titleEl);
   }
 
-  // Subject name (chrono mode)
-  if (showCatedra && subjectName) {
-    var subjEl = document.createElement("div");
-    subjEl.className = "pub-subject-name";
-    subjEl.textContent = "📚 " + subjectName;
-    card.appendChild(subjEl);
+  // === TAGS ROW (all info as pills, hidden if read) ===
+  var tagsRow = document.createElement("div");
+  tagsRow.className = "pub-tags-row";
+
+  // Tag type (Avisos/Exámenes/etc.) as first pill
+  var tagPill = document.createElement("span");
+  tagPill.className = "pub-detail-pill " + tagClassName(pub.tag);
+  tagPill.textContent = pub.tag;
+  tagsRow.appendChild(tagPill);
+
+  // Subtitle pill
+  if (pub.subtitle) {
+    var subPill = document.createElement("span");
+    subPill.className = "pub-detail-pill";
+    subPill.textContent = pub.subtitle;
+    tagsRow.appendChild(subPill);
   }
 
-  // Subtitle
-  if (pub.subtitle && !leida) {
-    var subEl = document.createElement("div");
-    subEl.className = "pub-subtitle";
-    subEl.textContent = pub.subtitle;
-    card.appendChild(subEl);
+  // Catedra pill (chrono mode)
+  if (showCatedra && catedraName) {
+    var catPill = document.createElement("span");
+    catPill.className = "pub-detail-pill";
+    catPill.textContent = catedraName;
+    tagsRow.appendChild(catPill);
   }
 
-  // Professor
-  if (pub.professor && !leida) {
-    var profEl = document.createElement("div");
-    profEl.className = "pub-professor";
-    profEl.textContent = "👤 " + pub.professor;
-    card.appendChild(profEl);
+  if (tagsRow.children.length > 0 && !leida) {
+    card.appendChild(tagsRow);
   }
 
-  // Modificada
-  if (pub.modificada && !leida) {
-    var modEl = document.createElement("div");
-    modEl.className = "pub-modificada";
-    modEl.textContent = pub.modificada;
-    card.appendChild(modEl);
-  }
-
-  // Catedra name (chrono mode) — only if not read
-  if (showCatedra && catedraName && !leida) {
-    var catEl = document.createElement("div");
-    catEl.className = "pub-catedra";
-    catEl.textContent = catedraName;
-    card.appendChild(catEl);
-  }
-
-  // Read / unread button
+  // === ACTIONS (bottom-right) ===
   var btnContainer = document.createElement("div");
   btnContainer.className = "pub-actions";
   if (leida) {
     var btnDesmarcar = document.createElement("button");
     btnDesmarcar.className = "btn-desmarcar";
-    btnDesmarcar.textContent = "👁 desmarcar";
-    btnDesmarcar.setAttribute("aria-label", "Desmarcar como leído");
+    btnDesmarcar.textContent = "\uD83D\uDC41 desmarcar";
+    btnDesmarcar.setAttribute("aria-label", "Desmarcar como le\u00EDdo");
     btnDesmarcar.addEventListener("click", function () { desmarcarLeida(pub.link); });
     btnContainer.appendChild(btnDesmarcar);
   } else {
     var btnLeido = document.createElement("button");
     btnLeido.className = "btn-leido";
-    btnLeido.textContent = "👁 lido";
-    btnLeido.setAttribute("aria-label", "Marcar como leído");
-    btnLeido.addEventListener("click", function () { marcarLeida(pub.link); });
+    btnLeido.textContent = "\uD83D\uDC41 lido";
+    btnLeido.setAttribute("aria-label", "Marcar como le\u00EDdo");
+    (function(link, modTs) {
+      btnLeido.addEventListener("click", function () { marcarLeida(link, modTs); });
+    })(pub.link, modTs);
     btnContainer.appendChild(btnLeido);
   }
   card.appendChild(btnContainer);
@@ -1463,6 +1632,44 @@ function populateNotifySubjects() {
 
     container.appendChild(label);
   });
+
+  // Add subscribed extra subjects section
+  var subscribed = getSubscribedCodes();
+  if (subscribed.length > 0) {
+    var hr = document.createElement("div");
+    hr.style.cssText = "border-top:1px solid #2a2a2a;margin:10px 0";
+    container.appendChild(hr);
+
+    var header = document.createElement("div");
+    header.style.cssText = "font-size:13px;color:#a855f7;font-weight:600;margin-bottom:6px";
+    header.textContent = "📬 Suscripciones adicionales";
+    container.appendChild(header);
+
+    subscribed.forEach(function (code) {
+      var resolved = resolveCatedraForCode(code);
+      if (!resolved || !resolved.id) return;
+
+      var label = document.createElement("label");
+      label.className = "notify-subject-label";
+
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.value = String(resolved.id);
+      checkbox.className = "notify-subject-checkbox";
+      checkbox.checked = true;
+
+      var subjName = getSubjectName(code) || code;
+      checkbox.dataset.subjectName = subjName;
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(" " + subjName + " (" + resolved.name + ")"));
+      var note = document.createElement("span");
+      note.style.cssText = "font-size:11px;color:#888;margin-left:4px";
+      note.textContent = "(Otras)";
+      label.appendChild(note);
+
+      container.appendChild(label);
+    });
+  }
 }
 
 function openNotifyModal() {
@@ -1600,4 +1807,180 @@ function handleNotifyUnsubscribe() {
         unsubscribeBtn.textContent = "Remover mi email";
       }
     });
+}
+
+// =============================
+// SUBSCRIBE EXTRA MODAL
+// =============================
+
+function openSubscribeModal() {
+  if (!catedrasLoaded) {
+    alert("Cargando datos de materias, espera un momento...");
+    return;
+  }
+
+  // Build list of ALL subjects with catedra (deduplicate by subject code)
+  var subscribed = getSubscribedCodes();
+  var subscribedSet = {};
+  subscribed.forEach(function (c) { subscribedSet[c] = true; });
+
+  var subjectsList = [];
+  var seenCodes = {};
+  if (typeof materias !== "undefined" && Array.isArray(materias)) {
+    materias.forEach(function (m) {
+      if (seenCodes[m.codigo]) return;
+      seenCodes[m.codigo] = true;
+      var resolved = resolveCatedraForCode(m.codigo);
+      if (!resolved || !resolved.id) return; // no cartelera
+      subjectsList.push({
+        code: m.codigo,
+        name: m.nombre,
+        anio: m.anio,
+        categoria: m.categoria,
+        catedraName: resolved.name,
+        catedraId: resolved.id,
+        checked: !!subscribedSet[m.codigo]
+      });
+    });
+  }
+
+  var obligatorias = subjectsList.filter(function(s) { return s.categoria !== "optativa"; });
+  var optativas = subjectsList.filter(function(s) { return s.categoria === "optativa"; });
+
+  // Create overlay
+  var overlay = document.createElement("div");
+  overlay.className = "modal subscribe-modal";
+  overlay.addEventListener("click", function (e) {
+    if (e.target === overlay) closeSubscribeModal();
+  });
+  document.addEventListener("keydown", function escHandler(e) {
+    if (e.key === "Escape") { closeSubscribeModal(); document.removeEventListener("keydown", escHandler); }
+  });
+
+  var content = document.createElement("div");
+  content.className = "modal-content";
+
+  var title = document.createElement("h2");
+  title.textContent = "📬 Recibir novedades de materias";
+  content.appendChild(title);
+
+  var p = document.createElement("p");
+  p.textContent = "Selecciona materias adicionales para recibir actualizaciones aunque no estén en tu plan actual.";
+  p.style.cssText = "font-size:13px;color:#999;margin:0 0 12px 0";
+  content.appendChild(p);
+
+  // --- Tabs ---
+  var tabBar = document.createElement("div");
+  tabBar.className = "subscribe-tab-bar";
+
+  var tabOblig = document.createElement("button");
+  tabOblig.className = "subscribe-tab active";
+  tabOblig.textContent = "Obligatorias";
+  tabOblig.setAttribute("data-tab", "obligatorias");
+  tabBar.appendChild(tabOblig);
+
+  var tabOpt = document.createElement("button");
+  tabOpt.className = "subscribe-tab";
+  tabOpt.textContent = "Optativas";
+  tabOpt.setAttribute("data-tab", "optativas");
+  tabBar.appendChild(tabOpt);
+  content.appendChild(tabBar);
+
+  // --- Tab content containers ---
+  var bodyOblig = document.createElement("div");
+  bodyOblig.className = "modal-body subscribe-tab-content";
+  bodyOblig.setAttribute("data-tab-content", "obligatorias");
+  content.appendChild(bodyOblig);
+
+  var bodyOpt = document.createElement("div");
+  bodyOpt.className = "modal-body subscribe-tab-content";
+  bodyOpt.style.display = "none";
+  bodyOpt.setAttribute("data-tab-content", "optativas");
+  content.appendChild(bodyOpt);
+
+  // Render subjects grouped by year with dividers
+  function renderSubjectGroup(list, container) {
+    // Sort by anio
+    list.sort(function(a, b) { return a.anio - b.anio; });
+    var currentAnio = 0;
+    list.forEach(function(subj) {
+      if (subj.anio !== currentAnio) {
+        currentAnio = subj.anio;
+        var divider = document.createElement("div");
+        divider.className = "subscribe-year-divider";
+        divider.textContent = currentAnio + "\u00b0 a\u00f1o";
+        container.appendChild(divider);
+      }
+      var label = document.createElement("label");
+      label.className = "subscribe-subject-label";
+
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "subscribe-subject-checkbox";
+      checkbox.checked = subj.checked;
+      checkbox.setAttribute("data-code", subj.code);
+
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(" " + subj.name));
+      var catedraSpan = document.createElement("span");
+      catedraSpan.className = "subscribe-catedra-name";
+      catedraSpan.textContent = subj.catedraName;
+      label.appendChild(catedraSpan);
+
+      container.appendChild(label);
+    });
+  }
+
+  renderSubjectGroup(obligatorias, bodyOblig);
+  renderSubjectGroup(optativas, bodyOpt);
+
+  // Tab switching logic
+  tabOblig.addEventListener("click", function() {
+    tabOblig.classList.add("active");
+    tabOpt.classList.remove("active");
+    bodyOblig.style.display = "";
+    bodyOpt.style.display = "none";
+  });
+  tabOpt.addEventListener("click", function() {
+    tabOpt.classList.add("active");
+    tabOblig.classList.remove("active");
+    bodyOblig.style.display = "none";
+    bodyOpt.style.display = "";
+  });
+
+  var buttons = document.createElement("div");
+  buttons.className = "modal-buttons";
+
+  var saveBtn = document.createElement("button");
+  saveBtn.className = "btn-save";
+  saveBtn.textContent = "Guardar";
+  saveBtn.addEventListener("click", function () {
+    var checkedCodes = [];
+    content.querySelectorAll(".subscribe-subject-checkbox:checked").forEach(function (cb) {
+      checkedCodes.push(cb.getAttribute("data-code"));
+    });
+    saveSubscribedCodes(checkedCodes);
+    closeSubscribeModal();
+    resolveAndFetch();
+  });
+  buttons.appendChild(saveBtn);
+
+  var cancelBtn = document.createElement("button");
+  cancelBtn.className = "btn-cancel";
+  cancelBtn.textContent = "✕ Cancelar";
+  cancelBtn.addEventListener("click", function () {
+    closeSubscribeModal();
+  });
+  buttons.appendChild(cancelBtn);
+
+  content.appendChild(buttons);
+  overlay.appendChild(content);
+  document.body.appendChild(overlay);
+}
+
+function closeSubscribeModal() {
+  var overlay = document.querySelector(".subscribe-modal");
+  if (overlay) {
+    document.body.removeChild(overlay);
+  }
 }
