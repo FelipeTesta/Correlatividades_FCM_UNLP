@@ -13,7 +13,7 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 - **Fechas de finales**: Consulta las fechas de exámenes finales disponibles (actualizado Feb-Dic 2026, 61 materias)
 - **Vacunas**: Seguimiento de vacunación requerida para la carrera
 - **Cartelera**: Verifica publicaciones de cátedras (avisos, exámenes, notas) con filtros por fecha y modos de visualización (por materia / cronológico)
-- **Notificaciones por email**: Recibe un email diario (8am) cuando haya nuevas publicaciones en tus cátedras
+- **Notificaciones por email**: Recibe emails (9h/13h/19h ART) cuando haya nuevas publicaciones en tus cátedras
 - **Exportar/Importar**: Guarda y restaura tu estado de progreso
 - **Responsive**: Funciona en desktop y mobile
 - **Modo oscuro**: Tema "Deep Black" (#000000)
@@ -30,7 +30,7 @@ Vista visual de todas las correlatividades organizadas por año. Hacé click en 
 
 ### Cartelera (cartelera.html)
 
-Muestra las publicaciones de las cátedras correspondientes a tus materias con estado "Cursando" o "Regularizada", más las publicaciones generales de la Facultad (sección "🏛 Avisos Generales de la Facultad", siempre visible). Seleccioná la cátedra cuando haya múltiples opciones. Filtra por fecha (365, 30 o 7 días) y alterná entre vista por materia o cronológica. Marcá publicaciones como leídas (👁). Usá el botón 🔔 Notificarme para suscribirte y recibir emails diarios con nuevas publicaciones (de cátedras y/o generales de la Facultad, con opción separada).
+Muestra las publicaciones de las cátedras correspondientes a tus materias con estado "Cursando" o "Regularizada", más las publicaciones generales de la Facultad (sección "🏛 Avisos Generales de la Facultad", siempre visible). Seleccioná la cátedra cuando haya múltiples opciones. Filtra por fecha (365, 30 o 7 días) y alterná entre vista por materia o cronológica. Marcá publicaciones como leídas (👁). Usá el botón 🔔 Notificarme para suscribirte y recibir emails 3x/día (9h/13h/19h ART) con nuevas publicaciones (de cátedras y/o generales de la Facultad, con opción separada).
 
 ## Versión
 

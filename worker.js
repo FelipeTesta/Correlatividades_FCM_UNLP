@@ -112,7 +112,7 @@ export default {
 
     // GET /health
     if (url.pathname === '/health') {
-      return new Response(JSON.stringify({ ok: true, cron: '0 8 * * *' }), {
+      return new Response(JSON.stringify({ ok: true, cron: '0 12,16,22 * * *' }), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }

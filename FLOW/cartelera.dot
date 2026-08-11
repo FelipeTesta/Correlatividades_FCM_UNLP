@@ -231,7 +231,7 @@ digraph Cartelera {
     kv_subs [label="KV CARTELERA_SUBS\nkey=email (lowercase normalized)\nvalue={codes, names}\n(backward-compat: legacy array)", fillcolor="#2d1028", color="#a855f7", shape=cylinder];
     kv_snapshots [label="KV CARTELERA_SNAPSHOTS\nkey=catedraID\nvalue=full pubs array\n(NOT slice 5 — slice 5 only\nfor welcome display)", fillcolor="#2d1028", color="#a855f7", shape=cylinder];
     secret_resend [label="Secret: RESEND_API_KEY\n(Resend email API)", fillcolor="#1a1a1a", color="#ff4444", shape=cylinder];
-    cron_trigger [label="Cron Trigger: 0 8 * * *\n(1x/day 8am)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    cron_trigger [label="Cron Trigger: 0 12,16,22 * * *\n(3x/day: 9h/13h/19h ART)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
 
     helper_parse [label="parseCatedraHtml(html)\nregex-based (NOT DOMParser)\nsplit 'ribbon-wrapper.card'\nextract: title, date, link\n(<a> href, handles absolute URLs)\n+ parseHomeHtml(html)\nsplit 'card.card-outline-success'\nhome faculty pubs (tag=General)", fillcolor="#1a1a1a", color="#666", shape=box];
     helper_fetch [label="fetchCatedraPubs(id)\nfetch + parseCatedraHtml\n→ [{title, date, link}]\n+ fetchHomePubs()\nfetch root / + parseHomeHtml", fillcolor="#1a1a1a", color="#666", shape=box];
