@@ -331,87 +331,63 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    // 1. List all subscriptions
+    // 1. List all subscriptions → build email→{codes,names,home} map
     let subsList;
     try { subsList = await env.CARTELERA_SUBS.list(); } catch (e) { console.error('KV list error: ' + e.message); return; }
 
-    // Build catedraID -> [emails] map + home opted-in emails
-    const catedraEmails = {};
-    const catedraNames = {};
-    const homeEmails = [];
+    const emailMap = {}; // email → {codes: [], names: {}, home: false}
     for (const key of subsList.keys) {
       const email = key.name;
-      let codes = [];
-      let names = {};
-      let home = false;
       try {
         const raw = await env.CARTELERA_SUBS.get(email);
-        if (raw) {
-          const subData = JSON.parse(raw);
-          codes = Array.isArray(subData) ? subData : (subData.codes || []);
-          names = Array.isArray(subData) ? {} : (subData.names || {});
-          home = !Array.isArray(subData) && !!subData.home;
-        }
-      } catch (e) { console.error('KV get error for ' + email + ': ' + e.message); continue; }
-      if (home) homeEmails.push(email);
-      codes.forEach(id => {
-        if (!catedraEmails[id]) catedraEmails[id] = [];
-        catedraEmails[id].push(email);
-        if (!catedraNames[id] && names[id]) catedraNames[id] = names[id];
+        if (!raw) continue;
+        const subData = JSON.parse(raw);
+        const codes = Array.isArray(subData) ? subData : (subData.codes || []);
+        const names = Array.isArray(subData) ? {} : (subData.names || {});
+        const home = !Array.isArray(subData) && !!subData.home;
+        emailMap[email] = { codes: [...new Set(codes)], names, home }; // dedup codes
+      } catch (e) { console.error('KV get error for ' + email + ': ' + e.message); }
+    }
+
+    // Collect unique catedra IDs + names + home-emails
+    const catedraIds = new Set();
+    const catedraNames = {}; // id → name (first-wins)
+    const homeEmails = [];
+    for (const [email, data] of Object.entries(emailMap)) {
+      if (data.home) homeEmails.push(email);
+      data.codes.forEach(id => {
+        catedraIds.add(id);
+        if (!catedraNames[id] && data.names[id]) catedraNames[id] = data.names[id];
       });
     }
 
-    // 2. For each unique catedra ID, fetch + check + notify
-    for (const [id, emails] of Object.entries(catedraEmails)) {
+    // 2. Fetch all catedras in parallel
+    const fetchPromises = Array.from(catedraIds).map(async (id) => {
       try {
         const pubs = await fetchCatedraPubs(id);
-
-        // Get stored snapshot
         const snapshotRaw = await env.CARTELERA_SNAPSHOTS.get(id);
         const snapshot = snapshotRaw ? JSON.parse(snapshotRaw) : [];
-
-        // Find new publications
         const newPubs = pubs.filter(p =>
           !snapshot.some(s => s.title === p.title && s.date === p.date && s.modified === p.modified)
         );
-
-        if (newPubs.length > 0) {
-          const displayName = catedraNames[id] || ('Cátedra ' + id);
-          const subject = 'Nueva publicación en ' + displayName + ' - Cartelera UNLP';
-          const html = '<h2>🔔 Cartelera UNLP</h2><p>Nuevas publicaciones en <strong>' + escapeHtml(displayName) + '</strong>:</p><ul>' +
-            newPubs.map(p => {
-              const pubLink = p.link ? (p.link.startsWith('http') ? p.link : 'https://cartelera.med.unlp.edu.ar' + p.link) : null;
-              const titleHtml = pubLink
-                ? '<a href="' + escapeHtml(pubLink) + '" style="color:#0066cc;text-decoration:none"><strong>' + escapeHtml(p.title) + '</strong></a>'
-                : '<strong>' + escapeHtml(p.title) + '</strong>';
-              return '<li>' + titleHtml + ' — ' + escapeHtml(p.date) + '</li>';
-            }).join('') +
-            '</ul><p><a href="https://cartelera.med.unlp.edu.ar/catedra/' + escapeHtml(id) + '">Ver cartelera completa</a></p>' +
-            '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
-
-          let anyEmailSent = false;
-          for (const email of emails) {
-            try {
-              await sendEmail(email, subject, html, env);
-              anyEmailSent = true;
-            } catch (e) {
-              console.error('Email send failed for ' + email + ': ' + e.message);
-            }
-          }
-
-          // Only update snapshot if at least one email was delivered
-          if (anyEmailSent) {
-            await env.CARTELERA_SNAPSHOTS.put(id, JSON.stringify(pubs));
-          } else {
-            console.error('All emails failed for catedra ' + id + ', snapshot NOT updated — will retry next cron');
-          }
-        }
+        return { id, displayName: catedraNames[id] || ('Cátedra ' + id), newPubs, allPubs: pubs, ok: true };
       } catch (e) {
         console.error('Error checking catedra ' + id + ': ' + e.message);
+        return { id, displayName: catedraNames[id] || ('Cátedra ' + id), newPubs: [], allPubs: [], ok: false };
+      }
+    });
+    const catedraResults = await Promise.allSettled(fetchPromises);
+
+    // Flatten results into lookup map (only successful fetches)
+    const catedraData = {};
+    for (const result of catedraResults) {
+      if (result.status === 'fulfilled' && result.value.ok) {
+        catedraData[result.value.id] = result.value;
       }
     }
 
-    // 3. Home general publications (fetched once, sent to opted-in subscribers)
+    // 3. Fetch home pubs (if any subscribers opted in)
+    let homeData = null;
     if (homeEmails.length > 0) {
       try {
         const homePubs = await fetchHomePubs();
@@ -420,35 +396,80 @@ export default {
         const newHomePubs = homePubs.filter(p =>
           !homeSnapshot.some(s => s.title === p.title && s.date === p.date && s.modified === p.modified)
         );
+        homeData = { newPubs: newHomePubs, allPubs: homePubs };
+      } catch (e) { console.error('Error checking home publications: ' + e.message); }
+    }
 
-        if (newHomePubs.length > 0) {
-          const subject = 'Nueva publicación general en la Facultad - Cartelera UNLP';
-          const html = '<h2>🔔 Cartelera UNLP</h2><p>Nuevas publicaciones generales de la Facultad:</p>' +
-            buildHomeEmailSection(newHomePubs) +
-            '<p><a href="https://cartelera.med.unlp.edu.ar/">Ver cartelera completa</a></p>' +
-            '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
+    // 4. Build per-email consolidated sections → send ONE email per user
+    const catedraSent = {}; // id → true (at least one email delivered for this catedra)
 
-          let anyHomeEmailSent = false;
-          for (const email of homeEmails) {
-            try {
-              await sendEmail(email, subject, html, env);
-              anyHomeEmailSent = true;
-            } catch (e) {
-              console.error('Home email send failed for ' + email + ': ' + e.message);
-            }
-          }
+    const emailTasks = Object.entries(emailMap).map(async ([email, data]) => {
+      const sections = [];
 
-          // Only update snapshot if at least one email was delivered
-          if (anyHomeEmailSent) {
-            await env.CARTELERA_SNAPSHOTS.put('home', JSON.stringify(homePubs));
-          } else {
-            console.error('All home emails failed, snapshot NOT updated — will retry next cron');
-          }
+      // Gather new pubs per catedra for this email
+      data.codes.forEach(id => {
+        const cd = catedraData[id];
+        if (cd && cd.newPubs.length > 0) {
+          sections.push({ type: 'catedra', displayName: cd.displayName, id, newPubs: cd.newPubs });
         }
+      });
+
+      // Home section
+      if (data.home && homeData && homeData.newPubs.length > 0) {
+        sections.push({ type: 'home', newPubs: homeData.newPubs });
+      }
+
+      if (sections.length === 0) return; // nothing new for this email
+
+      // Build consolidated HTML
+      const subject = '🔔 Nuevas publicaciones - Cartelera UNLP';
+      let html = '<h2>🔔 Cartelera UNLP</h2><p>Nuevas publicaciones en tus cátedras suscritas:</p>';
+
+      sections.forEach(sec => {
+        if (sec.type === 'home') {
+          html += buildHomeEmailSection(sec.newPubs);
+        } else {
+          html += '<div style="margin-bottom:16px;padding:12px;background:#f5f5f5;border-radius:8px">';
+          html += '<h3 style="margin:0 0 8px">' + escapeHtml(sec.displayName) + '</h3><ul style="margin:0">';
+          sec.newPubs.forEach(p => {
+            const pubLink = p.link ? (p.link.startsWith('http') ? p.link : 'https://cartelera.med.unlp.edu.ar' + p.link) : null;
+            const titleHtml = pubLink
+              ? '<a href="' + escapeHtml(pubLink) + '" style="color:#0066cc;text-decoration:none"><strong>' + escapeHtml(p.title) + '</strong></a>'
+              : '<strong>' + escapeHtml(p.title) + '</strong>';
+            html += '<li>' + titleHtml + ' — ' + escapeHtml(p.date) + '</li>';
+          });
+          html += '</ul><p><a href="https://cartelera.med.unlp.edu.ar/catedra/' + escapeHtml(sec.id) + '">Ver cartelera completa</a></p></div>';
+        }
+      });
+
+      html += '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
+
+      try {
+        await sendEmail(email, subject, html, env);
+        // Mark all catedras in this email as successfully sent
+        sections.forEach(sec => {
+          if (sec.type === 'catedra') catedraSent[sec.id] = true;
+        });
+        // If home section included, mark home as sent
+        if (sections.some(s => s.type === 'home')) catedraSent['home'] = true;
       } catch (e) {
-        console.error('Error checking home publications: ' + e.message);
+        console.error('Email send failed for ' + email + ': ' + e.message);
+      }
+    });
+
+    await Promise.allSettled(emailTasks);
+
+    // 5. Update snapshots only for catedras that had successful delivery
+    const snapshotTasks = [];
+    for (const [id, cd] of Object.entries(catedraData)) {
+      if (catedraSent[id] && cd.allPubs.length > 0) {
+        snapshotTasks.push(env.CARTELERA_SNAPSHOTS.put(id, JSON.stringify(cd.allPubs)));
       }
     }
+    if (catedraSent['home'] && homeData && homeData.allPubs.length > 0) {
+      snapshotTasks.push(env.CARTELERA_SNAPSHOTS.put('home', JSON.stringify(homeData.allPubs)));
+    }
+    await Promise.allSettled(snapshotTasks);
   }
 };
 
