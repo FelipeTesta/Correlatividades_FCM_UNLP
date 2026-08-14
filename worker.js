@@ -43,7 +43,7 @@ export default {
         await Promise.allSettled(codes.map(async (id) => {
           try {
             const pubs = await fetchCatedraPubs(id);
-            const latest5 = pubs.slice(0, 5);
+            const latest5 = pubsFromLastMonths(pubs, 12, 5);
             if (latest5.length > 0) catedraPubs[id] = latest5;
             await env.CARTELERA_SNAPSHOTS.put(id, JSON.stringify(pubs)); // store full array
           } catch (e) {
@@ -69,7 +69,7 @@ export default {
         if (Object.keys(catedraPubs).length > 0 || homePubs.length > 0) {
           try {
             const subject = '🔔 Cartelera UNLP - Suscripción confirmada';
-            const html = buildWelcomeHtml(catedraPubs, names || {}, homePubs.slice(0, 5));
+            const html = buildWelcomeHtml(catedraPubs, names || {}, pubsFromLastMonths(homePubs, 12, 5));
             await sendEmail(email, subject, html, env);
             welcomeEmailSent = true;
           } catch (e) {
@@ -594,8 +594,32 @@ async function sendEmail(to, subject, html, env) {
   }
 }
 
+function parsePubDate(str) {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})/.exec(str || '');
+  if (!m) return null;
+  const day = parseInt(m[1], 10), month = parseInt(m[2], 10) - 1, year = parseInt(m[3], 10);
+  const d = new Date(year, month, day);
+  if (isNaN(d.getTime())) return null;
+  return d;
+}
+
+function pubsFromLastMonths(pubs, months = 12, count = 5) {
+  if (!pubs || pubs.length === 0) return [];
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - months);
+  const out = [];
+  for (const p of pubs) {
+    if (out.length >= count) break;
+    const d = parsePubDate(p.date);
+    if (!d || d >= cutoff) {
+      out.push(p);
+    }
+  }
+  return out;
+}
+
 function buildWelcomeHtml(catedraPubs, names, homePubs) {
-  let html = '<h2>🔔 Cartelera UNLP</h2><p>¡Suscripción confirmada! Estas son las publicaciones recientes de tus cátedras:</p>';
+  let html = '<h2>🔔 Cartelera UNLP</h2><p>¡Suscripción confirmada! Estas son las últimas 5 publicaciones (últimos 12 meses) de tus cátedras:</p>';
   if (homePubs && homePubs.length > 0) {
     html += buildHomeEmailSection(homePubs);
   }

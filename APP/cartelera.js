@@ -382,7 +382,7 @@ function allVisibleRead() {
     var pubs = entry.pubs || [];
     for (var j = 0; j < pubs.length; j++) {
       var pub = pubs[j];
-      if (pub.date >= cutoff && pub.link) {
+      if ((pub.modificadaDate || pub.date) >= cutoff && pub.link) {
         var entryVal = leidas[pub.link];
         if (!entryVal) return false;
         if (entryVal === true) continue; // backward compat: old boolean
@@ -411,7 +411,7 @@ function marcarTodasLeidas() {
     codes.forEach(function (code) {
       var entry = fetchedData[code];
       (entry.pubs || []).forEach(function (pub) {
-        if (pub.date >= cutoff && pub.link) {
+        if ((pub.modificadaDate || pub.date) >= cutoff && pub.link) {
           delete leidas[pub.link];
         }
       });
@@ -421,7 +421,7 @@ function marcarTodasLeidas() {
     codes.forEach(function (code) {
       var entry = fetchedData[code];
       (entry.pubs || []).forEach(function (pub) {
-        if (pub.date >= cutoff && pub.link) {
+        if ((pub.modificadaDate || pub.date) >= cutoff && pub.link) {
           var modTs = pub.modificadaDate ? formatDateTime(pub.modificadaDate) : null;
           leidas[pub.link] = { read: true, mod: modTs };
         }
@@ -1093,10 +1093,10 @@ function render() {
   codes.forEach(function (code) {
     var entry = fetchedData[code];
     var pubs = (entry.pubs || []).filter(function (p) {
-      return p.date >= cutoff;
+      return (p.modificadaDate || p.date) >= cutoff;
     });
     // Sort by date descending
-    pubs.sort(function (a, b) { return b.date - a.date; });
+    pubs.sort(function (a, b) { return (b.modificadaDate || b.date) - (a.modificadaDate || a.date); });
     subjectData[code] = {
       catedraName: entry.catedraName,
       error: entry.error,
