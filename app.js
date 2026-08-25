@@ -61,26 +61,6 @@ function guardarCatedraSeleccionada(codigo, catedra) {
     try { localStorage.setItem("catedrasSeleccionadas", JSON.stringify(catedrasSeleccionadas)); } catch(e) {}
 }
 
-// ===============================
-// FECHAS DE FINALES - Parser CSV
-// ===============================
-
-const MESES = {
-    'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
-    'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
-};
-
-function parsearFecha(fechaStr, anio = 2026) {
-    if (!fechaStr || fechaStr === '-' || fechaStr.trim() === '') return null;
-    const fechaStrLimpia = fechaStr.trim().toLowerCase();
-    const match = fechaStrLimpia.match(/(\d{1,2})-([a-zé]+)/);
-    if (!match) return null;
-    const dia = parseInt(match[1]);
-    const mes = MESES[match[2]];
-    if (mes === undefined) return null;
-    return new Date(anio, mes, dia);
-}
-
 function parseFechaLocal(dateStr) {
     if (!dateStr) return null;
     const parts = dateStr.split('-');

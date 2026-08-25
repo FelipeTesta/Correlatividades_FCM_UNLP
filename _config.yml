@@ -10,3 +10,7 @@ exclude:
   - REF/
   - .gitignore
   - README.md
+  - FLOW/
+  - worker.js
+  - wrangler.toml
+  - deploy.ps1

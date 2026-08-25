@@ -338,12 +338,6 @@ h2 {
 }
 
 /* ============================= */
-/* LEGEND BOX (REMOVED) */
-/* ============================= */
-
-/* ... styles removed ... */
-
-/* ============================= */
 /* OPTATIVAS BOX */
 /* ============================= */
 
@@ -587,10 +581,8 @@ li button:hover {
     display: none;
 }
 
-/* estilos anteriores de ocultar botones est├ín obsoletos; ahora el JS decide qu├® mostrar */
-
 /* ============================= */
-/* REGULARIZADAS SUBDIVIS├òES */
+/* REGULARIZADAS SUBDIVISIONES */
 /* ============================= */
 
 .regularizadas-box {

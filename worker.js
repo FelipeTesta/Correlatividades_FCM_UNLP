@@ -317,10 +317,18 @@ export default {
       if (tag) target += `/etiqueta/${tag}`;
     }
     let html;
+    const upstreamController = new AbortController();
+    const upstreamTimeout = setTimeout(() => upstreamController.abort(), 15000); // mirror client-side 15s timeout
     try {
-      html = await (await fetch(target)).text();
+      const upstreamRes = await fetch(target, { signal: upstreamController.signal });
+      html = await upstreamRes.text();
     } catch (err) {
+      if (err.name === 'AbortError') {
+        return new Response(JSON.stringify({ error: 'upstream timeout after 15s' }), {status:504, headers:{'Content-Type':'application/json','Access-Control-Allow-Origin':'*'}});
+      }
       return new Response('proxy error: ' + (err.message || 'fetch failed'), {status:502, headers:{'Access-Control-Allow-Origin':'*','Content-Type':'text/plain'}});
+    } finally {
+      clearTimeout(upstreamTimeout);
     }
     return new Response(html, {
       headers: {
@@ -401,7 +409,8 @@ export default {
     }
 
     // 4. Build per-email consolidated sections → send ONE email per user
-    const catedraSent = {}; // id → true (at least one email delivered for this catedra)
+    const catedraDelivered = {}; // id → count of successful email deliveries including this catedra (or 'home')
+    const catedraFailed = {};    // id → count of failed email deliveries including this catedra (or 'home')
 
     const emailTasks = Object.entries(emailMap).map(async ([email, data]) => {
       const sections = [];
@@ -446,27 +455,33 @@ export default {
 
       try {
         await sendEmail(email, subject, html, env);
-        // Mark all catedras in this email as successfully sent
+        // Count successful deliveries per catedra/home
         sections.forEach(sec => {
-          if (sec.type === 'catedra') catedraSent[sec.id] = true;
+          const key = sec.type === 'home' ? 'home' : sec.id;
+          catedraDelivered[key] = (catedraDelivered[key] || 0) + 1;
         });
-        // If home section included, mark home as sent
-        if (sections.some(s => s.type === 'home')) catedraSent['home'] = true;
       } catch (e) {
         console.error('Email send failed for ' + email + ': ' + e.message);
+        // Count failures so affected snapshots are NOT updated (retry next cron)
+        sections.forEach(sec => {
+          const key = sec.type === 'home' ? 'home' : sec.id;
+          catedraFailed[key] = (catedraFailed[key] || 0) + 1;
+        });
       }
     });
 
     await Promise.allSettled(emailTasks);
 
-    // 5. Update snapshots only for catedras that had successful delivery
+    // 5. Update snapshots ONLY for catedras where EVERY email delivered successfully.
+    // If ANY email failed, skip that snapshot so failed users retry next cron
+    // (already-notified users may receive duplicates — accepted trade-off).
     const snapshotTasks = [];
     for (const [id, cd] of Object.entries(catedraData)) {
-      if (catedraSent[id] && cd.allPubs.length > 0) {
+      if ((catedraDelivered[id] || 0) > 0 && (catedraFailed[id] || 0) === 0 && cd.allPubs.length > 0) {
         snapshotTasks.push(env.CARTELERA_SNAPSHOTS.put(id, JSON.stringify(cd.allPubs)));
       }
     }
-    if (catedraSent['home'] && homeData && homeData.allPubs.length > 0) {
+    if ((catedraDelivered['home'] || 0) > 0 && (catedraFailed['home'] || 0) === 0 && homeData && homeData.allPubs.length > 0) {
       snapshotTasks.push(env.CARTELERA_SNAPSHOTS.put('home', JSON.stringify(homeData.allPubs)));
     }
     await Promise.allSettled(snapshotTasks);

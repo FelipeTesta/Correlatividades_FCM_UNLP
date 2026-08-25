@@ -34,7 +34,7 @@ Muestra las publicaciones de las cátedras correspondientes a tus materias con e
 
 ## Versión
 
-v0.08 — Julho 2026
+v0.08 — Agosto 2026
 
 ## Registro de cambios
 

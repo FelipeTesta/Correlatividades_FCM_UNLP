@@ -374,9 +374,6 @@ body {
 .subject-node.status-no-puede-cursar {
     background-color: rgba(51, 51, 51, 0.15);
 }
-.subject-node.status-optativa {
-    background-color: rgba(168, 85, 247, 0.15);
-}
 
 .subject-node.status-optativa-puede-cursar {
     background-color: rgba(168, 85, 247, 0.12);
@@ -401,9 +398,6 @@ body {
 }
 .subject-node.status-no-puede-cursar .node-name {
     color: #666;
-}
-.subject-node.status-optativa .node-code {
-    color: #a855f7;
 }
 
 .subject-node.status-optativa-puede-cursar .node-code {
@@ -571,9 +565,6 @@ body {
 }
 .subject-node.highlighted.status-no-puede-cursar {
     background-color: #1c1c1c;
-}
-.subject-node.highlighted.status-optativa {
-    background-color: #2a1e36;
 }
 .subject-node.highlighted.status-optativa-puede-cursar {
     background-color: #261c2f;
