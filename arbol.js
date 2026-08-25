@@ -29,6 +29,19 @@ const STATUS_CLASS_MAP = {
     'optativa-no-puede-cursar': 'status-optativa-no-puede-cursar'
 };
 
+// ---- State cache (perf: avoid repeated JSON.parse of localStorage) ----
+var _stateCache = { estados: null, cursando: null };
+function getCachedState(key) {
+    if (_stateCache[key] === null) {
+        try { _stateCache[key] = JSON.parse(localStorage.getItem(key) || '{}'); }
+        catch(e) { _stateCache[key] = {}; }
+    }
+    return _stateCache[key];
+}
+function invalidateStateCache(key) { _stateCache[key] = null; }
+// Cross-tab sync: re-read localStorage when tab regains focus
+window.addEventListener('focus', function() { invalidateStateCache('estados'); invalidateStateCache('cursando'); });
+
 // ===============================
 // INIT
 // ===============================
@@ -54,10 +67,8 @@ window.addEventListener('resize', function () {
 function initTree() {
     selectedNode = null;
 
-    // Read states from localStorage
-    var saved;
-    try { saved = localStorage.getItem('estados'); } catch(e) { saved = null; }
-    try { window.estados = saved ? JSON.parse(saved) : {}; } catch(e) { window.estados = {}; }
+    // Read states from localStorage (cached)
+    window.estados = getCachedState('estados');
 
     // Group subjects by year and type
     var years = {};
@@ -481,8 +492,7 @@ function countMissingPrerequisites(codigo, visited) {
 // ===============================
 
 function setSubjectState(codigo, estado) {
-    var estadosData;
-    try { estadosData = JSON.parse(localStorage.getItem('estados') || '{}'); } catch(e) { estadosData = {}; }
+    var estadosData = getCachedState('estados');
     estadosData[codigo] = estado;
     try { localStorage.setItem('estados', JSON.stringify(estadosData)); } catch(e) {}
     window.estados = estadosData;
@@ -490,15 +500,13 @@ function setSubjectState(codigo, estado) {
 }
 
 function removeSubjectState(codigo) {
-    var estadosData;
-    try { estadosData = JSON.parse(localStorage.getItem('estados') || '{}'); } catch(e) { estadosData = {}; }
+    var estadosData = getCachedState('estados');
     delete estadosData[codigo];
     try { localStorage.setItem('estados', JSON.stringify(estadosData)); } catch(e) {}
     window.estados = estadosData;
 
     // Also clear cursando state for this subject
-    var cursandoData;
-    try { cursandoData = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { cursandoData = {}; }
+    var cursandoData = getCachedState('cursando');
     if (cursandoData[codigo]) {
         delete cursandoData[codigo];
         try { localStorage.setItem('cursando', JSON.stringify(cursandoData)); } catch(e) {}
@@ -512,14 +520,12 @@ function removeSubjectState(codigo) {
 // ===============================
 
 function isCursando(codigo) {
-    var data;
-    try { data = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { data = {}; }
+    var data = getCachedState('cursando');
     return !!data[codigo];
 }
 
 function toggleCursando(codigo) {
-    var data;
-    try { data = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { data = {}; }
+    var data = getCachedState('cursando');
     if (data[codigo]) {
         delete data[codigo];
     } else {
@@ -1147,14 +1153,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===============================
 // SCROLL REDRAW & COMPACT INIT (one-time setup)
-// ===============================
+ // ===============================
+var _scrollDrawLast = 0, _scrollDrawTimer = null;
+function throttledDrawConnections() {
+    var now = Date.now();
+    if (now - _scrollDrawLast >= 100) {
+        _scrollDrawLast = now;
+        requestAnimationFrame(drawConnections);
+    } else if (!_scrollDrawTimer) {
+        _scrollDrawTimer = setTimeout(function() {
+            _scrollDrawTimer = null;
+            _scrollDrawLast = Date.now();
+            requestAnimationFrame(drawConnections);
+        }, 100 - (now - _scrollDrawLast));
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     var wrapper = document.querySelector('.tree-wrapper');
     if (wrapper) {
         wrapper.addEventListener('scroll', function() {
-            requestAnimationFrame(function() {
-                drawConnections();
-            });
+            throttledDrawConnections();
         }, { passive: true });
     }
 });

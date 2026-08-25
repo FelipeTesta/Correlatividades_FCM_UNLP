@@ -8,8 +8,7 @@
 // BASE LOCAL
 // ===============================
 
-let estados;
-try { var _s = localStorage.getItem("estados"); estados = _s ? JSON.parse(_s) : {}; } catch(e) { estados = {}; }
+let estados = getCachedState('estados');
 let proyectosExtension;
 try { var _s = localStorage.getItem("proyectosExtension"); proyectosExtension = _s ? JSON.parse(_s) : []; } catch(e) { proyectosExtension = []; }
 let anioIngreso;
@@ -21,6 +20,19 @@ let catedrasSeleccionadas;
 try { var _s = localStorage.getItem("catedrasSeleccionadas"); catedrasSeleccionadas = _s ? JSON.parse(_s) : {}; } catch(e) { catedrasSeleccionadas = {}; }
 let boxStates;
 try { var _s = localStorage.getItem("boxStates"); boxStates = _s ? JSON.parse(_s) : {}; } catch(e) { boxStates = {}; }
+
+// ---- State cache (perf: avoid repeated JSON.parse of localStorage) ----
+var _stateCache = { estados: null, cursando: null };
+function getCachedState(key) {
+    if (_stateCache[key] === null) {
+        try { _stateCache[key] = JSON.parse(localStorage.getItem(key) || '{}'); }
+        catch(e) { _stateCache[key] = {}; }
+    }
+    return _stateCache[key];
+}
+function invalidateStateCache(key) { _stateCache[key] = null; }
+// Cross-tab sync: re-read localStorage when tab regains focus
+window.addEventListener('focus', function() { invalidateStateCache('estados'); invalidateStateCache('cursando'); });
 
 function getBoxKey(element) {
     const h3 = element.querySelector("h3, h4");
@@ -241,18 +253,19 @@ function guardarLocalYRender() {
 // ===============================
 
 function resetearTodos() {
-    estados = {};
-    try { localStorage.removeItem("estados"); } catch(e) {}
-    try { localStorage.removeItem("cursando"); } catch(e) {}
+    var estadosData = getCachedState('estados');
+    for (var k in estadosData) delete estadosData[k];
+    var cursandoData = getCachedState('cursando');
+    for (var k in cursandoData) delete cursandoData[k];
+    try { localStorage.setItem("estados", JSON.stringify(estadosData)); } catch(e) {}
+    try { localStorage.setItem("cursando", JSON.stringify(cursandoData)); } catch(e) {}
     render();
 }
 
 function toggleCursandoMain(code, checked) {
-    try {
-        var cursando = JSON.parse(localStorage.getItem('cursando') || '{}');
-        if (checked) cursando[code] = true; else delete cursando[code];
-        localStorage.setItem('cursando', JSON.stringify(cursando));
-    } catch(e) {}
+    var cursando = getCachedState('cursando');
+    if (checked) cursando[code] = true; else delete cursando[code];
+    try { localStorage.setItem('cursando', JSON.stringify(cursando)); } catch(e) {}
     guardarLocalYRender();
 }
 
@@ -516,7 +529,8 @@ function actualizarBarraProgreso() {
         } else {
             // Check cursando state — counts as progress
             var isCursandoOn = false;
-            try { var cd = JSON.parse(localStorage.getItem('cursando') || '{}'); isCursandoOn = !!cd[m.codigo]; } catch(e) {}
+            var cursandoData = getCachedState('cursando');
+            isCursandoOn = !!cursandoData[m.codigo];
             if (isCursandoOn) {
                 aprobadas += puntos;
             } else if (cumpleRequisitos(m.paraCursar, m)) {
@@ -867,8 +881,7 @@ infoText += materia.anio + "° Año";
 
         // Cursando toggle for puede cursar items
         if (id.startsWith("puedeCursar-")) {
-            var cursandoData;
-            try { cursandoData = JSON.parse(localStorage.getItem('cursando') || '{}'); } catch(e) { cursandoData = {}; }
+            var cursandoData = getCachedState('cursando');
             var isCursandoOn = !!cursandoData[codigo];
 
             var toggleWrap = document.createElement("span");
@@ -1017,12 +1030,10 @@ infoText += materia.anio + "° Año";
 
     // Apply cursando-active class for puede cursar items
     if (codigo && id && (id === "puedeCursar" || id.startsWith("puedeCursar-"))) {
-        try {
-            var cursandoData = JSON.parse(localStorage.getItem('cursando') || '{}');
-            if (cursandoData[codigo]) {
-                li.classList.add("cursando-active");
-            }
-        } catch(e) {}
+        var cursandoData = getCachedState('cursando');
+        if (cursandoData[codigo]) {
+            li.classList.add("cursando-active");
+        }
     }
 
     document.getElementById(id).appendChild(li);
