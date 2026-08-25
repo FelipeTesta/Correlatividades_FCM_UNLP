@@ -31,7 +31,7 @@ digraph TreeMode {
     create_years [label="Create year sections\n.year-section → Año 1..6", fillcolor="#1a1a1a", color="#666", shape=box];
     create_years -> create_nodes [label="for each subject in year", fontcolor="#888", fontsize=10];
     create_nodes [label="Create subject nodes\nNode: getSubjectStatus()\n- aprobada → #22c55e + glass\n- regularizada → #f97316\n- puede-cursar → #facc15\n- no-puede-cursar → #333\n- optativa-puede → #a855f7\n- optativa-no-puede → #581c87\n- cursando → #22d3ee + border anim", fillcolor="#1a1a1a", color="#666", shape=box];
-    create_nodes -> add_actions [label="Add ✅🟨🔄 + Cursando toggle", fontcolor="#888", fontsize=10];
+    create_nodes -> add_actions [label="Add ✅🟧🔄 + Cursando toggle", fontcolor="#888", fontsize=10];
     add_actions [label="Add action buttons & toggles\n(shown on hover / selection)", fillcolor="#1a1a1a", color="#666", shape=box];
     add_actions -> svg_setup [label="last step", fontcolor="#888", fontsize=10];
     svg_setup [label="Setup SVG layer\n(absolute, z-index: 0)", fillcolor="#1a1a1a", color="#666", shape=box];
@@ -82,7 +82,7 @@ digraph TreeMode {
     style=dashed;
 
     btn_aprobar [label="✅ Aprobar", fillcolor="#003803", color="#22c55e", shape=box];
-    btn_regularizar [label="🟨 Regularizar", fillcolor="#3a1a00", color="#f97316", shape=box];
+    btn_regularizar [label="🟧 Regularizar", fillcolor="#3a1a00", color="#f97316", shape=box];
     btn_resetear [label="🔄 Resetear", fillcolor="#1a1a1a", color="#666", shape=box];
     guardar_local [label="guardarLocalYRender()\n→ save to localStorage\n→ initTree() re-render", fillcolor="#1a1a1a", color="#22d3ee", shape=box, style="filled,rounded,bold"];
   }

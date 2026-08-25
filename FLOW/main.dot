@@ -53,7 +53,7 @@ digraph MainPage {
     style=dashed;
 
     action_aprobar [label="✅ Aprobar\n(click button)", fillcolor="#003803", color="#22c55e", shape=box];
-    action_regularizar [label="🟨 Regularizar\n(click button)", fillcolor="#3a1a00", color="#f97316", shape=box];
+    action_regularizar [label="🟧 Regularizar\n(click button)", fillcolor="#3a1a00", color="#f97316", shape=box];
     action_resetear [label="🔄 Resetear\n(click button)", fillcolor="#1a1a1a", color="#666", shape=box];
     action_toggleBox [label="▾/▸ Toggle Box\n(click header)", fillcolor="#1a1a1a", color="#555", shape=box];
     action_export [label="💾 Exportar\n(download JSON)", fillcolor="#1a1a1a", color="#555", shape=box];
@@ -86,8 +86,8 @@ digraph MainPage {
     style=dashed;
 
     list_aprobadas [label="aprobadas\n✅ Approved courses", fillcolor="#003803", color="#22c55e", shape=box];
-    list_puedeFinal [label="puedeFinal\n🟨 Regularized + ready for final", fillcolor="#3a1a00", color="#f97316", shape=box];
-    list_noPuedeFinal [label="noPuedeFinal\n🟨 Regularized + blocked final", fillcolor="#3a1a00", color="#f97316", shape=box];
+    list_puedeFinal [label="puedeFinal\n🟧 Regularized + ready for final", fillcolor="#3a1a00", color="#f97316", shape=box];
+    list_noPuedeFinal [label="noPuedeFinal\n🟧 Regularized + blocked final", fillcolor="#3a1a00", color="#f97316", shape=box];
     list_pCursarOblig [label="puedeCursar-obligatorias\n🟡 Can start (obligatory)", fillcolor="#1a1a00", color="#facc15", shape=box];
     list_pCursarOpt [label="puedeCursar-optativas\n🟡 Can start (optativa)", fillcolor="#1a001a", color="#a855f7", shape=box];
     list_noPCursarOblig [label="noPuedeCursar-obligatorias\n🔴 Blocked (obligatory)", fillcolor="#1a0000", color="#ff4444", shape=box];

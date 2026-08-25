@@ -256,7 +256,7 @@ function createSubjectNode(m) {
     if (status !== 'regularizada') {
         var btnRegularizar = document.createElement('button');
         btnRegularizar.className = 'node-btn node-btn-regularizar';
-        btnRegularizar.textContent = '\uD83D\uDFE8';
+        btnRegularizar.textContent = '\uD83D\uDFE7';
         btnRegularizar.title = 'Regularizar';
         btnRegularizar.onclick = function(e) { e.stopPropagation(); setSubjectState(m.codigo, 'regularizada'); };
         btnRegularizar.setAttribute('aria-label', 'Regularizar ' + m.nombre);
@@ -1423,7 +1423,7 @@ function showTreeHelpModal() {
     var items = [
         '<b>\uD83D\uDD0D Navegaci\u00F3n:</b> Cada columna es un a\u00F1o (1\u00BA a 6\u00BA). Las filas muestran obligatorias y optativas.',
         '<b>\uD83D\uDC46 Selecci\u00F3n:</b> Toca/haz clic en una materia para resaltar sus correlativas (prerrequisitos + dependientes). ESC o toca vac\u00EDo para deseleccionar.',
-        '<b>\u2705 \uD83D\uDFE8 \uD83D\uDD04 Acciones:</b>' + (isMobile
+        '<b>\u2705 \uD83D\uDFE7 \uD83D\uDD04 Acciones:</b>' + (isMobile
             ? ' <i>Long-press</i> (mantener pulsado 400ms) sobre una materia para ver botones de Aprobar, Regularizar y Resetear.'
             : ' Pasa el mouse sobre una materia para ver los botones de Aprobar, Regularizar y Resetear.'),
         '<b>\uD83D\uDCAD Cursando:</b> En materias "Puede cursar", activa el interruptor para marcar que la est\u00E1s cursando. Las dependientes muestran un borde animado.',

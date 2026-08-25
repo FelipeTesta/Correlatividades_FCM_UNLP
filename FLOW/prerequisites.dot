@@ -75,7 +75,7 @@ digraph Prerequisites {
 
     cond_aprobada [label="condicion: 'aprobada'\n✅ Must be fully approved\n(has taken + passed final)\n\nlocalStorage check:\nestados[CODE] === 'aprobada'", fillcolor="#003803", color="#22c55e", shape=box];
 
-    cond_regularizada [label="condicion: 'regularizada'\n🟨 Must have cursada approved\n(attended, may or may not have final)\n\nlocalStorage check:\nestados[CODE] === 'aprobada' OR\nestados[CODE] === 'regularizada'", fillcolor="#3a1a00", color="#f97316", shape=box];
+    cond_regularizada [label="condicion: 'regularizada'\n🟧 Must have cursada approved\n(attended, may or may not have final)\n\nlocalStorage check:\nestados[CODE] === 'aprobada' OR\nestados[CODE] === 'regularizada'", fillcolor="#3a1a00", color="#f97316", shape=box];
 
     opt_horas [label="OPT-HORAS (special)\nOptativa hours requirement\n\nLogic:\nSum all 'aprobada' optativa.horas\nCheck if >= required hours", fillcolor="#1a001a", color="#a855f7", shape=box];
   }
