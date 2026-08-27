@@ -1135,9 +1135,10 @@ function showHelpModal() {
         '✅ <b>Aprobar</b> — Marca la materia como aprobada (final rendido).',
         '🟧 <b>Regularizar</b> — Marca la materia como cursada (falta rendir final).',
         '🔄 <b>Resetear</b> — Quita el estado de la materia.',
-        '🟦 <b>Cursando</b> — Indica que estás cursando la materia este cuatrimestre (afecta la barra de progreso).',
+        '🟦 <b>Cursando</b> — Activa el interruptor en materias "Puede cursar" para marcar que la estás cursando este cuatrimestre (afecta la barra de progreso).',
         '⚠️ Haz clic en el icono ⚠ para ver qué requisitos te faltan.',
         '🗓️ <b>Ver Fechas</b> (📅) — Consulta las fechas de exámenes finales.',
+        '💉 <b>Vacunas</b> — Registra tus vacunas obligatorias de la carrera.',
         '📋 <b>Cartelera</b> — Ver publicaciones y fechas de examen de las cátedras.',
         '🌳 <b>Modo Árbol</b> — Vista alternativa de correlatividades.',
         '💾 <b>Exportar/Importar</b> — Guarda o restaura tu progreso.'

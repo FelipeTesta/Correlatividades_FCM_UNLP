@@ -1486,9 +1486,9 @@ function showTreeHelpModal() {
             ? ' <i>Long-press</i> (mantener pulsado 400ms) sobre una materia para ver botones de Aprobar, Regularizar y Resetear.'
             : ' Pasa el mouse sobre una materia para ver los botones de Aprobar, Regularizar y Resetear.'),
         '<b>\uD83D\uDCAD Cursando:</b> En materias "Puede cursar", activa el interruptor para marcar que la est\u00E1s cursando. Las dependientes muestran un borde animado.',
-        '<b>\uD83D\uDD04 Zoom:</b> Usa los controles + \u2212 \u223C para alejar/acercar. Rango: 30%\u2013300%.',
+        '<b>\uD83D\uDD04 Zoom:</b> Usa los controles + \u2212 \u223C para alejar/acercar (30%\u2013300%). En m\u00F3vil: pellizca con 2 dedos.',
         '<b>\uD83D\uDCD0 Optativas:</b> El toggle "Optativas" muestra/oculta las materias optativas.',
-        '<b>\uD83D\uDFE1 \uD83D\uDFE1:</b> Aparece al lado de materias que faltan exactamente 1 requisito para poder cursar.',
+        '<b>\uD83D\uDFE1:</b> Aparece al lado de materias que faltan exactamente 1 requisito para poder cursar.',
         '<b>\uD83D\uDCCA Leyenda:</b> El bot\u00F3n "Leyenda" muestra el significado de colores, l\u00EDneas e iconos.',
         '<b>\uD83D\uDCCB Cartelera:</b> "Verificar Cartelera" muestra publicaciones de las c\u00E1tedras de materias en curso.'
     ];
