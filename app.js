@@ -8,19 +8,6 @@
 // BASE LOCAL
 // ===============================
 
-let estados = getCachedState('estados');
-let proyectosExtension;
-try { var _s = localStorage.getItem("proyectosExtension"); proyectosExtension = _s ? JSON.parse(_s) : []; } catch(e) { proyectosExtension = []; }
-let anioIngreso;
-try { anioIngreso = localStorage.getItem("anioIngreso") || new Date().getFullYear(); } catch(e) { anioIngreso = new Date().getFullYear(); }
-let fechasFinales = {};
-let catedrasData = {};
-let fechasCargadas = false;
-let catedrasSeleccionadas;
-try { var _s = localStorage.getItem("catedrasSeleccionadas"); catedrasSeleccionadas = _s ? JSON.parse(_s) : {}; } catch(e) { catedrasSeleccionadas = {}; }
-let boxStates;
-try { var _s = localStorage.getItem("boxStates"); boxStates = _s ? JSON.parse(_s) : {}; } catch(e) { boxStates = {}; }
-
 // ---- State cache (perf: avoid repeated JSON.parse of localStorage) ----
 var _stateCache = { estados: null, cursando: null };
 function getCachedState(key) {
@@ -33,6 +20,19 @@ function getCachedState(key) {
 function invalidateStateCache(key) { _stateCache[key] = null; }
 // Cross-tab sync: re-read localStorage when tab regains focus
 window.addEventListener('focus', function() { invalidateStateCache('estados'); invalidateStateCache('cursando'); });
+
+let estados = getCachedState('estados');
+let proyectosExtension;
+try { var _s = localStorage.getItem("proyectosExtension"); proyectosExtension = _s ? JSON.parse(_s) : []; } catch(e) { proyectosExtension = []; }
+let anioIngreso;
+try { anioIngreso = localStorage.getItem("anioIngreso") || new Date().getFullYear(); } catch(e) { anioIngreso = new Date().getFullYear(); }
+let fechasFinales = {};
+let catedrasData = {};
+let fechasCargadas = false;
+let catedrasSeleccionadas;
+try { var _s = localStorage.getItem("catedrasSeleccionadas"); catedrasSeleccionadas = _s ? JSON.parse(_s) : {}; } catch(e) { catedrasSeleccionadas = {}; }
+let boxStates;
+try { var _s = localStorage.getItem("boxStates"); boxStates = _s ? JSON.parse(_s) : {}; } catch(e) { boxStates = {}; }
 
 function getBoxKey(element) {
     const h3 = element.querySelector("h3, h4");
@@ -1140,8 +1140,7 @@ function showHelpModal() {
         '🗓️ <b>Ver Fechas</b> (📅) — Consulta las fechas de exámenes finales.',
         '💉 <b>Vacunas</b> — Registra tus vacunas obligatorias de la carrera.',
         '📋 <b>Cartelera</b> — Ver publicaciones y fechas de examen de las cátedras.',
-        '🌳 <b>Modo Árbol</b> — Vista alternativa de correlatividades.',
-        '💾 <b>Exportar/Importar</b> — Guarda o restaura tu progreso.'
+        '🌳 <b>Modo Árbol</b> — Vista alternativa de correlatividades.'
     ];
 
     var list = document.createElement("ul");

@@ -591,7 +591,7 @@ function verificarRequisitoConCursando(req) {
         return false;
     }
     var estadoMateria = estados[req.materia];
-    if (req.condicion === 'aprobada') return estadoMateria === 'aprobada';
+    if (req.condicion === 'aprobada') return estadoMateria === 'aprobada' || isCursando(req.materia);
     if (req.condicion === 'regularizada') return !!estadoMateria || isCursando(req.materia);
     return false;
 }

@@ -16,7 +16,6 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 - **Vacunas**: Seguimiento de vacunación requerida para la carrera
 - **Cartelera**: Verifica publicaciones de cátedras (avisos, exámenes, notas) con filtros por fecha y modos de visualización (por materia / cronológico)
 - **Notificaciones por email**: Recibe emails (9h/13h/19h ART) cuando haya nuevas publicaciones en tus cátedras
-- **Exportar/Importar**: Guarda y restaura tu estado de progreso
 - **Responsive**: Funciona en desktop y mobile
 - **Modo oscuro**: Tema "Deep Black" (#000000)
 
@@ -24,7 +23,7 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 
 ### Página principal (index.html)
 
-Marca tus materias como aprobadas (✅) o regularizadas (🟧). Las listas se actualizan automáticamente mostrando qué puedes cursar, qué no puedes cursar, y qué finales podes rendir. Consulta las fechas de exámenes con el botón de calendario. Exporta tu progreso para mantenerlo respaldado.
+Marca tus materias como aprobadas (✅) o regularizadas (🟧). Las listas se actualizan automáticamente mostrando qué puedes cursar, qué no puedes cursar, y qué finales podes rendir. Consulta las fechas de exámenes con el botón de calendario.
 
 ### Modo Árbol (arbol.html)
 

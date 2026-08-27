@@ -358,12 +358,14 @@ const materias = [
 },
 { codigo:"MI291", nombre:"Medicina Interna II", nombreCorto: "Med Interna II", anio:5, categoria:"anual", horas:200,
   paraCursar:[
+    {materia:"MI191",condicion:"aprobada"},
     {materia:"F9001",condicion:"regularizada"},
     {materia:"M0001",condicion:"regularizada"},
     {materia:"PT001",condicion:"aprobada"},
     {materia:"SEM91",condicion:"aprobada"}
   ],
   paraAprobar:[
+    {materia:"MI191",condicion:"aprobada"},
     {materia:"F9001",condicion:"regularizada"},
     {materia:"M0001",condicion:"regularizada"},
     {materia:"PT001",condicion:"aprobada"},
