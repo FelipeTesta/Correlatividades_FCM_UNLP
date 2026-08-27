@@ -251,6 +251,9 @@ body {
     min-width: 100px;
     max-width: 200px;
     flex: 0 0 calc(14.285% - 4px);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 
 .subject-node:hover {
@@ -281,6 +284,11 @@ body {
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+}
+
+.abbreviated-mode .node-name {
+    font-size: 13px;
+    font-weight: 600;
 }
 
 .node-code {
@@ -1122,9 +1130,11 @@ svg path.connection-line.highlighted {
         flex-wrap: wrap;
     }
 
-    /* Action buttons: completely hidden on mobile (replaced by touch-and-hold FAB) */
-    .node-actions {
-        display: none !important;
+    /* Action buttons: hidden on touch-primary devices (replaced by touch-and-hold FAB). PC with mouse/trackpad keeps hover buttons even on small windows. */
+    @media (hover: none) and (pointer: coarse) {
+        .node-actions {
+            display: none !important;
+        }
     }
 
     /* Touch-and-hold floating action buttons */
@@ -1355,15 +1365,12 @@ svg path.connection-line.highlighted {
         conic-gradient(from var(--border-angle), #ffffff, #22d3ee, #ffffff, #22d3ee, #ffffff);
     box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
 }
-
 .subject-node.cursando-active .node-code {
     color: #22d3ee;
 }
-
 .subject-node.cursando-active .node-dependents {
     color: #22d3ee;
 }
-
 .subject-node.cursando-active .node-border {
     background-color: #22d3ee;
 }

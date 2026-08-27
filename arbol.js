@@ -31,6 +31,39 @@ const STATUS_CLASS_MAP = {
 
 // ---- State cache (perf: avoid repeated JSON.parse of localStorage) ----
 var _stateCache = { estados: null, cursando: null };
+
+// ---- Subject name abbreviation system (medical student shorthand) ----
+var _abbreviateNames = (function() {
+    var stored = localStorage.getItem('arbolAbbreviateNames');
+    return stored !== null ? stored === 'true' : true;
+})();
+function isAbbreviatingNames() { return _abbreviateNames; }
+function toggleAbbreviateNames() {
+    _abbreviateNames = !_abbreviateNames;
+    try { localStorage.setItem('arbolAbbreviateNames', _abbreviateNames); } catch(e) {}
+    updateAbbreviateModeClass();
+    updateTree();
+}
+function updateAbbreviateModeClass() {
+    var wrapper = document.querySelector('.tree-wrapper');
+    if (wrapper) {
+        if (_abbreviateNames) {
+            wrapper.classList.add('abbreviated-mode');
+            wrapper.classList.add('abbreviated-names');
+        } else {
+            wrapper.classList.remove('abbreviated-mode');
+            wrapper.classList.remove('abbreviated-names');
+        }
+    }
+}
+// Apply on DOMContentLoaded as well
+document.addEventListener('DOMContentLoaded', function() {
+    updateAbbreviateModeClass();
+    var cb = document.getElementById('toggleAbbreviateNames');
+    if (cb) {
+        cb.checked = _abbreviateNames;
+    }
+});
 function getCachedState(key) {
     if (_stateCache[key] === null) {
         try { _stateCache[key] = JSON.parse(localStorage.getItem(key) || '{}'); }
@@ -207,15 +240,20 @@ function createSubjectNode(m) {
     // Add 🟡 emoji if this subject cannot be taken yet and is missing exactly 1 prerequisite
     var status = node.dataset.status;
     var isBlocked = (status === 'no-puede-cursar' || status === 'optativa-no-puede-cursar');
+    var displayName = m.nombre;
+    if (isAbbreviatingNames()) {
+        // Use nombreCorto fallback to full name for all cards
+        displayName = m.nombreCorto || m.nombre;
+    }
     if (isBlocked) {
         var missingCount = countMissingPrerequisites(m.codigo);
         if (missingCount === 1) {
-            nameSpan.textContent = '\uD83D\uDFE1 ' + m.nombre;
+            nameSpan.textContent = '\uD83D\uDFE1 ' + displayName;
         } else {
-            nameSpan.textContent = m.nombre;
+            nameSpan.textContent = displayName;
         }
     } else {
-        nameSpan.textContent = m.nombre;
+        nameSpan.textContent = displayName;
     }
     content.appendChild(nameSpan);
 
@@ -532,6 +570,8 @@ function toggleCursando(codigo) {
         data[codigo] = true;
     }
     try { localStorage.setItem('cursando', JSON.stringify(data)); } catch(e) {}
+    _stateCache['cursando'] = null;  // Invalidate cache immediately on desktop/PC
+    invalidateStateCache('cursando');  // Invalidate cache so PC animation updates immediately on toggle
     updateTree();
 }
 
@@ -1197,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var isLongPress = false;
 
     function isMobileDevice() {
-        return window.matchMedia('(max-width: 768px)').matches;
+        return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     }
 
     function dismissFAB() {
@@ -1437,7 +1477,7 @@ function showTreeHelpModal() {
     title.innerText = '\uD83C\uDF33 Modo \u00C1rbol \u2014 C\u00F3mo usar';
     modal.appendChild(title);
 
-    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+    var isMobile = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     var items = [
         '<b>\uD83D\uDD0D Navegaci\u00F3n:</b> Cada columna es un a\u00F1o (1\u00BA a 6\u00BA). Las filas muestran obligatorias y optativas.',
@@ -1477,6 +1517,32 @@ function showTreeHelpModal() {
     btnClose.style.cursor = 'pointer';
     btnClose.style.fontSize = '14px';
     btnClose.onclick = function() { document.body.removeChild(overlay); };
+
+    // "Abreviar nombres" toggle switch
+    var abbrevToggle = document.createElement('div');
+    abbrevToggle.style.marginTop = '12px';
+    abbrevToggle.style.padding = '8px';
+    abbrevToggle.style.background = '#1a1a1a';
+    abbrevToggle.style.borderRadius = '4px';
+    abbrevToggle.style.border = '1px solid #444';
+    abbrevToggle.innerHTML = '<span style="color:#999; font-size:12px; margin-right:8px;">Abreviar nombres</span>' + (_abbreviateNames ? '<span style="color:#22c55e; font-size:12px;">✓ Activado</span>' : '<span style="color:#f97316; font-size:12px;">Desactivado</span>');
+    // Click to toggle
+    abbrevToggle.addEventListener('click', function(e) {
+        if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SPAN') return;
+        toggleAbbreviateNames();
+        updateAbbreviateModeClass();
+        updateTree();
+        // Update the visual text
+        var statusSpan = abbrevToggle.querySelector('span:last-child');
+        if (_abbreviateNames) {
+            statusSpan.textContent = '✓ Activado';
+            statusSpan.style.color = '#22c55e';
+        } else {
+            statusSpan.textContent = 'Desactivado';
+            statusSpan.style.color = '#f97316';
+        }
+    });
+    modal.appendChild(abbrevToggle);
     modal.appendChild(btnClose);
 
     overlay.appendChild(modal);
