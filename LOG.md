@@ -1,3 +1,6 @@
+## 28/08/2026
+  + Animação glassShine (reflexo vidro nos nós `.status-aprobada`) não respeita mais `prefers-reduced-motion` — removida regra que desativava a animação em `@media (prefers-reduced-motion: reduce)`. Outras animações (cursando border, FAB, zoom) ainda respeitam a preferência de acessibilidade. Fix verificado: animação aparecia no Chrome device toolbar mas não no celular real devido a "Reduzir animações" ativado nas configurações de acessibilidade.
+
 ## 27/08/2026
   + Modo Árbol: botão "Ver optativas" reposicionado visualmente entre Zoom e Cartelera (CSS order: zoom=3, toggle=4, cartelera=5); legenda completamente restaurada — Colores: Aprobada, Regularizada, Puede cursar, Cursando, Próximas materias a liberar, No puede cursar, Optativa (puede cursar), Optativa (no puede cursar), 🟡 Falta 1 requisito, ⭕ No puede final, Abreviar nomes (toggle); Flechas: Cumplido, Puede cursar falta final, Falta Cursada, Falta Final; botões: "← Modo Lista", "📋 Cartelera".
   + Toggle switch unificado: desktop min-height auto (padding 6px 12px font 12px), mobile min-height 37px (padding 8px 10px font 11px) igual aos botões padrão; slider reduzido 28×14px (era 36×18px).
