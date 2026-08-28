@@ -11,7 +11,6 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 - **Modo Árbol**: Vista visual de árbol de correlatividades con líneas de conexión SVG, zoom, y selección interactiva
 - **Cursando**: Marca materias que estás cursando atualmente (toggle con animación cyan)
 - **Abreviar nomes**: Toggle "Abreviar nomes" na janela de Legenda (modo Árvore) mostra apelidos/siglas médicas (`nombreCorto` de cada matéria) em vez do nome completo. Persistido em localStorage (`arbolAbbreviateNames`, padrão ativado). Quando ativo, a fonte do nome aumenta ~30%.
-- **Abreviar nomes**: Toggle "Abreviar nomes" na janela de Legenda (modo Árvore) mostra apelidos/siglas médicas (`nombreCorto` de cada matéria) em vez do nome completo. Persistido em localStorage (`arbolAbbreviateNames`, padrão ativado). Quando ativo, a fonte do nome aumenta ~30%.
 - **Fechas de finales**: Consulta las fechas de exámenes finales disponibles (actualizado Feb-Dic 2026, 61 materias)
 - **Vacunas**: Seguimiento de vacunación requerida para la carrera
 - **Cartelera**: Verifica publicaciones de cátedras (avisos, exámenes, notas) con filtros por fecha y modos de visualización (por materia / cronológico)
@@ -39,6 +38,7 @@ v0.08 — Agosto 2026
 
 ## Registro de cambios
 
+- **27/08/2026:** Modo Árbol — botão "Ver optativas" reposicionado entre Zoom e Cartelera; legenda restaurada (ordem Colores/Flechas conforme spec, itens Cursando, Próximas materias a liberar, ⭕ No puede final, toggle Abreviar nomes; Flechas: Cumplido, Puede cursar falta final, Falta Cursada, Falta Final); botão voltar "← Modo Lista"; botão Cartelera "📋 Cartelera"; toggle switch horizontal unificado (desktop 28px / mobile 37px, slider 28×14px); fix overlay z-index legenda mobile; fix media query CSS mobile malformada.
 - **27/08/2026 — Restaurado CSS .cursando-active/.cursando-pending à versão original do GitHub; revertidas media queries 1024px→768px; detecção de dispositivo baseada em capability ((hover: hover) and (pointer: fine)) para botões PC (hover) vs mobile (FAB click-hold).**
 - **25/08/2026 — Adicionado nombreCorto a todas as matérias (obrigatórias + optativas) em APP/materias.js; toggle 'Abreviar nomes' no modo Árbol com persistência localStorage; correção de cache em toggleCursando (_stateCache['cursando'] = null); user-select: none nos nós; remoção de código morto (NAME_ABBREVIATIONS) e arquivos residuais.**
 - **04/08/2026:** Corregido PG001 (Psicología Médica, año 2): paraCursar vacío → requiere Anatomía regularizada. Añadido aviso de privacidad (banner fijo) en las 3 páginas HTML + CSS. (home) en la página (sección "🏛 Avisos Generales de la Facultad") y en notificaciones de email (opt-in separado en el modal)
