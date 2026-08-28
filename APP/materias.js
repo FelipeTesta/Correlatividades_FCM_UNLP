@@ -247,7 +247,7 @@ const materias = [
     {materia:"SEM91",condicion:"regularizada"}
   ]
 },
-{ codigo:"MI191", nombre:"Medicina Interna I", nombreCorto: "Med. Interna I", anio:4, categoria:"anual", horas:200,
+{ codigo:"MI191", nombre:"Medicina Interna I", nombreCorto: "Med Interna I", anio:4, categoria:"anual", horas:200,
   paraCursar:[
     {materia:"F9001",condicion:"regularizada"},
     {materia:"M0001",condicion:"regularizada"},
@@ -553,10 +553,10 @@ const materias = [
     {materia:"B0001",condicion:"regularizada"},
     {materia:"FB001",condicion:"regularizada"}
   ]
-}, { codigo:"LCM01", nombre:"Literatura, Cine y Medicina", nombreCorto: "Cine y Med.", categoria:"optativa", horas:60, anio:2,
+}, { codigo:"LCM01", nombre:"Literatura, Cine y Medicina", nombreCorto: "Cine y Med", categoria:"optativa", horas:60, anio:2,
   paraCursar:[],
   paraAprobar:[]
-}, { codigo:"MGF", nombre:"Medicina General y Familiar", nombreCorto: "Med. Familiar", categoria:"optativa", horas:70, anio:4,
+}, { codigo:"MGF", nombre:"Medicina General y Familiar", nombreCorto: "Med Familiar", categoria:"optativa", horas:70, anio:4,
   paraCursar:[
     {materia:"F9001",condicion:"regularizada"},
     {materia:"M0001",condicion:"regularizada"},

@@ -256,7 +256,16 @@ function createSubjectNode(m) {
         nameSpan.textContent = displayName;
     }
     content.appendChild(nameSpan);
-
+    // Add ? marker for regularizada/puede-cursar that cannot take final
+    var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar');
+    if (isRegularOrCanCursar && !canTakeFinal(m.codigo)) {
+        var displayName = m.nombre;
+        if (isAbbreviatingNames()) {
+            displayName = m.nombreCorto || m.nombre;
+        }
+        displayName = '\u2B55 ' + displayName;
+        nameSpan.textContent = displayName;
+    }
     var metaDiv = document.createElement('div');
     metaDiv.className = 'node-meta';
 
@@ -373,7 +382,15 @@ function createSubjectNode(m) {
     // Note: mouseenter redraw removed — causes flash on click (clear+recreate cycle)
 
     // Tooltip
-    node.title = m.nombre + ' (' + m.codigo + ')\n' + getStatusLabel(status);
+    var tooltipText = m.nombre;
+    var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar');
+    if (isRegularOrCanCursar && !canTakeFinal(m.codigo)) {
+        tooltipText += ' (No puede Final)';
+    } else {
+        tooltipText += ' (' + m.codigo + ')';
+    }
+    tooltipText += '\n' + getStatusLabel(status);
+    node.title = tooltipText;
 
     return node;
 }
@@ -438,6 +455,20 @@ function getSubjectStatus(codigo) {
     }
 
     return puedeCursar ? 'puede-cursar' : 'no-puede-cursar';
+}
+
+
+// Check if subject can take final exam (paraAprobar requirements met)
+function canTakeFinal(codigo) {
+    var m = null;
+    for (var i = 0; i < materias.length; i++) {
+        if (materias[i].codigo === codigo) {
+            m = materias[i];
+            break;
+        }
+    }
+    if (!m) return false;
+    return cumpleRequisitos(m.paraAprobar);
 }
 
 function cumpleRequisitos(lista) {
@@ -637,14 +668,21 @@ function updateTree() {
 // LINE COLORS
 // ===============================
 
-function getConnectionVisualStyle(prereqCode, paraCursarReq, paraAprobarReq) {
+function getConnectionVisualStyle(prereqCode, paraCursarReq, paraAprobarReq, targetCode) {
     // Check if the prerequisite subject is optativa
     for (var i = 0; i < materias.length; i++) {
         if (materias[i].codigo === prereqCode && materias[i].categoria === 'optativa') {
             return { color: LINE_COLORS.optativa, dashed: false };
         }
     }
-
+    // Check if the target subject is optativa
+    if (targetCode) {
+        for (var i = 0; i < materias.length; i++) {
+            if (materias[i].codigo === targetCode && materias[i].categoria === 'optativa') {
+                return { color: LINE_COLORS.optativa, dashed: false };
+            }
+        }
+    }
     var estado = estados[prereqCode];
 
     // Check if paraCursar requirement is met
@@ -786,7 +824,7 @@ function drawConnections() {
         var prereqRect = prereqNode.getBoundingClientRect();
         var depRect = depNode.getBoundingClientRect();
 
-        var style = getConnectionVisualStyle(conn.from, conn.paraCursarReq, conn.paraAprobarReq);
+        var style = getConnectionVisualStyle(conn.from, conn.paraCursarReq, conn.paraAprobarReq, conn.to);
 
         drawBezier(svg, svgRect, prereqRect, depRect, style.color, conn.from, conn.to, style.dashed);
     }

@@ -143,7 +143,8 @@ body {
 /* Desktop: restore visual order despite HTML reorder for mobile */
 .btn-back { order: 1; }
 .tree-top-bar h1 { order: 2; }
-.toggle-switch { order: 3; }
+.zoom-controls { order: 3; }
+.toggle-switch { order: 4; }
 .btn-cartelera { order: 5; }
 .btn-help { order: 6; }
 .btn-legend { order: 7; }
@@ -685,10 +686,17 @@ svg path.connection-line.highlighted {
     padding-bottom: 2px;
     border-bottom: 1px solid #1a1a1a;
 }
+.node-no-final-marker {
+    display: inline;
+    margin-right: 4px;
+    color: #facc15;
+}
+
 .legend-line-dashed {
     display: inline-block;
     width: 24px;
-    height: 0;
+    height: 2px;
+    border: none;
     border-top: 2px dashed #22c55e;
     vertical-align: middle;
 }
@@ -713,7 +721,7 @@ svg path.connection-line.highlighted {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    z-index: 1000;
+    z-index: 99;
 }
 .tree-legend-overlay.visible {
     display: block;
@@ -782,17 +790,16 @@ svg path.connection-line.highlighted {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     color: #999;
     user-select: none;
     margin: 0 auto;
-    padding: 4px 8px;
+    padding: 6px 12px;
     border: 1px solid #444;
     border-radius: 4px;
     background: transparent;
-    min-height: 37px;
 }
 
 .toggle-switch input {
@@ -800,12 +807,13 @@ svg path.connection-line.highlighted {
 }
 
 .toggle-slider {
-    width: 18px;
-    height: 28px;
+    width: 36px;
+    height: 18px;
     background-color: #333;
     border-radius: 9px;
     position: relative;
     transition: background-color 0.3s ease;
+    flex-shrink: 0;
 }
 
 .toggle-slider::after {
@@ -825,7 +833,7 @@ svg path.connection-line.highlighted {
 }
 
 .toggle-switch input:checked + .toggle-slider::after {
-    transform: translateY(12px);
+    transform: translateX(18px);
 }
 
 .toggle-label {
@@ -1067,19 +1075,50 @@ svg path.connection-line.highlighted {
     }
 
     .toggle-switch {
-        margin: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        color: #999;
+        user-select: none;
+        margin: 0 auto;
+        padding: 8px 10px;
+        border: 1px solid #444;
+        border-radius: 4px;
+        background: transparent;
+        min-height: 37px;
     }
 
-    .toggle-label {
-        font-size: 10px;
+    .toggle-switch .toggle-slider {
+        width: 28px;
+        height: 14px;
+        background-color: #333;
+        border-radius: 7px;
+        position: relative;
+        transition: background-color 0.3s ease;
+        flex-shrink: 0;
     }
 
-    .tree-wrapper {
-        padding: 8px 4px 60px;
+    .toggle-switch .toggle-slider::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #e5e5e5;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        transition: transform 0.3s ease;
     }
 
-    .year-section {
-        margin-bottom: 5px;
+    .toggle-switch input:checked + .toggle-slider {
+        background-color: #a855f7;
+    }
+
+    .toggle-switch input:checked + .toggle-slider::after {
+        transform: translateX(18px);
     }
 
     .year-header {
