@@ -1349,11 +1349,8 @@ svg path.connection-line.highlighted {
     }
 }
 
-/* Reduced motion: disable decorative animations */
+/* Reduced motion: disable decorative animations (except glassShine) */
 @media (prefers-reduced-motion: reduce) {
-    .subject-node.status-aprobada::after {
-        animation: none;
-    }
     .subject-node.cursando-active,
     .subject-node.cursando-pending {
         animation: none;
