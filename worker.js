@@ -487,7 +487,11 @@ export default {
             const titleHtml = pubLink
               ? '<a href="' + escapeHtml(pubLink) + '" style="color:#0066cc;text-decoration:none"><strong>' + escapeHtml(p.title) + '</strong></a>'
               : '<strong>' + escapeHtml(p.title) + '</strong>';
-            html += '<li>' + titleHtml + ' — ' + escapeHtml(p.date) + '</li>';
+            var dateDisplay = escapeHtml(p.date);
+            if (p.modified) {
+              dateDisplay = escapeHtml(p.date) + ' &rarr; Modificada en ' + escapeHtml(p.modified);
+            }
+            html += '<li>' + titleHtml + ' — ' + dateDisplay + '</li>';
           });
           html += '</ul><p><a href="https://cartelera.med.unlp.edu.ar/catedra/' + escapeHtml(sec.id) + '">Ver cartelera completa</a></p></div>';
         }
@@ -624,7 +628,11 @@ function buildHomeEmailSection(homePubs) {
     const titleHtml = pubLink
       ? '<a href="' + escapeHtml(pubLink) + '" style="color:#0066cc;text-decoration:none"><strong>' + escapeHtml(p.title) + '</strong></a>'
       : '<strong>' + escapeHtml(p.title) + '</strong>';
-    html += '<li>' + titleHtml + ' — ' + escapeHtml(p.date) + '</li>';
+    var dateDisplay = escapeHtml(p.date);
+    if (p.modified) {
+      dateDisplay = escapeHtml(p.date) + ' &rarr; Modificada en ' + escapeHtml(p.modified);
+    }
+    html += '<li>' + titleHtml + ' — ' + dateDisplay + '</li>';
   });
   html += '</ul></div>';
   return html;
@@ -699,7 +707,11 @@ function buildWelcomeHtml(catedraPubs, names, homePubs) {
       const titleHtml = pubLink
         ? '<a href="' + escapeHtml(pubLink) + '" style="color:#0066cc;text-decoration:none"><strong>' + escapeHtml(p.title) + '</strong></a>'
         : '<strong>' + escapeHtml(p.title) + '</strong>';
-      html += '<li>' + titleHtml + ' — ' + escapeHtml(p.date) + '</li>';
+      var dateDisplay = escapeHtml(p.date);
+      if (p.modified) {
+        dateDisplay = escapeHtml(p.date) + ' &rarr; Modificada en ' + escapeHtml(p.modified);
+      }
+      html += '<li>' + titleHtml + ' — ' + dateDisplay + '</li>';
     });
     html += '</ul></div>';
   }
