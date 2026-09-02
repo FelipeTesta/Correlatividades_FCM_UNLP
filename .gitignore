@@ -9,4 +9,5 @@ LOG.md
 Thumbs.db
 Desktop.ini
 .DS_Store
-.wrangler/opencode.json
+opencode.json
+.wrangler/
