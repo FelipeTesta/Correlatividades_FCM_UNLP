@@ -21,7 +21,7 @@ export default {
     if (url.pathname === '/subscribe' && request.method === 'POST') {
       try {
         const body = await request.json();
-        const { email: rawEmail, codes, names, home } = body;
+        const { email: rawEmail, codes, names, home, update } = body;
         if (!rawEmail || !codes || !Array.isArray(codes)) {
           return new Response(JSON.stringify({ error: 'email and codes[] required' }), {
             status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
@@ -35,6 +35,48 @@ export default {
             status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
           });
         }
+
+        // UPDATE MODE — diff existing subscription, init snapshots for added only
+        if (update) {
+          const oldSub = await env.CARTELERA_SUBS.get(email, { type: 'json' });
+          if (oldSub) {
+            const oldCodes = Array.isArray(oldSub) ? oldSub : (oldSub.codes || []);
+            const oldSet = new Set(oldCodes);
+            const newSet = new Set(codes);
+            const addedCodes = codes.filter(c => !oldSet.has(c));
+            const removedCodes = oldCodes.filter(c => !newSet.has(c));
+
+            // Overwrite KV with new subscription
+            await env.CARTELERA_SUBS.put(email, JSON.stringify({ codes, names: names || {}, home: !!home }));
+
+            // Initialize snapshots for added catedras only (parallel)
+            await Promise.allSettled(addedCodes.map(async (id) => {
+              try {
+                const pubs = await fetchCatedraPubs(id);
+                await env.CARTELERA_SNAPSHOTS.put(id, JSON.stringify(pubs));
+              } catch (e) {
+                console.error('Update snapshot init error for catedra ' + id + ': ' + e.message);
+              }
+            }));
+
+            // Send short update email only if new catedras were added
+            if (addedCodes.length > 0) {
+              try {
+                const subject = '🔔 Cartelera UNLP - Cátedras agregadas';
+                const html = buildUpdateEmailHtml(addedCodes, names || {});
+                await sendEmail(email, subject, html, env);
+              } catch (e) {
+                console.error('Update email send failed: ' + e.message);
+              }
+            }
+
+            return new Response(JSON.stringify({ ok: true, welcomeEmailSent: false, updateMode: true, addedCount: addedCodes.length }), {
+              headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+            });
+          }
+          // If oldSub is null (first time), fall through to normal subscribe below
+        }
+
         // Store subscription first (always, even if welcome email fails)
         await env.CARTELERA_SUBS.put(email, JSON.stringify({ codes, names: names || {}, home: !!home }));
 
@@ -631,6 +673,16 @@ function pubsFromLastMonths(pubs, months = 12, count = 5) {
     }
   }
   return out;
+}
+
+function buildUpdateEmailHtml(addedCodes, names) {
+  let html = '<h2>🔔 Cartelera UNLP</h2><p>Se agregaron nuevas cátedras a tu suscripción:</p><ul>';
+  addedCodes.forEach(code => {
+    html += '<li>' + escapeHtml(names[code] || code) + '</li>';
+  });
+  html += '</ul><p>Recibirás notificaciones cuando haya nuevas publicaciones en estas cátedras.</p>';
+  html += '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
+  return html;
 }
 
 function buildWelcomeHtml(catedraPubs, names, homePubs) {

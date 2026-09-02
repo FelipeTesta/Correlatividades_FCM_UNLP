@@ -238,6 +238,7 @@ digraph Cartelera {
     helper_home_email [label="buildHomeEmailSection(homePubs)\nHTML div for general pubs\n🏛 title, full links\n\nbuildWelcomeHtml(catedraPubs,names,homePubs)\n+ home section after intro", fillcolor="#2d1028", color="#a855f7", shape=box];
     helper_send [label="sendEmail(to, subject, html, env)\nvia Resend API\nshows subject names (not ID)\nclickable pub links\nunsubscribe link footer\nsecurity: escapeHtml on IDs", fillcolor="#1a1a1a", color="#666", shape=box];
     helper_welcome [label="buildWelcomeHtml(catedraPubs, names)\nlatest 5 pubs per catedra\nsubject names + clickable links", fillcolor="#1a1a1a", color="#22c55e", shape=box];
+    helper_update_email [label="buildUpdateEmailHtml(addedCodes, names)\nshort email: new cátedras only\nno publication fetch\nsame footer as welcome", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
   }
 
   // ── Email Routes Subgraph ──
@@ -249,7 +250,7 @@ digraph Cartelera {
     style=filled;
     fillcolor="#0a0a0a";
 
-    route_subscribe [label="POST /subscribe\naccept: {email, codes, names, home}\nvalidate email (regex + lowercase)\nOVERWRITE subs KV (not merge)\n{code, names, home: bool}\nPromise.allSettled parallel fetch\nstore full pubs in snapshots KV\n+ fetchHomePubs + snapshot 'home'\nwelcome includes home pubs (opt-in)\nreturn {ok, welcomeEmailSent}\nsecurity: escapeHtml, CORS headers", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    route_subscribe [label="POST /subscribe\naccept: {email, codes, names, home, update}\nvalidate email (regex + lowercase)\nOVERWRITE subs KV (not merge)\n{code, names, home: bool}\n\nupdate mode (update:true):\n  read old KV → diff codes\n  addedCodes → short email only\n  no welcome re-send\n\nnormal mode:\n  Promise.allSettled parallel fetch\n  store full pubs in snapshots KV\n  + fetchHomePubs + snapshot 'home'\n  welcome includes home pubs (opt-in)\nreturn {ok, welcomeEmailSent, updateMode}\nsecurity: escapeHtml, CORS headers", fillcolor="#1a1a1a", color="#a855f7", shape=box];
     route_unsubscribe [label="POST /unsubscribe\naccept: {email}\ndelete KV key by email", fillcolor="#1a1a1a", color="#ff4444", shape=box];
     route_health [label="GET /health\nreturn {ok, cron}", fillcolor="#1a1a1a", color="#22c55e", shape=box];
     route_proxy [label="GET ?id=\nproxy to cartelera.med.unlp.edu.ar\n?id=home → fetch racine /\n(else /catedra/ID)\n?tag= optional /etiqueta", fillcolor="#1a1a1a", color="#a855f7", shape=box];
@@ -284,8 +285,9 @@ digraph Cartelera {
     fillcolor="#0a0a0a";
 
     notify_button [label="🔔 Notificarme button\nin controls-bar", fillcolor="#1a1a1a", color="#a855f7", shape=box];
-    notify_modal [label="Notification Modal:\n- Email input field\n- #notifySubjects checkboxes\n  (subject name via getSubjectName\n   value=catedraID\n   dataset.subjectName stored)\n- Suscribirme button\n- ✕ Close\n- Remover mi email\n  (hold-to-confirm 1s\n   CSS progress bar)\ncatedrasLoaded guard\n(blocked until finales.json)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    notify_modal [label="Notification Modal:\n- Email input field\n- #notifySubjects checkboxes\n  (subject name via getSubjectName\n   value=catedraID\n   dataset.subjectName stored)\n- Suscribirme button\n- ✕ Close\n- notify-actions-row (flex):\n  · Actualizar materias (hold 1s)\n  · Remover email (hold 1s)\n  · visibility: only when email exists\n- catedrasLoaded guard\n(blocked until finales.json)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
     notify_subscribe [label="handleNotifySubscribe()\nPOST /subscribe\n{email, codes, names, home}\nAbortController 15s timeout\ntouchInProgress guard\n(prevents double-fire)", fillcolor="#1a1a1a", color="#a855f7", shape=box];
+    notify_update [label="handleNotifyUpdate()\nPOST /subscribe with update:true\ndiff codes vs existing KV\naddedCodes → short email\n(no welcome re-send)\nAbortController 15s timeout", fillcolor="#1a1a1a", color="#22d3ee", shape=box];
     home_optin [label="🏛 home opt-in checkbox\n#notifyHomeCheckbox (static)\ndefault checked", fillcolor="#2d1028", color="#a855f7", shape=box];
     notify_unsubscribe [label="handleNotifyUnsubscribe()\nPOST /unsubscribe\nclear localStorage\ncarteleraNotifyEmail", fillcolor="#1a1a1a", color="#ff4444", shape=box];
     notify_ls [label="localStorage\ncarteleraNotifyEmail\nstring (email address)", fillcolor="#1a1a1a", color="#a855f7", shape=cylinder];
@@ -333,8 +335,12 @@ digraph Cartelera {
   notify_modal -> home_optin [label="🏛 checkbox opt-in\n'Avisos Generales'", fontcolor="#a855f7", fontsize=9];
   home_optin -> route_subscribe [style=dashed, color="#a855f7", arrowhead=open, label="home: true", fontcolor="#888", fontsize=9];
   notify_modal -> notify_subscribe [label="Suscribirme click", fontcolor="#888", fontsize=9];
-  notify_modal -> notify_unsubscribe [label="Remover (hold 1s)", fontcolor="#888", fontsize=9];
+  notify_modal -> notify_update [label="Actualizar (hold 1s)", fontcolor="#22d3ee", fontsize=9];
+  notify_modal -> notify_unsubscribe [label="Remover (hold 1s)", fontcolor="#ff4444", fontsize=9];
   notify_subscribe -> route_subscribe [style=dashed, color="#a855f7", arrowhead=open, label="POST /subscribe", fontcolor="#888", fontsize=9];
+  notify_update -> route_subscribe [style=dashed, color="#22d3ee", arrowhead=open, label="POST /subscribe\n(update:true)", fontcolor="#888", fontsize=9];
+  route_subscribe -> helper_update_email [style=dashed, color="#22d3ee", arrowhead=open, label="short email (if added)", fontcolor="#888", fontsize=9];
+  notify_update -> notify_ls [style=dashed, color="#22d3ee", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
   notify_unsubscribe -> route_unsubscribe [style=dashed, color="#ff4444", arrowhead=open, label="POST /unsubscribe", fontcolor="#888", fontsize=9];
   notify_subscribe -> notify_ls [style=dashed, color="#a855f7", arrowhead=open, label="save", fontcolor="#888", fontsize=9];
   notify_unsubscribe -> notify_ls [style=dashed, color="#ff4444", arrowhead=open, label="clear", fontcolor="#888", fontsize=9];

@@ -1,3 +1,6 @@
+## 30/08/2026
+  + Adicionado `opencode.json` na raiz do projeto — MCP cloudflare×5 (cloudflare, cloudflare-docs, cloudflare-bindings, cloudflare-builds, cloudflare-observability) movidos do global (~/.config/opencode) para cá. Ferramentas Cloudflare agora só carregam neste projeto (menos contexto em outros projetos).
+
 ## 28/08/2026
   + Animação glassShine (reflexo vidro nos nós `.status-aprobada`) não respeita mais `prefers-reduced-motion` — removida regra que desativava a animação em `@media (prefers-reduced-motion: reduce)`. Outras animações (cursando border, FAB, zoom) ainda respeitam a preferência de acessibilidade. Fix verificado: animação aparecia no Chrome device toolbar mas não no celular real devido a "Reduzir animações" ativado nas configurações de acessibilidade.
 

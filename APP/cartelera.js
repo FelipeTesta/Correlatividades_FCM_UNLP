@@ -233,6 +233,43 @@ document.addEventListener("DOMContentLoaded", function () {
     unsubscribeBtn.addEventListener("touchend", cancelHold);
     unsubscribeBtn.addEventListener("touchcancel", cancelHold);
   }
+
+  // Hold-to-confirm update button
+  var notifyUpdateBtn = document.getElementById("notifyUpdateBtn");
+  if (notifyUpdateBtn) {
+    var updateHoldTimer = null;
+    var updateTouchInProgress = false;
+    function startUpdateHold(e) {
+      if (e.type === 'touchstart') {
+        updateTouchInProgress = true;
+      } else if (updateTouchInProgress) {
+        return;
+      }
+      e.preventDefault();
+      notifyUpdateBtn.classList.add("holding");
+      updateHoldTimer = setTimeout(function () {
+        handleNotifyUpdate();
+        notifyUpdateBtn.classList.remove("holding");
+        updateTouchInProgress = false;
+      }, 1000);
+    }
+    function cancelUpdateHold() {
+      if (updateHoldTimer) {
+        clearTimeout(updateHoldTimer);
+        updateHoldTimer = null;
+      }
+      notifyUpdateBtn.classList.remove("holding");
+      if (updateTouchInProgress) {
+        setTimeout(function () { updateTouchInProgress = false; }, 500);
+      }
+    }
+    notifyUpdateBtn.addEventListener("mousedown", startUpdateHold);
+    notifyUpdateBtn.addEventListener("touchstart", startUpdateHold, { passive: false });
+    notifyUpdateBtn.addEventListener("mouseup", cancelUpdateHold);
+    notifyUpdateBtn.addEventListener("mouseleave", cancelUpdateHold);
+    notifyUpdateBtn.addEventListener("touchend", cancelUpdateHold);
+    notifyUpdateBtn.addEventListener("touchcancel", cancelUpdateHold);
+  }
 });
 
 function loadCatedrasData() {
@@ -1687,6 +1724,14 @@ function openNotifyModal() {
 
   populateNotifySubjects();
   modal.style.display = "flex";
+
+  // Show update/remove buttons only when email exists (user already subscribed)
+  var hasEmail = false;
+  try { hasEmail = !!localStorage.getItem(NOTIFY_EMAIL_KEY); } catch (e) {}
+  var updateBtn = document.getElementById("notifyUpdateBtn");
+  var unsubscribeBtn = document.getElementById("notifyUnsubscribeBtn");
+  if (updateBtn) updateBtn.style.display = hasEmail ? "" : "none";
+  if (unsubscribeBtn) unsubscribeBtn.style.display = hasEmail ? "" : "none";
 }
 
 function closeNotifyModal() {
@@ -1803,9 +1848,83 @@ function handleNotifyUnsubscribe() {
     .finally(function () {
       clearTimeout(timeoutId);
       if (unsubscribeBtn) {
-        unsubscribeBtn.disabled = false;
-        unsubscribeBtn.textContent = "Remover mi email";
+      unsubscribeBtn.disabled = false;
+      unsubscribeBtn.textContent = "Remover mi email";
       }
+    });
+}
+
+function handleNotifyUpdate() {
+  var emailInput = document.getElementById("notifyEmail");
+  var email = emailInput ? emailInput.value.trim() : "";
+  if (!email || !email.includes("@")) {
+    alert("Ingresá tu email primero.");
+    return;
+  }
+
+  // Gather checked catedra IDs + names (same logic as handleNotifySubscribe)
+  var checkboxes = document.querySelectorAll("#notifySubjects .notify-subject-checkbox:checked");
+  var codes = [];
+  var names = {};
+  checkboxes.forEach(function (cb) {
+    var catedraId = cb.value;
+    var subjName = cb.dataset.subjectName || catedraId;
+    codes.push(catedraId);
+    names[catedraId] = subjName;
+  });
+
+  // General faculty publications opt-in (home)
+  var homeCheckbox = document.getElementById("notifyHomeCheckbox");
+  var homeChecked = !!(homeCheckbox && homeCheckbox.checked);
+
+  // Persist email
+  try { localStorage.setItem(NOTIFY_EMAIL_KEY, email); } catch (e) {}
+
+  // Show loading state
+  var btn = document.getElementById("notifyUpdateBtn");
+  var updateTextEl = btn ? btn.querySelector(".update-text") : null;
+  var originalText = updateTextEl ? updateTextEl.textContent : "";
+  if (updateTextEl) updateTextEl.textContent = "Actualizando...";
+  if (btn) btn.disabled = true;
+
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function () { controller.abort(); }, 15000);
+
+  fetch(CARTELERA_NOTIFY_ENDPOINT + "/subscribe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email, codes: codes, names: names, home: homeChecked, update: true }),
+    signal: controller.signal
+  })
+    .then(function (r) {
+      clearTimeout(timeoutId);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      clearTimeout(timeoutId);
+      if (data.ok) {
+        if (data.addedCount > 0) {
+          alert("Suscripción actualizada. Se agregaron " + data.addedCount + " nueva(s) cátedra(s).");
+        } else {
+          alert("Suscripción actualizada sin cambios nuevos.");
+        }
+      } else {
+        alert("Error al actualizar: " + (data.error || "Error desconocido"));
+      }
+    })
+    .catch(function (e) {
+      clearTimeout(timeoutId);
+      if (e.name === "AbortError") {
+        alert("Tiempo de espera agotado. Intentá de nuevo.");
+      } else {
+        alert("Error de conexión: " + (e.message || "desconocido"));
+      }
+    })
+    .finally(function () {
+      clearTimeout(timeoutId);
+      if (updateTextEl) updateTextEl.textContent = originalText;
+      if (btn) btn.disabled = false;
     });
 }
 

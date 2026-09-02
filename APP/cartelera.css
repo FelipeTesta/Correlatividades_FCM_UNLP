@@ -926,6 +926,52 @@ h1 {
   width: 100%;
 }
 
+/* Notify actions row — update + remove buttons side by side */
+.notify-actions-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.notify-actions-row .update-btn,
+.notify-actions-row .unsubscribe-btn {
+  flex: 1;
+}
+
+/* Update button (constructive action — blue/teal) */
+.update-btn {
+  background: transparent;
+  border: 1px solid #336666;
+  color: #66aaaa;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, color 0.2s;
+}
+.update-btn:hover {
+  border-color: #44cccc;
+  color: #88eeee;
+}
+.update-btn.holding {
+  border-color: #44cccc;
+  color: #88eeee;
+}
+.update-btn .hold-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: #44cccc;
+  transition: width 0.1s linear;
+}
+.update-btn.holding .hold-progress {
+  width: 100%;
+  transition: width 1s linear;
+}
+
 /* Mobile responsive */
 @media (max-width: 600px) {
   .modal-content {
@@ -943,6 +989,10 @@ h1 {
     padding: 10px 14px;
     font-size: 13px;
     min-height: 44px;
+  }
+
+  .notify-actions-row {
+    flex-direction: column;
   }
 }
 
