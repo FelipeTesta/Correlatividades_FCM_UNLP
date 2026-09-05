@@ -38,6 +38,8 @@ body {
     padding-top: 32px;
     background-color: #000000;
     color: #e5e5e5;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 /* ============================= */
@@ -828,6 +830,9 @@ li button:hover {
 
 /* Hover effect on list items (desktop) */
 @media (min-width: 769px) {
+    body {
+        margin: 12px 12%;
+    }
     .item-row:hover { background: rgba(255,255,255,0.06); }
     li:not(.item-row):hover { background: rgba(255,255,255,0.06); }
 }
