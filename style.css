@@ -963,7 +963,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 /* Abbreviated mode styles */
 .abbreviated-mode .optativa-nombre,
 .abbreviated-mode li span:first-child:not(.optativa-nombre) {
-    font-size: 13px; /* desktop +30% from base 10px? Actually base is 14px in li */
+    font-size: 16px; /* desktop - larger than base 14px */
 }
 
 @media (max-width: 768px) {
@@ -1201,7 +1201,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     /* Abbreviated mode mobile */
     .abbreviated-mode .optativa-nombre,
     .abbreviated-mode li span:first-child:not(.optativa-nombre) {
-        font-size: 11px; /* mobile */
+        font-size: 15px; /* mobile - larger than base 14px */
     }
 }
 
