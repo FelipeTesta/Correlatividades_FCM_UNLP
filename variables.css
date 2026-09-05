@@ -1,0 +1,32 @@
+/* ============================= */
+/* DESIGN SYSTEM — DEEP BLACK    */
+/* Centralized palette (v0.08)   */
+/* ============================= */
+
+:root {
+    /* Surfaces */
+    --bg: #000000;
+    --bg-elevated: #0a0a0a;
+    --bg-card: #111111;
+    --bg-hover: #1a1a1a;
+    --bg-input: #222222;
+
+    /* Text */
+    --text: #e5e5e5;
+    --text-muted: #999999;
+    --text-dim: #666666;
+    --text-faint: #888888;
+
+    /* Borders */
+    --border: #333333;
+    --border-strong: #444444;
+
+    /* Status accents */
+    --aprobada: #22c55e;
+    --regularizada: #f97316;
+    --cursando: #22d3ee;
+    --optativa: #a855f7;
+    --optativa-dark: #581c87;
+    --puede-cursar: #facc15;
+    --danger: #ef4444;
+}

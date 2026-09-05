@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Correlatividades Medicina UNLP</title>
+<link rel="stylesheet" href="variables.css">
 <link rel="stylesheet" href="style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -22,6 +23,7 @@
       <div class="progress-segment aprobadas" id="segmentAprobadas"></div>
       <div class="progress-segment regularizadas" id="segmentRegularizadas"></div>
       <div class="progress-segment optativas" id="segmentOptativas"></div>
+      <div class="progress-segment cursando" id="segmentCursando"></div>
       <div class="progress-segment puede-cursar" id="segmentPuedeCursar"></div>
     </div>
     <span id="progressPercent" class="progress-percent">0%</span>
@@ -48,6 +50,14 @@
 <span>Horas Optativas Acumuladas:</span>
 <span id="horasOptativas" class="horas-count">0</span>
 <span class="horas-label">/ 270</span>
+<!-- NEW: Abbreviate names switch at far right -->
+<label class="abbreviate-switch-wrap" style="margin-left:auto;">
+  <span class="abbreviate-switch-label">Abreviar nomes</span>
+  <label class="abbreviate-switch">
+    <input type="checkbox" id="toggleAbbreviateNames" onchange="toggleAbbreviateNames()">
+    <span class="abbreviate-slider"></span>
+  </label>
+</label>
 </div>
 
 <hr>
@@ -58,7 +68,7 @@
 <!-- APROBADAS -->
 <!-- ===================== -->
 
-<div class="box">
+<div class="box box-aprobadas">
 <h3 onclick="toggleBox(this)" tabindex="0" role="button">Aprobadas <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <ul id="aprobadas"></ul>
@@ -69,7 +79,7 @@
 <!-- REGULARIZADAS -->
 <!-- ===================== -->
 
-<div class="box regularizadas-box">
+<div class="box regularizadas-box box-regularizadas">
 
 <h3 onclick="toggleBox(this)" tabindex="0" role="button">Regularizadas <span class="box-count">[0]</span> ▾</h3>
 
@@ -92,12 +102,18 @@
 <!-- PUEDE CURSAR -->
 <!-- ===================== -->
 
-<div class="box">
+<div class="box box-puede-cursar">
 <h3 onclick="toggleBox(this)" tabindex="0" role="button">Puede cursar <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <div class="sub-section">
 <h4>Obrigatórias <span class="box-count">[0]</span></h4>
 <ul id="puedeCursar-obligatorias"></ul>
+</div>
+<div class="sub-section" id="optativasFavoritas-section" style="display:none">
+<h4 onclick="toggleSubsection(this)" class="collapsible-header">Optativas ⭐ <span class="box-count" id="optativasFavoritas-count">[0]</span> | <span id="optativasFavoritas-horas">0</span> Horas ▾</h4>
+<div class="sub-content">
+<ul id="optativasFavoritas"></ul>
+</div>
 </div>
 <div class="sub-section">
 <h4 onclick="toggleSubsection(this)" class="collapsible-header">Optativas <span class="box-count">[0]</span> ▾</h4>
@@ -112,7 +128,7 @@
 <!-- PROYECTOS DE EXTENSIÓN -->
 <!-- ===================== -->
 
-<div class="box">
+<div class="box box-proyectos">
 <h3 onclick="toggleBox(this)" tabindex="0" role="button">Proyectos de Extensión <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <div class="extension-form">
@@ -129,7 +145,7 @@
 <!-- ===================== -->
 <!-- ===================== -->
 
-<div class="box">
+<div class="box box-no-puede-cursar">
 <h3 onclick="toggleBox(this)" tabindex="0" role="button">No puede cursar <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <div class="sub-section">

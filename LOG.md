@@ -1,3 +1,15 @@
+## 05/09/2026
+  + Design system: criado `variables.css` (paleta centralizada Deep Black: 18 variáveis CSS --bg, --bg-elevated, --bg-card, --bg-hover, --bg-input, --text, --text-muted, --text-dim, --text-faint, --border, --border-strong, --aprobada, --regularizada, --cursando, --optativa, --optativa-dark, --puede-cursar, --danger). Linkado nas 3 páginas (index, arbol, cartelera) antes do CSS da página. Refatorados style.css (77 vars), arbol.css (102), cartelera.css (118) — cores hex hardcoded substituídas por var(--). Sem quebra visual (verificado via edge-devtools).
+  + Página principal: headers dos boxes estilizados no padrão Cartelera (.source-header) — border-left 4px colorido + fundo tint rgba + hover brightness(1.2) + collapsed opacity(0.7). Color-coding por box: Aprobadas=verde, Regularizadas=laranja, Puede cursar=amarelo, Projetos=cyan, No puede cursar=cinza.
+  + Página principal: animação de colapso corrigida — removido movimento horizontal (transition:all + mudanças de padding). Agora só desliza verticalmente (max-height + opacity).
+  + Página principal: fundo dos boxes e itens de lista removidos (transparente). Sub-sections indentadas (margin-left 16px). Espaçamento vertical reduzido (gap 14px→6px, padding box 10px→4px).
+  + Página principal: seleção de texto desabilitada (user-select:none no body). Margens laterais desktop 12% (@media min-width:769px) para vista verticalizada.
+  + Funcionalidade estrelas ⭐ para optativas: botão ⭐/☆ à direita do nome em "Puede cursar"; nova lista colapsável "Optativas ⭐ | 00 Horas" acima das optativas regulares; matéria marcada move-se para a lista e horas somam no título; persistência localStorage `optativasFavoritas` + sync cross-tab. Optativas favoritas têm os mesmos botões das normais (✅ Aprobar, 🟧 Regularizar, toggle Cursando, 🗓 Ver Fechas).
+  + Sistema "Abreviar nomes" portado do modo Árbol para a página principal: switch na linha "Horas Optativas Acumuladas" (extrema direita), persistência `mainAbbreviateNames` (default ON), usa `nombreCorto` de materias.js, fonte +30% quando ativo.
+  + Abreviações de texto: "Próxima final libre"→"Prox final libre", "Próximas Finales: sin fechas previstas"→"-" (quando abreviado). Categorias abreviadas: bimestral→Bi, trimestral→Tri, cuatrimestral→Quatri, optativa→Opt (helper abreviarCategoria()).
+  + Barra de progresso: novo segmento silver (#c0c0c0) para matérias com cursando=on (antes somadas às aprovadas). pctTotal inclui cursando.
+  + Criado FLOW/finales-update.dot — procedimento de atualização periódica das datas de finais (fonte oficial med.unlp.edu.ar/secretaria-academica/mesas-de-examenes + cartelera.med.unlp.edu.ar; fluxo verificação→extração→JSON→validação→deploy→notificação; frequência mensal; automação futura sugerida).
+
 ## 30/08/2026
   + Adicionado `opencode.json` na raiz do projeto — MCP cloudflare×5 (cloudflare, cloudflare-docs, cloudflare-bindings, cloudflare-builds, cloudflare-observability) movidos do global (~/.config/opencode) para cá. Ferramentas Cloudflare agora só carregam neste projeto (menos contexto em outros projetos).
 
