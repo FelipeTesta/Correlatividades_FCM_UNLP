@@ -9,7 +9,7 @@
 // ===============================
 
 // ---- State cache (perf: avoid repeated JSON.parse of localStorage) ----
-var _stateCache = { estados: null, cursando: null };
+var _stateCache = { estados: null, cursando: null, optativasFavoritas: null };
 function getCachedState(key) {
     if (_stateCache[key] === null) {
         try { _stateCache[key] = JSON.parse(localStorage.getItem(key) || '{}'); }
@@ -19,7 +19,47 @@ function getCachedState(key) {
 }
 function invalidateStateCache(key) { _stateCache[key] = null; }
 // Cross-tab sync: re-read localStorage when tab regains focus
-window.addEventListener('focus', function() { invalidateStateCache('estados'); invalidateStateCache('cursando'); });
+window.addEventListener('focus', function() { invalidateStateCache('estados'); invalidateStateCache('cursando'); invalidateStateCache('optativasFavoritas'); });
+
+// ---- Abbreviate names state (medical student shorthand) ----
+var _abbreviateNames = (function() {
+    var stored = localStorage.getItem('mainAbbreviateNames');
+    return stored !== null ? stored === 'true' : true; // default ON
+})();
+function isAbbreviatingNames() { return _abbreviateNames; }
+function toggleAbbreviateNames() {
+    _abbreviateNames = !_abbreviateNames;
+    try { localStorage.setItem('mainAbbreviateNames', _abbreviateNames); } catch(e) {}
+    updateAbbreviateModeClass();
+    guardarLocalYRender();
+}
+function updateAbbreviateModeClass() {
+    var body = document.body;
+    if (body) {
+        if (_abbreviateNames) {
+            body.classList.add('abbreviated-mode');
+        } else {
+            body.classList.remove('abbreviated-mode');
+        }
+    }
+    var cb = document.getElementById('toggleAbbreviateNames');
+    if (cb) cb.checked = _abbreviateNames;
+}
+// Apply on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    updateAbbreviateModeClass();
+});
+
+function abreviarCategoria(cat) {
+    if (!cat) return "";
+    var map = {
+        "bimestral": "Bi",
+        "trimestral": "Tri",
+        "cuatrimestral": "Quatri",
+        "optativa": "Opt"
+    };
+    return map[cat] || (cat.charAt(0).toUpperCase() + cat.slice(1));
+}
 
 let estados = getCachedState('estados');
 let proyectosExtension;
@@ -269,6 +309,17 @@ function toggleCursandoMain(code, checked) {
     guardarLocalYRender();
 }
 
+function toggleOptativaFavorita(code) {
+    var favoritas = getCachedState('optativasFavoritas');
+    if (favoritas[code]) {
+        delete favoritas[code];
+    } else {
+        favoritas[code] = true;
+    }
+    try { localStorage.setItem('optativasFavoritas', JSON.stringify(favoritas)); } catch(e) {}
+    guardarLocalYRender();
+}
+
 // ===============================
 // PROYECTOS DE EXTENSIÓN
 // ===============================
@@ -374,9 +425,23 @@ function render() {
     puedeCursarObligatorias.sort((a, b) => (a.anio || 0) - (b.anio || 0));
     puedeCursarOptativas.sort((a, b) => (a.anio || 0) - (b.anio || 0));
 
+    // Split optativas into favoritas and resto
+    var favoritasData = getCachedState('optativasFavoritas');
+    var favoritas = [];
+    var resto = [];
+    puedeCursarOptativas.forEach(m => {
+        if (favoritasData[m.codigo]) favoritas.push(m);
+        else resto.push(m);
+    });
+
     // Renderizar puede cursar ordenado
     puedeCursarObligatorias.forEach(m => agregar("puedeCursar-obligatorias", m.nombre, m.codigo));
-    puedeCursarOptativas.forEach(m => agregar("puedeCursar-optativas", m.nombre, m.codigo));
+    resto.forEach(m => agregar("puedeCursar-optativas", m.nombre, m.codigo));
+    favoritas.forEach(m => agregar("optativasFavoritas", m.nombre, m.codigo));
+
+    // Show/hide favoritas section
+    var favSection = document.getElementById('optativasFavoritas-section');
+    if (favSection) favSection.style.display = favoritas.length > 0 ? 'block' : 'none';
 
     // renderizar proyectos de extensión en "aprobadas" y en su propia lista
     proyectosExtension.forEach(p => {
@@ -452,9 +517,10 @@ function actualizarContadores() {
         noPuedeCursarObl: document.getElementById("noPuedeCursar-obligatorias")?.children.length || 0,
         noPuedeCursarOpt: document.getElementById("noPuedeCursar-optativas")?.children.length || 0,
         proyectosExtension: document.getElementById("proyectosExtension")?.children.length || 0,
+        optativasFavoritas: document.getElementById("optativasFavoritas")?.children.length || 0,
     };
 
-    counts.puedeCursarTotal = counts.puedeCursarObl + counts.puedeCursarOpt;
+    counts.puedeCursarTotal = counts.puedeCursarObl + counts.puedeCursarOpt + counts.optativasFavoritas;
     counts.regularizadasTotal = counts.puedeFinal + counts.noPuedeFinal;
     counts.noPuedeCursarTotal = counts.noPuedeCursarObl + counts.noPuedeCursarOpt;
 
@@ -468,7 +534,7 @@ function actualizarContadores() {
     });
 
     const subSections = document.querySelectorAll(".sub-section");
-    const subOrder = ["puedeFinal", "noPuedeFinal", "puedeCursarObl", "puedeCursarOpt", "noPuedeCursarObl", "noPuedeCursarOpt"];
+    const subOrder = ["puedeFinal", "noPuedeFinal", "puedeCursarObl", "puedeCursarOpt", "noPuedeCursarObl", "noPuedeCursarOpt", "optativasFavoritas"];
     subSections.forEach((sub, i) => {
         if (i < subOrder.length) {
             const h4 = sub.querySelector("h4");
@@ -478,6 +544,16 @@ function actualizarContadores() {
             }
         }
     });
+
+    // Update optativasFavoritas hours
+    var favoritasData = getCachedState('optativasFavoritas');
+    var horasFav = 0;
+    for (var code in favoritasData) {
+        var m = materias.find(x => x.codigo === code);
+        if (m && m.horas) horasFav += m.horas;
+    }
+    var horasEl = document.getElementById('optativasFavoritas-horas');
+    if (horasEl) horasEl.innerText = horasFav;
 }
 
 // ===============================
@@ -504,6 +580,7 @@ function actualizarBarraProgreso() {
     
     let aprobadas = 0;
     let regularizadas = 0;
+    let cursando = 0;
     let optativasPct = 0;
     let puedeCursar = 0;
     let total = 0;
@@ -527,12 +604,12 @@ function actualizarBarraProgreso() {
         } else if (estado === "regularizada") {
             regularizadas += puntos;
         } else {
-            // Check cursando state — counts as progress
+            // Check cursando state — counts as progress (silver segment)
             var isCursandoOn = false;
             var cursandoData = getCachedState('cursando');
             isCursandoOn = !!cursandoData[m.codigo];
             if (isCursandoOn) {
-                aprobadas += puntos;
+                cursando += puntos;
             } else if (cumpleRequisitos(m.paraCursar, m)) {
                 puedeCursar += puntos;
             }
@@ -547,9 +624,10 @@ function actualizarBarraProgreso() {
     // calcular porcentajes
     const pctAprobadas = total > 0 ? (aprobadas / total) * 100 : 0;
     const pctRegularizadas = total > 0 ? (regularizadas / total) * 100 : 0;
+    const pctCursando = total > 0 ? (cursando / total) * 100 : 0;
     const pctOptativas = total > 0 ? (optativasPuntos / total) * 100 : 0;
     const pctPuedeCursar = total > 0 ? (puedeCursar / total) * 100 : 0;
-    const pctTotal = ((aprobadas + regularizadas + optativasPuntos) / total) * 100;
+    const pctTotal = ((aprobadas + regularizadas + cursando + optativasPuntos) / total) * 100;
     
     // actualizar texto
     document.getElementById("materiasCount").innerText = "Materias: " + obligatorias.filter(m => estados[m.codigo] === "aprobada").length + " (Aprobadas) / " + obligatorias.length + "(Totales) | Optativas: " + Math.min(horasOptativas, 270) + "/270h";
@@ -557,17 +635,20 @@ function actualizarBarraProgreso() {
   // actualizar segmentos de barra
   const segAprobadas = document.getElementById("segmentAprobadas");
   const segRegularizadas = document.getElementById("segmentRegularizadas");
+  const segCursando = document.getElementById("segmentCursando");
   const segOptativas = document.getElementById("segmentOptativas");
   const segPuedeCursar = document.getElementById("segmentPuedeCursar");
   
   segAprobadas.style.width = pctAprobadas + "%";
   segRegularizadas.style.width = pctRegularizadas + "%";
+  segCursando.style.width = pctCursando + "%";
   segOptativas.style.width = pctOptativas + "%";
   segPuedeCursar.style.width = pctPuedeCursar + "%";
   
    // agregar tooltips explicativos
    segAprobadas.title = "Aprobadas: " + Math.round(pctAprobadas) + "%";
    segRegularizadas.title = "Regularizadas: " + Math.round(pctRegularizadas) + "%";
+   segCursando.title = "Cursando: " + Math.round(pctCursando) + "%";
    segOptativas.title = "Optativas: " + Math.round(pctOptativas) + "% (" + Math.min(horasOptativas, 270) + "/270h)";
    segPuedeCursar.title = "Puede cursar: " + Math.round(pctPuedeCursar) + "%";
   
@@ -669,7 +750,16 @@ function agregar(id, texto, codigo = null, progreso = null) {
         box1.className = "item-box item-nombre";
         
         const span = document.createElement("span");
-        span.innerText = texto;
+        
+        // Apply abbreviation if enabled
+        var displayName = texto;
+        if (isAbbreviatingNames() && codigo) {
+            var m = materias.find(m => m.codigo === codigo);
+            if (m && m.nombreCorto) {
+                displayName = m.nombreCorto;
+            }
+        }
+        span.innerText = displayName;
         
         if (codigo) {
             const materia = materias.find(m => m.codigo === codigo);
@@ -712,7 +802,7 @@ infoText += materia.anio + "° Año";
                 }
                 if (materia.categoria) {
                     if (infoText) infoText += " | ";
-                    infoText += materia.categoria.charAt(0).toUpperCase() + materia.categoria.slice(1);
+                    infoText += abreviarCategoria(materia.categoria);
                 }
                 if (infoText) {
                     infoSpan = document.createElement("span");
@@ -776,7 +866,16 @@ infoText += materia.anio + "° Año";
 
     // Para otros casos: estructura original
     const span = document.createElement("span");
-    span.innerText = texto;
+    
+    // Apply abbreviation if enabled
+    var displayName = texto;
+    if (isAbbreviatingNames() && codigo) {
+        var m = materias.find(m => m.codigo === codigo);
+        if (m && m.nombreCorto) {
+            displayName = m.nombreCorto;
+        }
+    }
+    span.innerText = displayName;
     
     // aplicar clase para optativas
     let materia = null;
@@ -806,7 +905,7 @@ infoText += materia.anio + "° Año";
             }
             if (materia.categoria) {
                 if (infoText) infoText += " | ";
-                infoText += materia.categoria.charAt(0).toUpperCase() + materia.categoria.slice(1);
+                infoText += abreviarCategoria(materia.categoria);
             }
             if (infoText) {
                 infoSpan.innerText = infoText;
@@ -845,8 +944,8 @@ infoText += materia.anio + "° Año";
     // Se tiver código → adiciona botões de controle dentro do rightGroup
     if (codigo) {
         // decidir quais botões incluir segundo o id da lista
-        const showAprobada = (id === "puedeCursar" || id.startsWith("puedeCursar-") || id.startsWith("puedeFinal") || id.startsWith("noPuedeFinal"));
-        const showRegularizada = (id === "aprobadas" || id === "puedeCursar" || id.startsWith("puedeCursar-"));
+        const showAprobada = (id === "puedeCursar" || id.startsWith("puedeCursar-") || id === "optativasFavoritas" || id.startsWith("puedeFinal") || id.startsWith("noPuedeFinal"));
+        const showRegularizada = (id === "aprobadas" || id === "puedeCursar" || id.startsWith("puedeCursar-") || id === "optativasFavoritas");
         const showReset = (id === "aprobadas" || id.startsWith("puedeFinal") || id.startsWith("noPuedeFinal"));
         
         if (showAprobada) {
@@ -880,7 +979,7 @@ infoText += materia.anio + "° Año";
         }
 
         // Cursando toggle for puede cursar items
-        if (id.startsWith("puedeCursar-")) {
+        if (id.startsWith("puedeCursar-") || id === "optativasFavoritas") {
             var cursandoData = getCachedState('cursando');
             var isCursandoOn = !!cursandoData[codigo];
 
@@ -905,6 +1004,18 @@ infoText += materia.anio + "° Año";
             toggleWrap.appendChild(document.createTextNode(" Cursando"));
 
             rightGroup.appendChild(toggleWrap);
+        }
+
+        // Star button for optativas in puedeCursar-optativas and optativasFavoritas
+        if ((id === "puedeCursar-optativas" || id === "optativasFavoritas") && codigo) {
+            var favoritasData = getCachedState('optativasFavoritas');
+            var isFav = !!favoritasData[codigo];
+            var btnStar = document.createElement("button");
+            btnStar.innerText = isFav ? '⭐' : '☆';
+            btnStar.className = 'btn-star-optativa';
+            btnStar.title = isFav ? 'Retirar de favoritas' : 'Marcar como favorita';
+            btnStar.onclick = function(e) { e.stopPropagation(); toggleOptativaFavorita(codigo); };
+            rightGroup.appendChild(btnStar);
         }
     }
 
@@ -951,14 +1062,14 @@ infoText += materia.anio + "° Año";
         // Agregar fechas de finales para puedeFinal, no puedeFinal y puedeCursar-optativas
         let fechasSpan = null;
         let btnCalendario = null;
-        const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
-        const esPuedeCursarOptativa = id === "puedeCursar-optativas";
-        
+const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
+        const esPuedeCursarOptativa = id === "puedeCursar-optativas" || id === "optativasFavoritas";
+
         if (codigo && (esRegularizada || esPuedeCursarOptativa)) {
             const tieneDatos = fechasFinales[codigo] && fechasFinales[codigo].length > 0;
             const tieneOpcionLibre = tieneDatos && fechasFinales[codigo].some(e => e.esLibre);
             
-            // En puedeCursar-optativas: solo mostrar si tiene opción Libre
+            // En podeCursar-optativas e optativasFavoritas: solo mostrar si tiene opción Libre
             if (esPuedeCursarOptativa && !tieneOpcionLibre) {
                 // No mostrar nada
             } else {
@@ -967,7 +1078,7 @@ infoText += materia.anio + "° Año";
                 const esOptativa = materia && materia.categoria === "optativa";
                 
                 if (proximas && proximas.length > 0) {
-                    let textoFechas = esRegularizada ? "Finales: " : "Próxima final libre: ";
+                    let textoFechas = esRegularizada ? "Finales: " : (isAbbreviatingNames() ? "Prox final libre: " : "Próxima final libre: ");
                     
                     
                     textoFechas += proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
@@ -981,7 +1092,7 @@ infoText += materia.anio + "° Año";
                     }
                 } else if (tieneDatos) {
                     fechasSpan = document.createElement("span");
-                    fechasSpan.innerText = "Próximas Finales: sin fechas previstas";
+                    fechasSpan.innerText = isAbbreviatingNames() ? "-" : "Próximas Finales: sin fechas previstas";
                     fechasSpan.className = "fechas-proximas";
                 }
                 
@@ -1046,6 +1157,7 @@ function limpiarListas() {
         "puedeCursar",
         "puedeCursar-obligatorias",
         "puedeCursar-optativas",
+        "optativasFavoritas",
         "noPuedeCursar",
         "noPuedeCursar-obligatorias",
         "noPuedeCursar-optativas",

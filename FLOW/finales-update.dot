@@ -1,0 +1,58 @@
+digraph finales_update {
+    rankdir=TB;
+    node [fontname="Arial", fontsize=11];
+    edge [fontname="Arial", fontsize=10];
+
+    // =============================
+    // PROCEDIMENTO DE ATUALIZAÇÃO DE DATAS DE FINAIS
+    // Fonte oficial: Secretaría Académica - Facultad de Ciencias Médicas UNLP
+    // URL: https://med.unlp.edu.ar/secretaria-academica/mesas-de-examenes/
+    // Alternativa: cartelera.med.unlp.edu.ar (publicações de cátedras)
+    // =============================
+
+    inicio [shape=ellipse, style=filled, fillcolor="#22c55e", fontcolor=white, label="INÍCIO\nVerificar necessidade de atualização"];
+    
+    // Fonte oficial
+    fonte_oficial [shape=box, style=filled, fillcolor="#22d3ee", label="FONTES OFICIAIS\n1. med.unlp.edu.ar → Secretaría Académica → Mesas de Exámenes\n2. cartelera.med.unlp.edu.ar → Publicações de cátedras\n3. Boletim Oficial UNLP (Resoluções de mesas)"];
+    
+    // Verificação
+    verificar [shape=diamond, style=filled, fillcolor="#facc15", label="Há novas datas?\n(Comparar com finais.json atual)"];
+    
+    // Extração manual
+    extrair [shape=box, style=filled, fillcolor="#a855f7", fontcolor=white, label="EXTRACÇÃO MANUAL\n1. Acessar fonte oficial\n2. Copiar datas por matéria e cátedra\n3. Formato: YYYY-MM-DD + label (ex: '1° Marzo')\n4. Identificar cátedras 'Libre' vs regulares"];
+    
+    // Atualização JSON
+    atualizar_json [shape=box, style=filled, fillcolor="#f97316", fontcolor=white, label="ATUALIZAR finales.json\nEstrutura:\n{\n  \"CODIGO\": {\n    \"Cátedra Nome\": [\n      {\"fecha\": \"2026-03-15\", \"label\": \"1° Marzo\"},\n      ...\n    ]\n  }\n}\nRegras:\n- Manter ordem cronológica\n- 'esLibre' detectado por 'libre' no nome da cátedra\n- label: mês abreviado ou '1° Marzo', '2° Março'"];
+    
+    // Validação
+    validar [shape=diamond, style=filled, fillcolor="#facc15", label="JSON válido?\n(Sintaxe + datas futuras + códigos existentes)"];
+    
+    // Deploy
+    deploy [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="DEPLOY\n1. git add APP/finales/finales.json\n2. git commit -m \"chore: update final dates [MM/YYYY]\"\n3. ./deploy.ps1 (bump version.json + push)\n4. Verificar em produção"];
+    
+    // Notificação
+    notificar [shape=box, style=filled, fillcolor="#22d3ee", label="NOTIFICAR USUÁRIOS\n- Cartelera: cron 3x/dia detecta automaticamente\n- Email: usuários inscritos recebem aviso\n- Log: registrar em LOG.md"];
+    
+    fim [shape=ellipse, style=filled, fillcolor="#ef4444", fontcolor=white, label="FIM\nPróxima verificação agendada"];
+
+    // Fluxo principal
+    inicio -> fonte_oficial;
+    fonte_oficial -> verificar;
+    verificar -> extrair [label="SIM"];
+    verificar -> fim [label="NÃO"];
+    extrair -> atualizar_json;
+    atualizar_json -> validar;
+    validar -> deploy [label="OK"];
+    validar -> extrair [label="ERRO"];
+    deploy -> notificar;
+    notificar -> fim;
+
+    // Frequência
+    frequencia [shape=note, label="FREQUÊNCIA RECOMENDADA:\n- Mensal (início de cada mês)\n- Extra: após publicação de Resoluções UNLP\n- Urgente: se detectar datas incorretas em produção"];
+    
+    // Automação futura
+    automacao [shape=note, style=dashed, label="AUTOMAÇÃO FUTURA (opcional):\n- Scraper Python/Node para med.unlp.edu.ar\n- Comparar hash do JSON → alerta se mudou\n- GitHub Action mensal + PR automático\n- Integração com cartelera Worker (já monitora cátedras)"];
+
+    verificar -> frequencia [style=dotted];
+    deploy -> automacao [style=dotted];
+}

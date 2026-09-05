@@ -10,7 +10,7 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 - **Progreso visual**: Barra de progreso con sistema de puntos por categoría (anual, cuatrimestral, bimestral, optativas)
 - **Modo Árbol**: Vista visual de árbol de correlatividades con líneas de conexión SVG, zoom, y selección interactiva
 - **Cursando**: Marca materias que estás cursando atualmente (toggle con animación cyan)
-- **Abreviar nomes**: Toggle "Abreviar nomes" na janela de Legenda (modo Árvore) mostra apelidos/siglas médicas (`nombreCorto` de cada matéria) em vez do nome completo. Persistido em localStorage (`arbolAbbreviateNames`, padrão ativado). Quando ativo, a fonte do nome aumenta ~30%.
+- **Abreviar nomes**: Toggle "Abreviar nomes" mostra apelidos/siglas médicas (`nombreCorto` de cada matéria) em vez do nome completo. Disponível no modo Árvore (painel da Legenda) e na página principal (switch na linha de horas optativas). Persistido em localStorage (`arbolAbbreviateNames` / `mainAbbreviateNames`, padrão ativado). Quando ativo, a fonte do nome aumenta ~30%.
 - **Fechas de finales**: Consulta las fechas de exámenes finales disponibles (actualizado Feb-Dic 2026, 61 materias)
 - **Vacunas**: Seguimiento de vacunación requerida para la carrera
 - **Cartelera**: Verifica publicaciones de cátedras (avisos, exámenes, notas) con filtros por fecha y modos de visualización (por materia / cronológico)
@@ -38,6 +38,7 @@ v0.08 — Agosto 2026
 
 ## Registro de cambios
 
+- **05/09/2026:** Design system unificado — criado `variables.css` (paleta centralizada em 18 variáveis CSS) e refatorados os 3 CSS (style, arbol, cartelera) para usar var(--). Página principal: headers de boxes coloridos (padrão Cartelera), animação de colapso vertical (sem movimento horizontal), fundos removidos, espaçamento reduzido, seleção de texto desabilitada, margens laterais desktop 12%. Nova funcionalidade estrelas ⭐ para optativas (lista "Optativas ⭐ | 00 Horas" com soma de horas, persistência localStorage). Sistema "Abreviar nomes" portado para a página principal (switch na linha de horas optativas, default ON). Abreviações de texto e categorias (Prox final libre, Bi/Tri/Quatri/Opt). Barra de progresso com segmento silver para cursando=on. Procedimento FLOW/finales-update.dot para atualização periódica de datas de finais.
 - **28/08/2026:** Animação glassShine (reflexo vidro nos nós aprovados) não respeita mais prefers-reduced-motion — funciona mesmo com "Reduzir animações" ativado no dispositivo.
 - **27/08/2026:** Modo Árbol — botão "Ver optativas" reposicionado entre Zoom e Cartelera; legenda restaurada (ordem Colores/Flechas conforme spec, itens Cursando, Próximas materias a liberar, ⭕ No puede final, toggle Abreviar nomes; Flechas: Cumplido, Puede cursar falta final, Falta Cursada, Falta Final); botão voltar "← Modo Lista"; botão Cartelera "📋 Cartelera"; toggle switch horizontal unificado (desktop 28px / mobile 37px, slider 28×14px); fix overlay z-index legenda mobile; fix media query CSS mobile malformada.
 - **27/08/2026 — Restaurado CSS .cursando-active/.cursando-pending à versão original do GitHub; revertidas media queries 1024px→768px; detecção de dispositivo baseada em capability ((hover: hover) and (pointer: fine)) para botões PC (hover) vs mobile (FAB click-hold).**
