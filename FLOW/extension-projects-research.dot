@@ -1,0 +1,66 @@
+digraph extension_research {
+    rankdir=TB;
+    node [fontname="Arial", fontsize=11];
+    edge [fontname="Arial", fontsize=10];
+    bgcolor="transparent";
+
+    // =============================
+    // PESQUISA: PROJETOS DE EXTENSÃO UNLP MEDICINA
+    // Data da pesquisa: 05/09/2026
+    // Objetivo: avaliar viabilidade de integração ao app
+    // =============================
+
+    title [shape=plaintext, label="PESQUISA: Projetos de Extensão UNLP Medicina\nObjetivo: integrar lista de projetos abertos ao app?\nData: 05/09/2026"];
+
+    // PERGUNTA
+    pergunta [shape=ellipse, style=filled, fillcolor="#22d3ee", fontcolor=white, label="Há plataforma pública\ncom projetos de extensão abertos?"];
+
+    // FONTES ENCONTRADAS
+    fonte_faculdade [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="FONTE PRIMÁRIA ENCONTRADA\n\nmed.unlp.edu.ar/extension/projetos\n\nLista ~20 projetos ATIVOS (não 'abertos')\nCada projeto tem:\n• Título\n• Diretor(a)\n• Email de contato (protegido por JS)\n\nFormato: HTML estático, sem API\nNÃO há campo 'inscrições abertas'"];
+
+    fonte_convocatoria [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="CONVOCATORIA 2027\n\nmed.unlp.edu.ar/convocatoria-abierta-2027\n\nPeríodo de presentación:\n01/07/2026 - 31/08/2026 (fechada)\n\nPlataforma de submissão:\n'Sistema Único de la UNLP' (não documentado)"];
+
+    fonte_unlp [shape=box, style=filled, fillcolor="#a855f7", fontcolor=white, label="FONTE SECUNDÁRIA\n\nunlp.edu.ar/proyectosext/\n\n• Programas + Proyectos + Actividades\n• Convocatorias Ordinarias + Extraordinarias\n• Convocatorias Educación Formal Alternativa"];
+
+    // LIMITAÇÕES
+    limitacoes [shape=box, style=filled, fillcolor="#ef4444", fontcolor=white, label="LIMITAÇÕES ENCONTRADAS\n\n1. Sem API pública estruturada\n2. Sem status 'aberto para inscripción'\n   (só lista de projetos ATIVOS)\n3. Emails protegidos por JavaScript anti-spam\n   (não scrapeáveis diretamente)\n4. Atualização manual via HTML estático\n5. Convocatorias anuales (não contínuas)\n6. Sem dados de horas/créditos por projeto"];
+
+    // AVALIAÇÃO
+    avaliacao [shape=diamond, style=filled, fillcolor="#facc15", label="Viável integrar ao app?\n\nPrós vs Contras"];
+
+    pros [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="PRÓS\n\n• Informação de valor para estudantes\n• Vincula com horas optativas (já no app)\n• Aumenta utilidade do app\n• Diferencial vs outras ferramentas"];
+
+    contras [shape=box, style=filled, fillcolor="#ef4444", fontcolor=white, label="CONTRAS\n\n• Scraping frágil (HTML estático, sem API)\n• Manutenção mensal necessária\n• Sem dados estruturados (horas, vagas)\n• Contato via email (fora do app)\n• Risco: dados desatualizados"];
+
+    // DECISÃO
+    decisao [shape=diamond, style=filled, fillcolor="#facc15", label="Implementar agora?\n\nConsiderar:\n• Esforço de manutenção\n• Valor real para usuários\n• Custo de scraping vs JSON manual"];
+
+    // CENÁRIOS
+    implementar [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="IMPLEMENTAR (se decisão = SIM)\n\n1. Criar APP/projetos_extension.json (manual)\n2. Formato: {id, nombre, director, contacto, link}\n3. Atualizar FLOW/projetos-extension-update.dot\n4. Adicionar seção 'Projetos Extensão' no app\n5. Sync mensal (mesmo ciclo dos finais)"];
+
+    nao_implementar [shape=box, style=filled, fillcolor="#666666", fontcolor=white, label="NÃO IMPLEMENTAR (se decisão = NÃO)\n\n1. Documentar pesquisa neste .dot\n2. Aguardar plataforma estruturada (API UNLP)\n3. Reavaliar em 6 meses"];
+
+    // FLUXO
+    title -> pergunta;
+    pergunta -> fonte_faculdade;
+    pergunta -> fonte_convocatoria;
+    pergunta -> fonte_unlp;
+    fonte_faculdade -> limitacoes;
+    fonte_convocatoria -> limitacoes;
+    fonte_unlp -> limitacoes;
+    limitacoes -> avaliacao;
+    avaliacao -> pros;
+    avaliacao -> contras;
+    pros -> decisao;
+    contras -> decisao;
+    decisao -> implementar [label="SIM"];
+    decisao -> nao_implementar [label="NÃO"];
+
+    // NOTAS
+    nota_api [shape=note, style=dashed, label="POSSÍVEL EVOLUÇÃO:\n• UNLP poderia expor API REST\n• Sistema Único de la UNLP tem backend SIU\n• Verificar periodicidade: 6 meses"];
+
+    nota_similar [shape=note, label="PADRÃO SIMILAR:\nMesma estrutura do ciclo de finales:\n1. Fonte oficial (HTML/JSON)\n2. Extração manual ou semi-auto\n3. Validação\n4. Deploy via deploy.ps1\n5. Notificação (LOG.md)"];
+
+    limitacoes -> nota_api [style=dotted];
+    fonte_faculdade -> nota_similar [style=dotted];
+}
