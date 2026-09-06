@@ -1078,7 +1078,7 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
                 const esOptativa = materia && materia.categoria === "optativa";
                 
                 if (proximas && proximas.length > 0) {
-                    let textoFechas = esRegularizada ? "Finales: " : (isAbbreviatingNames() ? "Prox final libre: " : "Próxima final libre: ");
+                    let textoFechas = esRegularizada ? "Finales: " : "Próxima final libre: ";
                     
                     
                     textoFechas += proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
@@ -1092,7 +1092,7 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
                     }
                 } else if (tieneDatos) {
                     fechasSpan = document.createElement("span");
-                    fechasSpan.innerText = isAbbreviatingNames() ? "-" : "Próximas Finales: sin fechas previstas";
+                    fechasSpan.innerText = "-";
                     fechasSpan.className = "fechas-proximas";
                 }
                 
