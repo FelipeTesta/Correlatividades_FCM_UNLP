@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Extensión - Correlatividades Medicina UNLP</title>
+    <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="APP/extension.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <a href="arbol.html" class="btn-back" title="Volver al modo árbol">← Volver</a>
+        <h1>📚 Extensión</h1>
+        <a href="cartelera.html" class="btn-cartelera" title="Verificar cartelera">📋 Cartelera</a>
+    </div>
+
+    <!-- Header informativo -->
+    <div class="extension-header">
+        <h2>Secretaría de Extensión Universitaria</h2>
+        <p class="secretario-info"><strong>Secretario:</strong> Lic. Pablo VETERE &nbsp;|&nbsp; <strong>Prosecretario:</strong> Sr. Guillermo DEVIDA</p>
+        <p class="contacto-info">📍 Edificio Central, Planta Baja, Ala Berisso</p>
+        <p>Datos de cada proyecto: página individual en <a href="https://www.med.unlp.edu.ar/index.php/extension/proyectos" target="_blank" rel="noopener">med.unlp.edu.ar/extension/proyectos</a>. Última revisión: <span id="lastUpdate">06/09/2026</span>.</p>
+        <div class="extension-faculty-links">
+            <a href="https://www.med.unlp.edu.ar/index.php/extension" target="_blank" rel="noopener" class="faculty-link">🏛 Secretaría de Extensión</a>
+            <a href="https://www.med.unlp.edu.ar/index.php/extension/proyectos" target="_blank" rel="noopener" class="faculty-link">📋 Todos los proyectos</a>
+            <a href="https://www.instagram.com/extension_fcm/" target="_blank" rel="noopener" class="faculty-link">📷 @extension_fcm</a>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-bar">
+        <div class="filter-group">
+            <button class="filter-btn active" data-status="all" aria-pressed="true">Todos</button>
+            <button class="filter-btn" data-status="inscripciones_abiertas" aria-pressed="false">🟢 Abiertas</button>
+            <button class="filter-btn" data-status="en_curso" aria-pressed="false">🟡 En curso</button>
+            <button class="filter-btn" data-status="indisponible" aria-pressed="false">🔴 Indisponibles</button>
+        </div>
+        <div class="search-wrap">
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar proyecto o director..." aria-label="Buscar proyecto">
+        </div>
+    </div>
+
+    <!-- Contador -->
+    <div class="extension-counter">
+        <span id="extensionCount">0</span> proyectos
+    </div>
+
+    <!-- Grid de cards -->
+    <div id="extensionGrid" class="extension-grid">
+        <!-- Renderizado via JS -->
+    </div>
+
+    <!-- Empty state -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+        <p>📭 Nenhum projeto encontrado com esses filtros.</p>
+    </div>
+
+<script src="APP/extension_data.js"></script>
+<script src="APP/extension.js"></script>
+<script src="version-check.js"></script>
+</body>
+</html>
