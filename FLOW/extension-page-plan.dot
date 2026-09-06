@@ -1,0 +1,107 @@
+digraph extension_plan {
+    rankdir=TB;
+    node [fontname="Arial", fontsize=11];
+    edge [fontname="Arial", fontsize=10];
+    bgcolor="transparent";
+
+    // =============================
+    // PLANEJAMENTO: PÁGINA "EXTENSION"
+    // Projeto: Correlatividades Medicina UNLP (v0.08)
+    // Data: 06/09/2026
+    // Status: PLANEJAMENTO (aguardando aprovação)
+    // =============================
+
+    title [shape=plaintext, label="PÁGINA EXTENSION - PLANEJAMENTO\nData: 06/09/2026 | Status: aguardando aprovação"];
+
+    // =============================
+    // OBJETIVO
+    // =============================
+    objetivo [shape=box, style=filled, fillcolor="#22d3ee", fontcolor=white, label="OBJETIVO\n\nCriar página standalone 'Extension'\n(espelhada em cartelera.html) que mostra\nem grade os projetos de extensão da FCM UNLP\ncom cards contendo:\n• Nome do projeto\n• Descrição resumida\n• Status (inscripciones abiertas/en curso/indisponible)\n• Email de contato\n• Links: [Oficial] [Redes sociais]"];
+
+    // =============================
+    // PESQUISA REALIZADA
+    // =============================
+    pesquisa [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="PESQUISA REDES SOCIAIS (06/09/2026 - final)\n\n20 projetos - URLs oficiais 100%:\nmed.unlp.edu.ar/index.php/extension/proyectos/[slug]\n\nInstagram dedicado: 3/20\n• @aminomedueleunlp (1 - A mi no me duele)\n• @arribalafrutaabajoelazucar (3 - Arriba la fruta)\n• @procopin (20 - PROCOPIN) ✓ confirmado\n\nInstagram geral da faculdade (hub):\n• @extension_fcm (todos os projetos publicam aqui)\n  → adicionar como link 'Instagram Facultad' no header\n\nFacebook: 0/20 (nenhum)\nTwitter/X: 0/20 (nenhum)\nYouTube: 0/20 (PROCOPIN só tem Google Drive, não canal)\n\nCard fields atualizados:\n• links.oficial: sempre presente (20/20)\n• links.instagram: dedicado (3) ou @extension_fcm (17 restantes) como fallback\n• links.facebook: null para todos\n• links.twitter: null para todos\n• links.youtube: null para todos\n\nConclusão: redes sociais dedicadas são raras (3/20).\nMostrar @extension_fcm como 'red social de la facultad' no header da página.\nCada card mostra o @ dedicado se existir, senão null."];
+
+    // =============================
+    // ARQUITETURA
+    // =============================
+    arquitetura [shape=box, style=filled, fillcolor="#a855f7", fontcolor=white, label="ARQUITETURA (5 arquivos novos)\n\n1. extension.html (entry point, standalone)\n2. APP/extension.js (render grid + filters)\n3. APP/extension.css (dark theme, grid, cards)\n4. APP/extension_data.js (dados manuais por projeto)\n5. FLOW/extension-update.dot (ciclo de atualização)\n\nMirror da estrutura de cartelera.html/cartelera.js\nCompartilha localStorage (estados, optativasFavoritas)\nSem fetch remoto (dados estáticos em extension_data.js)"];
+
+    // =============================
+    // ESTRUTURA DO CARD
+    // =============================
+    card [shape=box, style=filled, fillcolor="#f97316", fontcolor=white, label="CARD DE PROJETO (estrutura)\n\n┌──────────────────────────────┐\n│ [Status: en_curso 🟡]        │\n│                              │\n│ Nome do Projeto              │\n│ Director: Nome Apellido      │\n│                              │\n│ Descrição resumida (1-2 li-  │\n│ nhas em espanhol).           │\n│                              │\n│ 📧 email@med.unlp.edu.ar     │\n│                              │\n│ [🔗 Oficial] [📷 Instagram]   │\n└──────────────────────────────┘\n\nCSS Grid: auto-fill, minmax 280px, gap 14px\nMobile (≤600px): 1 coluna\nStatus: pill colorida canto superior direito"];
+
+    // =============================
+    // STATUS / CORES
+    // =============================
+    status [shape=box, style=filled, fillcolor="#facc15", fontcolor=black, label="STATUS / CORES (pill superior direito)\n\n🟢 inscripciones_abiertas\n   → #22c55e (verde) | fundo rgba(34,197,94,0.15)\n\n🟡 en_curso\n   → #facc15 (amarelo) | fundo rgba(250,204,21,0.15)\n\n🔴 indisponible\n   → #ef4444 (vermelho) | fundo rgba(239,68,68,0.15)\n\n⚪ desconocido\n   → #6b7280 (cinza) | fundo rgba(107,114,128,0.15)\n\nDeterminação do status (ciclo de atualização):\n• 🟢: chamada recente para participantes (< 6 meses)\n• 🟡: atividade/publicações < 12 meses\n• 🔴: sem atividade > 12 meses OU explicitamente fechado\n• ⚪: informação insuficiente"];
+
+    // =============================
+    // DADOS MANUAIS (extension_data.js)
+    // =============================
+    dados [shape=box, style=filled, fillcolor="#a855f7", fontcolor=white, label="APP/extension_data.js (formato)\n\nconst EXTENSION_PROJECTS = [\n  {\n    id: 'ami-no-me-duele',\n    nombre: 'A mi no me duele',\n    director: 'Pablo Vetere',\n    descripcion: 'Prevención y abordaje del dolor crónico...',\n    status: 'en_curso',\n    email: 'extension@med.unlp.edu.ar',\n    links: {\n      oficial: 'https://med.unlp.edu.ar/extension/proyectos',\n      instagram: 'https://www.instagram.com/aminomedueleunlp/',\n      facebook: null,\n      twitter: null,\n      youtube: null\n    },\n    ultimaActividad: '2025',\n    evidencia: 'https://www.instagram.com/aminomedueleunlp/'\n  },\n  // ... 19 mais\n];\n\nNotas:\n• Sem fetch remoto → instantâneo\n• Atualização manual via commit\n• localStorage opcional: 'extensionFavoritas' (estrela ⭐)"];
+
+    // =============================
+    // FILTROS / ORDENAÇÃO
+    // =============================
+    filtros [shape=box, style=filled, fillcolor="#facc15", fontcolor=black, label="FILTROS / ORDENAÇÃO (opcional v1)\n\nOrdenação padrão: alfabética por nombre\nFiltros (toggle no topo):\n• [Todos] [🟢 abiertas] [🟡 en_curso] [🔴 indisponibles]\n• Busca por texto (nombre/director)\n• Toggle 'Mostrar descripción' (compacto vs expandido)\n\nPersistência (localStorage):\n• extensionFilterStatus (default 'all')\n• extensionSortBy (default 'alfabetico')\n• extensionShowDescription (default true)"];
+
+    // =============================
+    // NAVEGAÇÃO
+    // =============================
+    nav [shape=box, style=filled, fillcolor="#22d3ee", fontcolor=white, label="NAVEGAÇÃO\n\nAdicionar botão '📚 Extensión' no top-bar de:\n• index.html (próximo a '🌳 Árbol')\n• arbol.html (próximo a '📋 Cartelera')\n• cartelera.html (próximo a '🔙 Volver')\n\nBotão '← Volver' em extension.html\nCompartilha .privacy-notice (banner top)"];
+
+    // =============================
+    // CICLO DE ATUALIZAÇÃO
+    // =============================
+    ciclo [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="CICLO DE ATUALIZAÇÃO (manual)\n\nFLOW/extension-update.dot - documento separado\nFrequência: trimestral (a cada 3 meses) ou sob demanda\n\nTrigger: usuário reporta dado incorreto / novo projeto\n\nProcesso (ver extension-update.dot):\n1. Acessar med.unlp.edu.ar/extension/proyectos\n2. Listar projetos ativos vs inativos\n3. Para cada projeto: pesquisar atividade recente\n4. Atualizar APP/extension_data.js\n5. Validar JSON + estrutura\n6. Commit + deploy.ps1 + push\n7. Atualizar LOG.md"];
+
+    // =============================
+    // VARIÁVEIS CSS (reutilizar)
+    // =============================
+    css [shape=box, style=filled, fillcolor="#a855f7", fontcolor=white, label="CSS - REUTILIZAR VARIABLES.CSS\n\nLinkar variables.css em extension.html (antes do extension.css)\n\nCores já disponíveis:\n--bg, --bg-elevated, --bg-card\n--text, --text-muted, --text-dim\n--border, --border-strong\n--cursando (#22d3ee), --aprobada (#22c55e)\n--regularizada (#f97316), --optativa (#a855f7)\n--puede-cursar (#facc15), --danger (#ef4444)\n\nNovas vars específicas (se necessário):\n--status-en-curso: var(--puede-cursar)\n--status-indisponible: var(--danger)\n--status-desconocido: #6b7280"];
+
+    // =============================
+    // FASES DE IMPLEMENTAÇÃO
+    // =============================
+    fase1 [shape=box, style=filled, fillcolor="#22c55e", fontcolor=white, label="FASE 1 - Estrutura base\n(2-3 horas)\n\n□ extension.html (HTML estático + skeleton)\n□ APP/extension.css (grid + cards + status pills)\n□ APP/extension_data.js (dados dos 20 projetos)\n□ Variáveis CSS em variables.css\n□ Botões de navegação em 3 páginas"];
+
+    fase2 [shape=box, style=filled, fillcolor="#22d3ee", fontcolor=white, label="FASE 2 - Lógica JS\n(1-2 horas)\n\n□ APP/extension.js (render grid)\n□ Filtros: status + busca\n□ Ordenação alfabética\n□ Persistência localStorage\n□ Responsivo mobile"];
+
+    fase3 [shape=box, style=filled, fillcolor="#a855f7", fontcolor=white, label="FASE 3 - Documentação + ciclo\n(1 hora)\n\n□ FLOW/extension-update.dot\n□ FLOW/extension-page-plan.dot (este arquivo)\n□ Atualizar README.md (funcionalidades)\n□ Atualizar AGENTS.md (IMPLEMENT)\n□ Atualizar LOG.md (data + mudanças)"];
+
+    // FLUXO
+    title -> objetivo;
+    objetivo -> pesquisa;
+    objetivo -> arquitetura;
+    arquitetura -> card;
+    card -> status;
+    card -> dados;
+    dados -> filtros;
+    card -> nav;
+    nav -> ciclo;
+    css -> fase1;
+    fase1 -> fase2;
+    fase2 -> fase3;
+
+    // APROVAÇÃO
+    decisao [shape=diamond, style=filled, fillcolor="#facc15", label="APROVAR\neste plano?"];
+
+    inicio_impl [shape=ellipse, style=filled, fillcolor="#22c55e", fontcolor=white, label="INÍCIO IMPLEMENTAÇÃO\n(fase 1 → 2 → 3)"];
+
+    revisao [shape=ellipse, style=filled, fillcolor="#ef4444", fontcolor=white, label="REVISAR PLANO\n(ajustes solicitados)"];
+
+    fase3 -> decisao;
+    decisao -> inicio_impl [label="SIM"];
+    decisao -> revisao [label="NÃO"];
+
+    // NOTAS
+    estimativa [shape=note, label="ESTIMATIVA TOTAL:\n4-6 horas de implementação\n+ ~20-30 min/ciclo atualização\n(manual, trimestral)"];
+
+    riscos [shape=note, style=dashed, label="RISCOS:\n• Dados manuais podem ficar desatualizados\n• Sem notificação automática de mudanças\n• Instagram/Facebook podem bloquear links\n• Solução: ciclo trimestral + aviso na página"];
+
+    pesquisa -> estimativa [style=dotted];
+    ciclo -> riscos [style=dotted];
+}
