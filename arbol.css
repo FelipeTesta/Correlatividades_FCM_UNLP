@@ -70,8 +70,8 @@ body {
 .tree-top-bar {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 6px;
+    gap: 8px;
+    padding: 4px 8px;
     background-color: var(--bg-elevated);
     border: 1px solid var(--bg-hover);
     border-radius: 4px;
@@ -938,11 +938,11 @@ svg path.connection-line.highlighted {
 
     .tree-top-bar {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-wrap: nowrap;
+        justify-content: space-between;
         align-items: center;
         gap: 6px;
-        padding: 4px 6px;
+        padding: 4px 8px;
         margin-bottom: 0;
     }
 
@@ -958,7 +958,7 @@ svg path.connection-line.highlighted {
     }
 
     /* Row 2: Optativas | Verificar Cartelera */
-    .toggle-switch { order: 0; }
+    .toggle-switch { order: 0; margin-right: auto; }
     .btn-cartelera { order: 0; }
 
     /* Row 3: Cómo usar | Leyenda */
@@ -1238,19 +1238,6 @@ svg path.connection-line.highlighted {
         padding: 8px 0;
     }
 
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .subject-node.cursando-active,
-    .subject-node.cursando-pending {
-        animation: none;
-    }
-    .mobile-fab-overlay {
-        animation: none;
-    }
-    .mobile-fab-container {
-        animation: none;
-    }
 }
 
 /* ============================= */
