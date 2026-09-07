@@ -1,3 +1,13 @@
+## 07/09/2026
+  + Navbar unificado: font-size+line-height !important on .app-navbar-link desktop+mobile (nav.css L154-155). Font cascade fix: style.css li:not(.app-navbar-list li) excluded from navbar. Duplicate scrollbar blocks removed from arbol.css (~20 lines).
+  + Topbar layout: uniform min-height:37px on all buttons, gap:8px, margin-bottom:8px. Toggle-switch margin-right:auto pushes optativas left. Same layout desktop+mobile.
+  + Button height unification: style.css .btn-help + .btn-reset-hold height 40→37px, line-height 38→35px (matches arbol.css .tree-top-bar rules).
+  + arbol.css cleanup: removed duplicate * box-sizing (3 lines), scrollbar blocks (~20 lines), orphan .tree-top-bar h1 font-size rule. Kept html overflow:visible + body overflow-x:hidden (single scroll).
+  + optativa arrows: removed early-return purple blocks in getConnectionVisualStyle() — optativas now use same 4-case system (gray/white/green-dashed/green-solid) as obrigatórias.
+  + prefers-reduced-motion: removed from arbol.css entirely (user explicit request — page is lightweight, no need to reduce animations).
+  + h1 titles: hidden globally via base.css (display:none !important on body>h1, .tree-top-bar h1, .top-bar h1) — redundant with navbar page title.
+  + Deploy: branch feature/navbar-unificado merged to main, old main backed up as backup/pre-navbar-unificado. version.json bumped to 2d94c94.
+
 ## 05/09/2026
   + Design system: criado `variables.css` (paleta centralizada Deep Black: 18 variáveis CSS --bg, --bg-elevated, --bg-card, --bg-hover, --bg-input, --text, --text-muted, --text-dim, --text-faint, --border, --border-strong, --aprobada, --regularizada, --cursando, --optativa, --optativa-dark, --puede-cursar, --danger). Linkado nas 3 páginas (index, arbol, cartelera) antes do CSS da página. Refatorados style.css (77 vars), arbol.css (102), cartelera.css (118) — cores hex hardcoded substituídas por var(--). Sem quebra visual (verificado via edge-devtools).
   + Página principal: headers dos boxes estilizados no padrão Cartelera (.source-header) — border-left 4px colorido + fundo tint rgba + hover brightness(1.2) + collapsed opacity(0.7). Color-coding por box: Aprobadas=verde, Regularizadas=laranja, Puede cursar=amarelo, Projetos=cyan, No puede cursar=cinza.
