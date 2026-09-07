@@ -1,11 +1,7 @@
-﻿/* ============================= */
-/* MODO ÃRBOL - CORRELATIVIDADES */
+/* ============================= */
+/* MODO ÁRBOL - CORRELATIVIDADES */
 /* DEEP BLACK THEME             */
 /* ============================= */
-
-* {
-    box-sizing: border-box;
-}
 
 html {
     overflow: visible;
@@ -16,34 +12,12 @@ html, body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #000;
     color: var(--text);
-    overscroll-behavior: none;
     color-scheme: dark;
 }
 
 body {
     overflow-x: hidden;
     padding-top: 48px;
-}
-
-/* Scrollbar personalizado */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg-elevated);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-/* Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) var(--bg-elevated);
 }
 
 /* ============================= */
@@ -75,7 +49,7 @@ body {
     background-color: var(--bg-elevated);
     border: 1px solid var(--bg-hover);
     border-radius: 4px;
-    margin-bottom: 0;
+    margin-bottom: 8px;
     flex-shrink: 0;
 }
 
@@ -93,7 +67,7 @@ body {
     color: #fff;
     font-weight: bold;
     font-size: 12px;
-    padding: 8px 16px;
+    padding: 6px 12px;
     cursor: pointer;
     border-radius: 4px;
     transition: all 0.2s ease;
@@ -106,6 +80,18 @@ body {
 .btn-back:hover {
     background-color: #ffffff11;
     border-color: var(--text-dim);
+}
+
+.tree-top-bar .btn-back,
+.tree-top-bar .btn-legend,
+.tree-top-bar .btn-cartelera,
+.tree-top-bar .btn-help {
+    min-height: 37px;
+    display: inline-flex;
+    align-items: center;
+}
+.tree-top-bar .toggle-switch {
+    margin-right: auto;
 }
 
 /* ============================= */
@@ -946,7 +932,7 @@ svg path.connection-line.highlighted {
         margin-bottom: 0;
     }
 
-/* Row 1: ← Volver | 🌳 Modo árbol | Zoom */
+/* Row 1: ? Volver | ?? Modo �rbol | Zoom */
     .btn-back { order: 0; }
     .tree-top-bar h1 {
         order: 0;
@@ -961,7 +947,7 @@ svg path.connection-line.highlighted {
     .toggle-switch { order: 0; margin-right: auto; }
     .btn-cartelera { order: 0; }
 
-    /* Row 3: Cómo usar | Leyenda */
+    /* Row 3: C�mo usar | Leyenda */
     .btn-help { order: 0; }
     .btn-legend { order: 0; }
 
@@ -1147,14 +1133,14 @@ svg path.connection-line.highlighted {
 
     .subject-node {
         flex: 0 0 auto;
-        min-width: 65px;
-        max-width: 110px;
+        min-width: 75px;
+        max-width: 130px;
         min-height: 40px;
         margin: 0 2px 8px 2px;
     }
 
     .node-content {
-        padding: 3px 4px;
+        padding: 5px 6px;
         flex-direction: column;
         gap: 2px;
     }
@@ -1311,7 +1297,7 @@ svg path.connection-line.highlighted {
     }
 }
 
-/* Action buttons: hidden on touch-primary devices (replaced by touch-and-hold FAB). Independent of screen width â€” applies to all touch devices (phones, tablets, landscape). PC with mouse/trackpad keeps hover buttons. */
+/* Action buttons: hidden on touch-primary devices (replaced by touch-and-hold FAB). Independent of screen width — applies to all touch devices (phones, tablets, landscape). PC with mouse/trackpad keeps hover buttons. */
 @media (hover: none) and (pointer: coarse) {
     .node-actions {
         display: none !important;

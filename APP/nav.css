@@ -151,8 +151,8 @@
     .app-navbar-link {
         width: 100%;
         padding: 8px 12px;
-        font-size: 14px;
-        min-height: 38px;
+        font-size: 14px !important;
+        min-height: 38px !important;
         border-radius: 4px;
         justify-content: flex-start;
     }
