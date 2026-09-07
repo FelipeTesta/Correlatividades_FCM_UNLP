@@ -3,15 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <title>Esquema Vacunal - Personal de Salud 2026</title>
+<link rel="stylesheet" href="variables.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="APP/nav.css">
 <link rel="stylesheet" href="style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
+<body data-page-title="Vacunas">
+
+<div id="appNavbar"></div>
 
 <h1>Esquema Vacunal - Personal de Salud</h1>
 
 <div class="top-bar-vacunas">
-  <button class="btn-primary" onclick="window.location.href='index.html'">← Volver</button>
   <button class="btn-danger" onclick="resetearHistorico()" style="margin-left: auto;">Reset 🔄</button>
 </div>
 
@@ -58,5 +62,8 @@
 
 <script src="APP/vacunas_data.js"></script>
 <script src="vacunas.js"></script>
+<div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
+<script src="APP/nav.js"></script>
+
 </body>
 </html>

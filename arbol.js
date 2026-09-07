@@ -5,11 +5,6 @@
 // localStorage.
 // ===============================
 
-let currentZoom = 1;
-const ZOOM_STEP = 0.2;
-const ZOOM_MIN = 0.3;
-const ZOOM_MAX = 3;
-
 let selectedNode = null;
 
 const LINE_COLORS = {
@@ -45,14 +40,14 @@ function toggleAbbreviateNames() {
     updateTree();
 }
 function updateAbbreviateModeClass() {
-    var wrapper = document.querySelector('.tree-wrapper');
-    if (wrapper) {
+    var container = document.getElementById('treeContent') || document.querySelector('.tree-content');
+    if (container) {
         if (_abbreviateNames) {
-            wrapper.classList.add('abbreviated-mode');
-            wrapper.classList.add('abbreviated-names');
+            container.classList.add('abbreviated-mode');
+            container.classList.add('abbreviated-names');
         } else {
-            wrapper.classList.remove('abbreviated-mode');
-            wrapper.classList.remove('abbreviated-names');
+            container.classList.remove('abbreviated-mode');
+            container.classList.remove('abbreviated-names');
         }
     }
 }
@@ -81,16 +76,22 @@ window.addEventListener('focus', function() { invalidateStateCache('estados'); i
 
 document.addEventListener('DOMContentLoaded', initTree);
 
-// Re-draw connections on resize
+// Re-draw connections on resize / scroll
 let resizeTimeout;
 window.addEventListener('resize', function () {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(function () {
-        if (document.querySelector('.tree-wrapper')) {
+        if (document.querySelector('.tree-content')) {
             updateSvgDimensions();
             drawConnections();
         }
     }, 150);
+});
+
+window.addEventListener('scroll', function () {
+    requestAnimationFrame(function () {
+        drawConnections();
+    });
 });
 
 // ===============================
@@ -133,21 +134,16 @@ function initTree() {
         }
     }
 
-    // Get wrapper
-    var wrapper = document.querySelector('.tree-wrapper');
-    if (!wrapper) return;
+    // Get content container
+    var contentContainer = document.getElementById('treeContent') || document.querySelector('.tree-content');
+    if (!contentContainer) return;
 
     // Remove previous SVG before clearing
     var oldSvg = document.getElementById('treeSvg');
     if (oldSvg) oldSvg.remove();
 
-    // Clear wrapper
-    wrapper.innerHTML = '';
-
-    // Create zoom container (holds year sections, NOT the SVG)
-    var zoomContainer = document.createElement('div');
-    zoomContainer.className = 'tree-zoom-container';
-    wrapper.appendChild(zoomContainer);
+    // Clear container
+    contentContainer.innerHTML = '';
 
     // Create year sections
     for (var year = 1; year <= 6; year++) {
@@ -189,17 +185,14 @@ function initTree() {
             section.appendChild(optRow);
         }
 
-        zoomContainer.appendChild(section);
+        contentContainer.appendChild(section);
     }
 
-    // Create SVG overlay (inside zoomContainer for correct z-index stacking)
+    // Create SVG overlay (inside contentContainer for correct z-index stacking)
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('class', 'tree-svg');
     svg.setAttribute('id', 'treeSvg');
-    zoomContainer.appendChild(svg);
-
-    // Apply current zoom level
-    applyZoomTransform();
+    contentContainer.appendChild(svg);
 
     // Draw connections after DOM renders
     requestAnimationFrame(function() {
@@ -669,20 +662,6 @@ function updateTree() {
 // ===============================
 
 function getConnectionVisualStyle(prereqCode, paraCursarReq, paraAprobarReq, targetCode) {
-    // Check if the prerequisite subject is optativa
-    for (var i = 0; i < materias.length; i++) {
-        if (materias[i].codigo === prereqCode && materias[i].categoria === 'optativa') {
-            return { color: LINE_COLORS.optativa, dashed: false };
-        }
-    }
-    // Check if the target subject is optativa
-    if (targetCode) {
-        for (var i = 0; i < materias.length; i++) {
-            if (materias[i].codigo === targetCode && materias[i].categoria === 'optativa') {
-                return { color: LINE_COLORS.optativa, dashed: false };
-            }
-        }
-    }
     var estado = estados[prereqCode];
 
     // Check if paraCursar requirement is met
@@ -733,17 +712,17 @@ function getTreeSvg() {
 }
 
 function updateSvgDimensions() {
-    var wrapper = document.querySelector('.tree-wrapper');
+    var contentContainer = document.getElementById('treeContent') || document.querySelector('.tree-content');
     var svg = getTreeSvg();
-    if (!wrapper || !svg) return;
+    if (!contentContainer || !svg) return;
 
     // Temporarily hide SVG to avoid it contributing to scrollWidth/scrollHeight
     var prevDisplay = svg.style.display;
     svg.style.display = 'none';
-    void wrapper.offsetHeight; // force reflow
+    void contentContainer.offsetHeight; // force reflow
 
-    var w = wrapper.scrollWidth;
-    var h = wrapper.scrollHeight;
+    var w = contentContainer.scrollWidth;
+    var h = contentContainer.scrollHeight;
 
     // Add extra padding for mobile card expansion (buttons appearing)
     var extraPadding = 60;
@@ -926,54 +905,7 @@ function drawBezier(svg, svgRect, startRect, endRect, color, fromCode, toCode, i
     svg.appendChild(pathEl);
 }
 
-// ===============================
-// ZOOM CONTROLS
-// ===============================
 
-function zoomIn() {
-    currentZoom = Math.min(currentZoom + ZOOM_STEP, ZOOM_MAX);
-    applyZoomTransform();
-    updateZoomDisplay();
-    requestAnimationFrame(function () {
-        updateSvgDimensions();
-        drawConnections();
-    });
-}
-
-function zoomOut() {
-    currentZoom = Math.max(currentZoom - ZOOM_STEP, ZOOM_MIN);
-    applyZoomTransform();
-    updateZoomDisplay();
-    requestAnimationFrame(function () {
-        updateSvgDimensions();
-        drawConnections();
-    });
-}
-
-function resetZoom() {
-    currentZoom = 1;
-    applyZoomTransform();
-    updateZoomDisplay();
-    requestAnimationFrame(function () {
-        updateSvgDimensions();
-        drawConnections();
-    });
-}
-
-function applyZoomTransform() {
-    var container = document.querySelector('.tree-zoom-container');
-    if (container) {
-        container.style.transform = 'scale(' + currentZoom + ')';
-        container.style.transformOrigin = 'top left';
-    }
-}
-
-function updateZoomDisplay() {
-    var display = document.getElementById('zoomLevel');
-    if (display) {
-        display.textContent = Math.round(currentZoom * 100) + '%';
-    }
-}
 
 // ===============================
 // SELECTION SYSTEM
@@ -1115,9 +1047,9 @@ document.addEventListener('keydown', function (e) {
 });
 
 // Click on empty space to deselect
-var treeWrapper = document.querySelector('.tree-wrapper');
-if (treeWrapper) {
-    treeWrapper.addEventListener('click', function(e) {
+var treeContent = document.getElementById('treeContent') || document.querySelector('.tree-content');
+if (treeContent) {
+    treeContent.addEventListener('click', function(e) {
         if (!e.target.closest('.subject-node')) {
             deselectAll();
         }
@@ -1152,8 +1084,8 @@ function toggleOptativasVisibility() {
 
     function updateAfterToggle() {
         // Force reflow to get accurate dimensions after hiding/showing elements
-        var zoomContainer = document.querySelector('.tree-zoom-container');
-        if (zoomContainer) void zoomContainer.offsetHeight;
+        var contentContainer = document.getElementById('treeContent') || document.querySelector('.tree-content');
+        if (contentContainer) void contentContainer.offsetHeight;
 
         updateSvgDimensions();
         drawConnections();
@@ -1248,12 +1180,7 @@ function throttledDrawConnections() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    var wrapper = document.querySelector('.tree-wrapper');
-    if (wrapper) {
-        wrapper.addEventListener('scroll', function() {
-            throttledDrawConnections();
-        }, { passive: true });
-    }
+    // Scroll listener already on window (line 91). No wrapper to attach to.
 });
 
 // ===============================
@@ -1449,45 +1376,15 @@ document.addEventListener('DOMContentLoaded', function() {
         longPressCodigo = null;
     }
 
-    // Register touch events on the tree wrapper (delegation)
+    // Register touch events on the tree content (delegation)
     document.addEventListener('DOMContentLoaded', function() {
-        var wrapper = document.querySelector('.tree-wrapper');
-        if (!wrapper) return;
+        var contentContainer = document.getElementById('treeContent') || document.querySelector('.tree-content');
+        if (!contentContainer) return;
 
-        wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
-        wrapper.addEventListener('touchmove', handleTouchMove, { passive: true });
-        wrapper.addEventListener('touchend', handleTouchEnd, { passive: false });
-        wrapper.addEventListener('touchcancel', function() { cancelLongPress(); }, { passive: true });
-
-        // Pinch-to-zoom (2 fingers)
-        wrapper.addEventListener('touchstart', function(e) {
-            if (e.touches.length === 2) {
-                pinchInitialDistance = getTouchDistance(e.touches);
-                pinchInitialZoom = currentZoom;
-                cancelLongPress();
-            }
-        }, { passive: true });
-
-        wrapper.addEventListener('touchmove', function(e) {
-            if (e.touches.length === 2 && pinchInitialDistance > 0) {
-                var dist = getTouchDistance(e.touches);
-                var ratio = dist / pinchInitialDistance;
-                var newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, pinchInitialZoom * ratio));
-                currentZoom = newZoom;
-                applyZoomTransform();
-                updateZoomDisplay();
-            }
-        }, { passive: true });
-
-        wrapper.addEventListener('touchend', function(e) {
-            if (e.touches.length < 2 && pinchInitialDistance > 0) {
-                pinchInitialDistance = 0;
-                requestAnimationFrame(function() {
-                    updateSvgDimensions();
-                    drawConnections();
-                });
-            }
-        }, { passive: true });
+        contentContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+        contentContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+        contentContainer.addEventListener('touchend', handleTouchEnd, { passive: false });
+        contentContainer.addEventListener('touchcancel', function() { cancelLongPress(); }, { passive: true });
     });
 })();
 

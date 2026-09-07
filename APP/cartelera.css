@@ -3,53 +3,10 @@
 /* DEEP BLACK THEME              */
 /* ============================= */
 
-* {
-    box-sizing: border-box;
-}
-
 html, body {
-    margin: 0;
-    padding: 12px;
-    font-family: system-ui, -apple-system, Arial, Helvetica, sans-serif;
-    background-color: #000;
-    color: var(--text);
     min-height: 100vh;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior: contain;
-    color-scheme: dark;
-}
-
-body {
-    padding-top: 32px;
-}
-
-/* ============================= */
-/* SCROLLBAR                     */
-/* ============================= */
-
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-::-webkit-scrollbar-track {
-    background: var(--bg-card);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 5px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: var(--border-strong);
-}
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) var(--bg-card);
-}
-
-button:focus-visible, a:focus-visible, [role="button"]:focus-visible, .collapsible-subject:focus-visible, .source-header:focus-visible {
-  outline: 2px solid var(--cursando);
-  outline-offset: 2px;
 }
 
 /* ============================= */
@@ -1021,10 +978,6 @@ h1 {
         gap: 8px;
     }
 }
-
-.privacy-notice { position:fixed; top:0; left:0; right:0; z-index:9999; text-align:center; font-size:12px; color:#aaa; background:rgba(0,0,0,0.92); padding:6px 12px; border-bottom:1px solid var(--bg-input); display:flex; justify-content:center; align-items:center; gap:10px; }
-.privacy-close { background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:14px; padding:2px 6px; line-height:1; }
-.privacy-close:hover { color:var(--text); }
 
 /* ============================= */
 /* MODIFICATION DATE PILL        */

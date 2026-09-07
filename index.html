@@ -5,12 +5,15 @@
 <meta charset="UTF-8">
 <title>Correlatividades Medicina UNLP</title>
 <link rel="stylesheet" href="variables.css">
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="APP/nav.css">
+    <link rel="stylesheet" href="style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body>
-<div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
+<body data-page-title="Início">
+
+<div id="appNavbar"></div>
 
 <h1>Medicina UNLP – Plan 2023</h1>
 
@@ -31,11 +34,6 @@
 </div>
 
 <div class="top-bar">
-  <div class="top-bar-left">
-    <button class="btn-primary" onclick="window.location.href='vacunas.html'">🛡️ Vacunas</button>
-    <button class="btn-primary" onclick="window.location.href='arbol.html'">🌳 Modo Árbol</button>
-    <button class="btn-primary" onclick="window.location.href='cartelera.html'">📋 Cartelera</button>
-  </div>
   <div class="year-input-group">
     <label>Año de ingreso:</label>
     <input type="number" id="anioIngreso" value="2023" onblur="guardarAnio()">
@@ -52,7 +50,7 @@
 <span class="horas-label">/ 270</span>
 <!-- NEW: Abbreviate names switch at far right -->
 <label class="abbreviate-switch-wrap" style="margin-left:auto;">
-  <span class="abbreviate-switch-label">Abreviar nomes</span>
+  <span class="abbreviate-switch-label">Abreviar nombres</span>
   <label class="abbreviate-switch">
     <input type="checkbox" id="toggleAbbreviateNames" onchange="toggleAbbreviateNames()">
     <span class="abbreviate-slider"></span>
@@ -165,7 +163,10 @@
 
 <script src="APP/materias.js"></script>
 <script src="app.js"></script>
+<div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
 <script src="version-check.js"></script>
+<script src="APP/nav.js"></script>
+
 
 </body>
 </html>

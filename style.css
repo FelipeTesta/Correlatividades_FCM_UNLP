@@ -2,48 +2,8 @@
 /* TEMA PRETO PROFUNDO */
 /* ============================= */
 
-* {
-    box-sizing: border-box;
-}
-
-html, body {
-    max-width: 100vw;
-    overflow-x: hidden;
-}
-
-/* Scrollbar personalizado */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background-color: var(--bg-elevated);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-/* Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) var(--bg-elevated);
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 12px;
-    padding-top: 32px;
-    background-color: var(--bg);
-    color: var(--text);
-    -webkit-user-select: none;
-    user-select: none;
-}
-
 /* ============================= */
-/* Tâ”œÃ¬TULOS */
+/* TITULOS */
 /* ============================= */
 
 h1 {
@@ -218,7 +178,7 @@ h2 {
 }
 
 
-/* texto de proyectos de extensiâ”œâ”‚n */
+/* texto de proyectos de extensi�n */
 .extension-nombre {
     color: #86efac;
 }
@@ -242,7 +202,7 @@ h2 {
 .year-input-group {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex: 1;
     gap: 10px;
 }
@@ -261,6 +221,8 @@ h2 {
     border-radius: 6px;
     font-size: 16px;
     width: 80px;
+    height: 40px;
+    box-sizing: border-box;
     text-align: center;
 }
 
@@ -275,7 +237,10 @@ h2 {
     color: var(--cursando) !important;
     font-weight: bold;
     font-size: 11px !important;
-    padding: 6px 12px !important;
+    padding: 0 12px !important;
+    border-radius: 4px;
+    height: 40px;
+    line-height: 38px;
     letter-spacing: 1px;
 }
 
@@ -292,7 +257,9 @@ h2 {
     color: #f87171 !important;
     font-weight: bold;
     font-size: 12px !important;
-    padding: 8px 16px !important;
+    padding: 0 16px !important;
+    height: 40px;
+    line-height: 38px;
     cursor: pointer;
     border-radius: 4px;
     transition: border-color 0.2s ease;
@@ -362,12 +329,12 @@ h2 {
 /* ITEMS */
 /* ============================= */
 
-ul {
+ul:not(.app-navbar-list) {
     padding-left: 8px;
     margin: 6px 0;
 }
 
-li {
+li:not(.app-navbar-list li) {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -425,17 +392,17 @@ li.item-row {
     justify-content: space-between;
 }
 
-/* Progress fica â”œÃ¡ esquerda */
+/* Progress fica �"oǭ esquerda */
 .info-row .progress {
     margin-right: auto;
 }
 
-/* Nome da matâ”œÂ®ria */
+/* Nome da mat�"o��ria */
 li span:first-child {
     flex: 1;
 }
 
-/* tag de aâ”œâ–’o */
+/* tag de a�"o�-'o */
 .anio-tag {
     font-size: 12px;
     color: var(--text-muted);
@@ -447,7 +414,7 @@ li span:first-child {
 }
 
 /* ============================= */
-/* BOTâ”œÃ²ES DE ESTADO */
+/* BOT�"o��ES DE ESTADO */
 /* ============================= */
 
 .btn-warning-faltantes {
@@ -458,7 +425,7 @@ li span:first-child {
     font-size: 16px;
     padding: 0 4px !important;
     margin-left: 4px;
-    display: inline-block !important; /* ForÃ§ar exibiÃ§Ã£o */
+    display: inline-block !important; /* For��ar exibi��ǜo */
 }
 
 .btn-warning-faltantes:hover {
@@ -515,12 +482,6 @@ li button {
     max-width: 450px;
     width: 100%;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .modal-content h3 {
@@ -611,19 +572,19 @@ li button:hover {
     border-radius: 4px;
 }
 
-/* Cada seâ”œÂºâ”œÃºo interna */
+/* Cada se�"o���"oǧo interna */
 .sub-section {
     margin-top: 4px;
 }
 
-/* Tâ”œÂ¡tulo interno menor */
+/* T�"o��tulo interno menor */
 .sub-section h4 {
     margin-bottom: 8px;
     font-size: 15px;
     opacity: 0.8;
 }
 
-/* Header colapsâ”œÃ­vel para subsections de optativas */
+/* Header colaps�"o��vel para subsections de optativas */
 .collapsible-header {
     cursor: pointer;
     user-select: none;
@@ -638,7 +599,7 @@ li button:hover {
     opacity: 0.9;
 }
 
-/* Conteâ”œâ•‘do colapsâ”œÃ­vel dentro de sub-sections */
+/* Conte�"o�'do colaps�"o��vel dentro de sub-sections */
 .sub-content {
     overflow: hidden;
     max-height: none;
@@ -648,7 +609,7 @@ li button:hover {
         opacity 0.2s ease;
 }
 
-/* Quando sub-content estâ”œÃ­ colapsado */
+/* Quando sub-content est�"o�� colapsado */
 .sub-content.collapsed {
     max-height: 0;
     opacity: 0;
@@ -659,7 +620,7 @@ li button:hover {
     display: none;
 }
 
-/* Remove espaâ”œÂºo se estiver vazio */
+/* Remove espa�"o��o se estiver vazio */
 .sub-section ul:empty + * {
     margin-top: 0;
 }
@@ -770,7 +731,7 @@ li button:hover {
 }
 
 /* ============================= */
-/* BOX COLAPSâ”œÃ¼VEL AJUSTADO */
+/* BOX COLAPS�"oǬVEL AJUSTADO */
 /* ============================= */
 
 .box {
@@ -778,7 +739,6 @@ li button:hover {
     border: none;
     background-color: transparent;
 }
-
 
 
 .box h3 {
@@ -842,7 +802,7 @@ li button:hover {
     margin-left: 4px;
 }
 
-/* Conteâ”œâ•‘do interno */
+/* Conte�"o�'do interno */
 .box-content {
     overflow: hidden;
     max-height: none;
@@ -865,20 +825,6 @@ li button:hover {
 }
 
 
-
-/* ============================= */
-/* FOCUS INDICATORS              */
-/* ============================= */
-
-*:focus-visible {
-    outline: 2px solid var(--cursando);
-    outline-offset: 2px;
-}
-
-/* ============================= */
-/* RESPONSIVIDADE MOBILE */
-/* ============================= */
-
 /* ============================= */
 /* TOP BAR */
 /* ============================= */
@@ -893,21 +839,18 @@ li button:hover {
 
 /* Hover effect on list items (desktop) */
 @media (min-width: 769px) {
-    body {
-        margin: 12px 12%;
-    }
     .item-row:hover { background: rgba(255,255,255,0.06); }
     li:not(.item-row):hover { background: rgba(255,255,255,0.06); }
 }
 
-/* Cursando active background â€” subtle, no animation */
+/* Cursando active background �?" subtle, no animation */
 li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid rgba(34,211,238,0.4); }
 
 /* Cursando toggle on main page */
 .cursando-toggle-main { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-faint); margin-left: 8px; white-space: nowrap; }
 .cursando-switch-main { position: relative; display: inline-block; width: 28px; height: 16px; }
 .cursando-switch-main input { opacity: 0; width: 0; height: 0; }
-.cursando-slider-main { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border-radius: 16px; transition: background 0.2s; }
+.cursando-slider-main { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border-radius: 16px; overflow: hidden; transition: background 0.2s; }
 .cursando-slider-main::before { content: ""; position: absolute; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--text-muted); border-radius: 50%; transition: transform 0.2s; }
 .cursando-switch-main input:checked + .cursando-slider-main { background-color: rgba(34,211,238,0.6); }
 .cursando-switch-main input:checked + .cursando-slider-main::before { transform: translateX(12px); background-color: var(--cursando); }
@@ -938,6 +881,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     background-color: var(--bg-input);
     border: 1px solid var(--border);
     border-radius: 20px;
+    overflow: hidden;
     transition: background 0.2s, border-color 0.2s;
 }
 .abbreviate-slider::before {
@@ -968,13 +912,10 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 
 @media (max-width: 768px) {
 
-    body {
-        margin: 10px;
-    }
-
     /* Grid vira 1 coluna no celular */
     .listas {
         flex-direction: column;
+        gap: 3px;
     }
 
     /* Top bar - layout vertical */
@@ -1022,7 +963,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     /* Optativas box */
     .optativas-box {
         flex-wrap: wrap;
-        padding: 12px; /* Mais espaâ”œÂºamento para toque */
+        padding: 12px; /* Mais espa�"o��amento para toque */
     }
 
     .optativas-box span:first-child {
@@ -1054,14 +995,14 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     .extension-form input,
     .extension-form button {
         width: 100%;
-        min-height: 44px; /* Tamanho mâ”œÂ¡nimo para toque */
+        min-height: 44px; /* Tamanho m�"o��nimo para toque */
         font-size: 16px;
     }
 
     /* Inputs e buttons */
     select, input, button {
         max-width: 100%;
-        min-height: 44px; /* Tamanho mâ”œÂ¡nimo para toque */
+        min-height: 44px; /* Tamanho m�"o��nimo para toque */
         font-size: 16px;
     }
 
@@ -1069,7 +1010,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     li {
         display: flex;
         flex-wrap: wrap;
-        padding: 12px; /* Mais espaâ”œÂºamento para toque */
+        padding: 12px; /* Mais espa�"o��amento para toque */
         margin-bottom: 10px;
     }
 
@@ -1122,7 +1063,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
         font-size: 14px;
     }
 
-    /* Right group com botâ”œÃes alinhado â”œÃ¡ direita */
+    /* Right group com bot�"o�?es alinhado �"oǭ direita */
     .right-group {
         display: flex;
         margin-left: auto;
@@ -1137,11 +1078,11 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 
     li button {
         width: auto;
-        min-height: 40px; /* Tamanho mâ”œÂ¡nimo para toque */
+        min-height: 40px; /* Tamanho m�"o��nimo para toque */
         font-size: 16px;
     }
 
-    /* Botâ”œÃes de aâ”œÂºâ”œÃºo especâ”œÂ¡ficos */
+    /* Bot�"o�?es de a�"o���"oǧo espec�"o��ficos */
     .btn-warning-faltantes {
         min-width: 40px;
         min-height: 40px;
@@ -1167,8 +1108,8 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 
     /* Boxes */
     .box {
-        padding: 12px; /* Mais espaâ”œÂºamento interno */
-        margin-bottom: 12px;
+        margin-bottom: 6px;
+        padding: 8px;
     }
 
     .box h3 {
@@ -1177,7 +1118,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     }
 
     h1 {
-        font-size: 22px; /* Tâ”œÂ¡tulo maior para mobile */
+        font-size: 22px; /* T�"o��tulo maior para mobile */
         text-align: center;
     }
     
@@ -1205,7 +1146,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     }
 }
 
-.privacy-notice { position:fixed; top:0; left:0; right:0; z-index:9999; text-align:center; font-size:12px; color:#aaa; background:rgba(0,0,0,0.92); padding:6px 12px; border-bottom:1px solid var(--bg-input); display:flex; justify-content:center; align-items:center; gap:10px; }
-.privacy-close { background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:14px; padding:2px 6px; line-height:1; }
-.privacy-close:hover { color:var(--text); }
+/* ============================= */
+/* PRIVACY NOTICE */
+/* ============================= */
 

@@ -4,36 +4,31 @@
     <meta charset="UTF-8">
     <title>Modo Árbol - Correlatividades Medicina UNLP</title>
     <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="APP/nav.css">
     <link rel="stylesheet" href="arbol.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-<div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
+<body data-page="arbol" data-page-title="Modo Árbol">
+
+<div id="appNavbar"></div>
 
 <div class="tree-page">
 
     <!-- Top Bar -->
     <div class="tree-top-bar">
-        <a href="index.html" class="btn-back" title="Volver">← Modo Lista</a>
         <h1>🌳 Modo Árbol</h1>
-        <div class="zoom-controls">
-            <button onclick="zoomOut()" title="Alejar">−</button>
-            <span id="zoomLevel" aria-live="polite">100%</span>
-            <button onclick="zoomIn()" title="Acercar">+</button>
-            <button onclick="resetZoom()" title="Restablecer">⟲</button>
-        </div>
         <label class="toggle-switch" role="switch" aria-label="Mostrar optativas">
             <input type="checkbox" id="toggleOptativas" onchange="toggleOptativasVisibility()">
             <span class="toggle-slider"></span>
             <span class="toggle-label">Ver optativas</span>
         </label>
-        <a href="cartelera.html" class="btn-cartelera" title="Verificar publicaciones de cátedras">📋 Cartelera</a>
         <button class="btn-help" onclick="showTreeHelpModal()" title="¿Cómo usar el modo árbol?">❓ Cómo usar</button>
         <button class="btn-legend" onclick="toggleLegend()">📋 Leyenda</button>
     </div>
 
-    <!-- Scrollable Tree Area -->
-    <div class="tree-wrapper" id="treeWrapper"></div>
+    <!-- Tree Content (scrolls with body) -->
+    <div class="tree-content" id="treeContent"></div>
 
     <!-- Legend -->
     <div class="tree-legend" id="treeLegend">
@@ -70,8 +65,11 @@
 
 </div>
 
+<div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
 <script src="APP/materias.js"></script>
 <script src="arbol.js"></script>
 <script src="version-check.js"></script>
+<script src="APP/nav.js"></script>
+
 </body>
 </html>

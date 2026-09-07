@@ -1078,7 +1078,7 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
                 const esOptativa = materia && materia.categoria === "optativa";
                 
                 if (proximas && proximas.length > 0) {
-                    let textoFechas = esRegularizada ? "Finales: " : "Próxima final libre: ";
+                    let textoFechas = esRegularizada ? "Finales: " : "Prox final libre: ";
                     
                     
                     textoFechas += proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");

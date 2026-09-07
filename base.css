@@ -1,0 +1,101 @@
+/* ============================================= */
+/* BASE.CSS — Shared Foundation (all pages)      */
+/* Loaded AFTER variables.css, BEFORE page CSS   */
+/* ============================================= */
+
+/* ---- CSS Reset ---- */
+* {
+    box-sizing: border-box;
+}
+
+/* ---- HTML/Body Baseline ---- */
+html, body {
+    max-width: 100vw;
+    overflow-x: clip;
+}
+
+body {
+    margin: 12px;
+    font-family: system-ui, -apple-system, Arial, Helvetica, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-user-select: none;
+    user-select: none;
+    color-scheme: dark;
+    padding-top: 48px;
+}
+
+@media (min-width: 769px) {
+    body { margin: 12px 12%; }
+}
+
+/* ---- Custom Scrollbar ---- */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background-color: var(--bg-elevated);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-strong);
+}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--bg-elevated);
+}
+
+/* ---- Focus Indicators ---- */
+*:focus-visible {
+    outline: 2px solid var(--cursando);
+    outline-offset: 2px;
+}
+
+/* ---- Modal Animations ---- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Privacy Notice (floating bottom) ---- */
+.privacy-notice {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    background: rgba(0, 0, 0, 0.92);
+    padding: 6px 12px;
+    border-top: 1px solid var(--bg-input);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.privacy-close {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    line-height: 1;
+}
+.privacy-close:hover {
+    color: var(--text);
+}
+
+/* ---- Global: hide page h1, keep navbar title ---- */
+body > h1,
+.tree-top-bar h1,
+.top-bar h1 {
+    display: none !important;
+}
+

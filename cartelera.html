@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <title>Cartelera - Correlatividades Medicina UNLP</title>
     <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="base.css">
+    <link rel="stylesheet" href="APP/nav.css">
     <link rel="stylesheet" href="APP/cartelera.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-<div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
+<body data-page-title="Cartelera">
+
+<div id="appNavbar"></div>
 
     <!-- Top Bar -->
     <div class="top-bar">
-        <a href="arbol.html" class="btn-back">← Volver al Árbol</a>
         <h1>📋 Cartelera</h1>
     </div>
 
@@ -76,6 +78,9 @@
       </div>
     </div>
 
-    <script src="version-check.js"></script>
+    <div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
+<script src="version-check.js"></script>
+<script src="APP/nav.js"></script>
+
 </body>
 </html>

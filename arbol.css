@@ -7,18 +7,22 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow: visible;
+}
+
 html, body {
-    margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
     background-color: #000;
     color: var(--text);
-    overflow-x: hidden;
+    overscroll-behavior: none;
     color-scheme: dark;
 }
 
 body {
-    padding-top: 32px;
+    overflow-x: hidden;
+    padding-top: 48px;
 }
 
 /* Scrollbar personalizado */
@@ -47,11 +51,16 @@ body {
 /* ============================= */
 
 .tree-page {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+    display: block;
+    min-height: auto;
     padding: 8px;
+}
+
+/* Tree content: centering + positioned container for SVG overlay */
+.tree-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
 }
 
 /* ============================= */
@@ -61,12 +70,12 @@ body {
 .tree-top-bar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: 6px;
+    padding: 4px 6px;
     background-color: var(--bg-elevated);
     border: 1px solid var(--bg-hover);
     border-radius: 4px;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     flex-shrink: 0;
 }
 
@@ -97,83 +106,6 @@ body {
 .btn-back:hover {
     background-color: #ffffff11;
     border-color: var(--text-dim);
-}
-
-/* ============================= */
-/* ZOOM CONTROLS                 */
-/* ============================= */
-
-.zoom-controls {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-left: auto;
-    order: 4;
-}
-
-.zoom-controls button {
-    background-color: transparent;
-    border: 1px solid var(--border-strong);
-    color: #fff;
-    font-size: 14px;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    line-height: 1;
-    padding: 0;
-}
-
-.zoom-controls button:hover {
-    background-color: #ffffff11;
-    border-color: var(--text-dim);
-}
-
-#zoomLevel {
-    font-size: 12px;
-    color: var(--text-muted);
-    min-width: 40px;
-    text-align: center;
-}
-
-/* Desktop: restore visual order despite HTML reorder for mobile */
-.btn-back { order: 1; }
-.tree-top-bar h1 { order: 2; }
-.zoom-controls { order: 3; }
-.toggle-switch { order: 4; }
-.btn-cartelera { order: 5; }
-.btn-help { order: 6; }
-.btn-legend { order: 7; }
-
-/* ============================= */
-/* TREE WRAPPER (SCROLLABLE)     */
-/* ============================= */
-
-.tree-wrapper {
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
-    border: 1px solid var(--bg-hover);
-    border-radius: 4px;
-    background-color: #050505;
-    position: relative;
-    padding: 8px;
-}
-
-/* ============================= */
-/* ZOOM CONTAINER                 */
-/* ============================= */
-
-.tree-zoom-container {
-    transform-origin: top left;
-    transition: transform 0.15s ease;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
 }
 
 /* ============================= */
@@ -293,6 +225,7 @@ body {
 }
 
 .node-code {
+    display: none;
     font-size: 8px;
     color: var(--text-dim);
     font-family: monospace;
@@ -1001,8 +934,6 @@ svg path.connection-line.highlighted {
 @media (max-width: 768px) {
     .tree-page {
         padding: 4px;
-        height: 100vh;
-        height: 100dvh;
     }
 
     .tree-top-bar {
@@ -1010,29 +941,29 @@ svg path.connection-line.highlighted {
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
         padding: 4px 6px;
+        margin-bottom: 0;
     }
 
-    /* Row 1: â† Volver | ðŸŒ³ Modo Ãrbol | Zoom */
-    .btn-back { order: 1; }
+/* Row 1: ← Volver | 🌳 Modo árbol | Zoom */
+    .btn-back { order: 0; }
     .tree-top-bar h1 {
-        order: 2;
+        order: 0;
         width: auto;
         flex: 0 0 auto;
         font-size: 13px;
         text-align: center;
         margin-bottom: 0;
     }
-    .zoom-controls { order: 3; margin-left: 0; }
 
     /* Row 2: Optativas | Verificar Cartelera */
-    .toggle-switch { order: 4; }
-    .btn-cartelera { order: 5; }
+    .toggle-switch { order: 0; }
+    .btn-cartelera { order: 0; }
 
-    /* Row 3: CÃ³mo usar | Leyenda */
-    .btn-help { order: 6; }
-    .btn-legend { order: 7; }
+    /* Row 3: Cómo usar | Leyenda */
+    .btn-help { order: 0; }
+    .btn-legend { order: 0; }
 
     .btn-back {
         font-size: 12px;
@@ -1056,22 +987,6 @@ svg path.connection-line.highlighted {
         font-size: 11px;
         padding: 8px 10px;
         min-height: 37px;
-    }
-
-    .zoom-controls button {
-        width: 37px;
-        height: 37px;
-        font-size: 16px;
-    }
-
-    .zoom-controls button:nth-of-type(1),
-    .zoom-controls button:nth-of-type(2) {
-        display: none;
-    }
-
-    #zoomLevel {
-        font-size: 11px;
-        min-width: 32px;
     }
 
     .toggle-switch {
@@ -1128,48 +1043,7 @@ svg path.connection-line.highlighted {
         margin-bottom: 2px;
     }
 
-    .subjects-row {
-        gap: 3px;
-        margin-bottom: 3px;
-    }
-
-    .subjects-row.obligatorias {
-        margin-bottom: 4px;
-    }
-
     /* On mobile, keep tree layout compact */
-    .subject-node {
-        flex: 0 0 auto;
-        min-width: 65px;
-        max-width: 110px;
-        min-height: 40px;
-        margin: 0 2px 8px 2px;
-    }
-
-    .node-content {
-        padding: 3px 4px;
-        flex-direction: column;
-        gap: 2px;
-    }
-
-    .node-name {
-        font-size: 8px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        line-height: 1.2;
-    }
-
-    .node-code {
-        font-size: 9px;
-        flex-shrink: 0;
-    }
-
-    .node-meta {
-        font-size: 7px;
-        flex-wrap: wrap;
-    }
-
-    /* Touch-and-hold floating action buttons */
     .mobile-fab-overlay {
         position: fixed;
         top: 0;
@@ -1262,19 +1136,44 @@ svg path.connection-line.highlighted {
         to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
+    .subjects-row {
+        gap: 3px;
+        margin-bottom: 3px;
+    }
+
+    .subjects-row.obligatorias {
+        margin-bottom: 4px;
+    }
+
+    .subject-node {
+        flex: 0 0 auto;
+        min-width: 65px;
+        max-width: 110px;
+        min-height: 40px;
+        margin: 0 2px 8px 2px;
+    }
+
+    .node-content {
+        padding: 3px 4px;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .node-name {
+        font-size: 8px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.2;
+    }
+
+    .node-meta {
+        font-size: 7px;
+        flex-wrap: wrap;
+    }
+
     /* Suppress iOS context menu on long press */
     .subject-node {
         -webkit-touch-callout: none;
-    }
-
-    /* Tree area: no text selection on mobile */
-    .tree-zoom-container {
-        -webkit-user-select: none;
-        user-select: none;
-    }
-
-    .node-border {
-        width: 3px;
     }
 
     .optativa-label {
@@ -1341,22 +1240,10 @@ svg path.connection-line.highlighted {
 
 }
 
-/* Portrait mobile: reduced zoom for overview */
-@media (max-width: 768px) and (orientation: portrait) {
-    .tree-zoom-container {
-        transform: scale(0.65);
-        transform-origin: top center;
-    }
-}
-
-/* Reduced motion: disable decorative animations (except glassShine) */
 @media (prefers-reduced-motion: reduce) {
     .subject-node.cursando-active,
     .subject-node.cursando-pending {
         animation: none;
-    }
-    .tree-zoom-container {
-        transition: none;
     }
     .mobile-fab-overlay {
         animation: none;
@@ -1436,10 +1323,6 @@ svg path.connection-line.highlighted {
         opacity: 0;
     }
 }
-
-.privacy-notice { position:fixed; top:0; left:0; right:0; z-index:9999; text-align:center; font-size:12px; color:#aaa; background:rgba(0,0,0,0.92); padding:6px 12px; border-bottom:1px solid var(--bg-input); display:flex; justify-content:center; align-items:center; gap:10px; }
-.privacy-close { background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:14px; padding:2px 6px; line-height:1; }
-.privacy-close:hover { color:var(--text); }
 
 /* Action buttons: hidden on touch-primary devices (replaced by touch-and-hold FAB). Independent of screen width â€” applies to all touch devices (phones, tablets, landscape). PC with mouse/trackpad keeps hover buttons. */
 @media (hover: none) and (pointer: coarse) {
