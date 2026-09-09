@@ -1,3 +1,6 @@
+## 09/09/2026
+  + Fix: ao marcar matéria como aprovada/regularizada/reset, o estado cursando=on agora é limpo para evitar duplicação na Cartelera. arbol.js: setSubjectState() agora inclui limpeza de cursando + invalidação de cache. app.js: nova função clearCursandoForSubject() chamada nos 5 botões de estado (noPuedeFinal ✅/🔄 + gerais ✅/🟧/🔄).
+
 ## 07/09/2026
   + Navbar unificado: font-size+line-height !important on .app-navbar-link desktop+mobile (nav.css L154-155). Font cascade fix: style.css li:not(.app-navbar-list li) excluded from navbar. Duplicate scrollbar blocks removed from arbol.css (~20 lines).
   + Topbar layout: uniform min-height:37px on all buttons, gap:8px, margin-bottom:8px. Toggle-switch margin-right:auto pushes optativas left. Same layout desktop+mobile.

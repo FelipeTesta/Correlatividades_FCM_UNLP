@@ -558,6 +558,15 @@ function setSubjectState(codigo, estado) {
     estadosData[codigo] = estado;
     try { localStorage.setItem('estados', JSON.stringify(estadosData)); } catch(e) {}
     window.estados = estadosData;
+
+    // Clear cursando for this subject (avoids duplicate in Cartelera)
+    var cursandoData = getCachedState('cursando');
+    if (cursandoData[codigo]) {
+        delete cursandoData[codigo];
+        try { localStorage.setItem('cursando', JSON.stringify(cursandoData)); } catch(e) {}
+        _stateCache['cursando'] = null;
+    }
+
     updateTree();
 }
 

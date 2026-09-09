@@ -309,6 +309,14 @@ function toggleCursandoMain(code, checked) {
     guardarLocalYRender();
 }
 
+function clearCursandoForSubject(code) {
+    var cursando = getCachedState('cursando');
+    if (cursando[code]) {
+        delete cursando[code];
+        try { localStorage.setItem('cursando', JSON.stringify(cursando)); } catch(e) {}
+    }
+}
+
 function toggleOptativaFavorita(code) {
     var favoritas = getCachedState('optativasFavoritas');
     if (favoritas[code]) {
@@ -842,6 +850,7 @@ infoText += materia.anio + "° Año";
             btnAprobada.innerText = "✅";
             btnAprobada.onclick = () => {
                 estados[codigo] = "aprobada";
+                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnAprobada);
@@ -850,6 +859,7 @@ infoText += materia.anio + "° Año";
             btnReset.innerText = "🔄";
             btnReset.onclick = () => {
                 delete estados[codigo];
+                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnReset);
@@ -953,6 +963,7 @@ infoText += materia.anio + "° Año";
             btnAprobada.innerText = "✅";
             btnAprobada.onclick = () => {
                 estados[codigo] = "aprobada";
+                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnAprobada);
@@ -963,6 +974,7 @@ infoText += materia.anio + "° Año";
             btnRegularizada.innerText = "🟧";
             btnRegularizada.onclick = () => {
                 estados[codigo] = "regularizada";
+                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnRegularizada);
@@ -973,6 +985,7 @@ infoText += materia.anio + "° Año";
             btnReset.innerText = "🔄";
             btnReset.onclick = () => {
                 delete estados[codigo];
+                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnReset);
