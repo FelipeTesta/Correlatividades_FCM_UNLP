@@ -1344,17 +1344,31 @@ function renderSubjectMode(subjectData) {
 
       var noPubsP = document.createElement("p");
       noPubsP.className = "no-pubs-text";
-      var names = withoutPubsCodes.map(function(c) {
-        return getSubjectName(c) || subjectData[c].catedraName || c;
+
+      noPubsP.appendChild(document.createTextNode("Sin nuevas publicaciones (" + withoutPubsCodes.length + "): "));
+
+      withoutPubsCodes.forEach(function (c, i) {
+        var subjName = getSubjectName(c) || subjectData[c].catedraName || c;
+        var resolved = resolveCatedraForCode(c);
+        if (resolved && resolved.id) {
+          var link = document.createElement("a");
+          link.className = "no-pubs-link";
+          link.href = CARTELERA_BASE + "/catedra/" + resolved.id;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = subjName;
+          noPubsP.appendChild(link);
+        } else {
+          var span = document.createElement("span");
+          span.className = "no-pubs-link";
+          span.textContent = subjName;
+          noPubsP.appendChild(span);
+        }
+        if (i < withoutPubsCodes.length - 1) {
+          noPubsP.appendChild(document.createTextNode(", "));
+        }
       });
-      // Build text with each name clickable to expand
-      // Simple version: just list names
-      noPubsP.textContent = "Sin nuevas publicaciones (" + withoutPubsCodes.length + "): " + names.join(", ");
-      noPubsP.style.color = "#666";
-      noPubsP.style.fontSize = "12px";
-      noPubsP.style.fontStyle = "italic";
-      noPubsP.style.padding = "8px 12px";
-      noPubsP.style.margin = "4px 0";
+
       noPubsSection.appendChild(noPubsP);
 
       group.appendChild(noPubsSection);

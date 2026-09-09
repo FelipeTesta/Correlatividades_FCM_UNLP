@@ -1231,6 +1231,100 @@ if (!hasSeenHelp) {
     try { localStorage.setItem("hasSeenHelp", "true"); } catch(e) {}
 }
 
+function openVideoPlayerModal(videoSrc, videoTitle) {
+    var playerOverlay = document.createElement("div");
+    playerOverlay.className = "video-player-overlay";
+    playerOverlay.onclick = function(e) {
+        if (e.target === playerOverlay) {
+            document.body.removeChild(playerOverlay);
+        }
+    };
+
+    var content = document.createElement("div");
+    content.className = "video-player-content";
+
+    var header = document.createElement("div");
+    header.className = "video-player-header";
+    header.innerHTML = '<span>🎬 ' + videoTitle + '</span>';
+
+    var btnClose = document.createElement("button");
+    btnClose.className = "video-player-close";
+    btnClose.innerText = "×";
+    btnClose.onclick = function() {
+        document.body.removeChild(playerOverlay);
+    };
+    header.appendChild(btnClose);
+    content.appendChild(header);
+
+    var body = document.createElement("div");
+    body.className = "video-player-body";
+
+    var video = document.createElement("video");
+    video.src = videoSrc;
+    video.controls = true;
+    video.autoplay = true;
+    video.playsInline = true;
+    body.appendChild(video);
+
+    content.appendChild(body);
+    playerOverlay.appendChild(content);
+    document.body.appendChild(playerOverlay);
+
+    document.addEventListener('keydown', function playerKeyHandler(e) {
+        if (e.key === 'Escape') {
+            if (document.body.contains(playerOverlay)) {
+                document.body.removeChild(playerOverlay);
+            }
+            document.removeEventListener('keydown', playerKeyHandler);
+        }
+    });
+}
+
+function createVideoThumbnailsContainer() {
+    var container = document.createElement("div");
+    container.className = "video-thumbnails-container";
+
+    var videos = [
+        { src: "public/video/pc_mode.mp4", title: "Modo Escritorio (PC)" },
+        { src: "public/video/mobile.mp4", title: "Modo Móvil" }
+    ];
+
+    videos.forEach(function(v) {
+        var card = document.createElement("div");
+        card.className = "video-thumbnail-card";
+        card.title = "Reproducir " + v.title;
+
+        var video = document.createElement("video");
+        video.src = v.src;
+        video.muted = true;
+        video.preload = "metadata";
+        video.playsInline = true;
+        card.appendChild(video);
+
+        var overlay = document.createElement("div");
+        overlay.className = "video-play-overlay";
+        
+        var btn = document.createElement("div");
+        btn.className = "video-play-btn";
+        overlay.appendChild(btn);
+
+        var label = document.createElement("div");
+        label.className = "video-thumb-title";
+        label.innerText = v.title;
+        overlay.appendChild(label);
+
+        card.appendChild(overlay);
+
+        card.onclick = function() {
+            openVideoPlayerModal(v.src, v.title);
+        };
+
+        container.appendChild(card);
+    });
+
+    return container;
+}
+
 function showHelpModal() {
     var overlay = document.createElement("div");
     overlay.className = "modal-overlay";
@@ -1242,6 +1336,9 @@ function showHelpModal() {
     var title = document.createElement("h3");
     title.innerText = "¿Cómo usar este sitio?";
     modal.appendChild(title);
+
+    // Add video thumbnails preview
+    modal.appendChild(createVideoThumbnailsContainer());
 
     var items = [
         '✅ <b>Aprobar</b> — Marca la materia como aprobada (final rendido).',

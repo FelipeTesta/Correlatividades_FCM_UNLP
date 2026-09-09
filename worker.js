@@ -346,6 +346,83 @@ export default {
       }
     }
 
+    // POST /heartbeat — track online session + daily visit count
+    if (url.pathname === '/heartbeat' && request.method === 'POST') {
+      try {
+        const { sessionId } = await request.json();
+        if (!sessionId || typeof sessionId !== 'string') {
+          return new Response(JSON.stringify({ error: 'sessionId required' }), {
+            status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          });
+        }
+        // Store session with 60s TTL (auto-expires if no heartbeat)
+        await env.CARTELERA_SUBS.put('online:' + sessionId, '1', { expirationTtl: 60 });
+        // Count unique visitors: only increment if this session hasn't been counted today
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const visitedKey = 'visited:' + sessionId + ':' + today;
+        const alreadyVisited = await env.CARTELERA_SUBS.get(visitedKey);
+        const isAdmin = sessionId.startsWith('admin-');
+        if (!alreadyVisited && !isAdmin) {
+          // First heartbeat today from this session — increment daily counter
+          const visitKey = 'visits:' + today;
+          const current = await env.CARTELERA_SUBS.get(visitKey);
+          const count = current ? parseInt(current, 10) + 1 : 1;
+          await env.CARTELERA_SUBS.put(visitKey, String(count), { expirationTtl: 172800 }); // 48h TTL
+          // Mark this session as counted for today (48h TTL)
+          await env.CARTELERA_SUBS.put(visitedKey, '1', { expirationTtl: 172800 });
+        }
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // GET /online — return online count + daily visits
+    if (url.pathname === '/online') {
+      try {
+        // Count active sessions (keys starting with "online:")
+        const onlineList = await env.CARTELERA_SUBS.list({ prefix: 'online:' });
+        const onlineCount = onlineList.keys.length;
+        // Get today's visit count
+        const today = new Date().toISOString().slice(0, 10);
+        const visitKey = 'visits:' + today;
+        const visitRaw = await env.CARTELERA_SUBS.get(visitKey);
+        const visitCount = visitRaw ? parseInt(visitRaw, 10) : 0;
+        return new Response(JSON.stringify({ online: onlineCount, visits: visitCount }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ online: 0, visits: 0, error: e.message }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // POST /reset-visits — reset today's visit counter (admin only)
+    if (url.pathname === '/reset-visits' && request.method === 'POST') {
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        await env.CARTELERA_SUBS.delete('visits:' + today);
+        const visitedList = await env.CARTELERA_SUBS.list({ prefix: 'visited:' });
+        for (const key of visitedList.keys) {
+          if (key.name.endsWith(':' + today)) {
+            await env.CARTELERA_SUBS.delete(key.name);
+          }
+        }
+        return new Response(JSON.stringify({ ok: true, resetDate: today }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
     // Default: proxy behavior (existing)
     const id = url.searchParams.get('id');
     const tag = url.searchParams.get('tag');
@@ -531,6 +608,25 @@ export default {
       snapshotTasks.push(env.CARTELERA_SNAPSHOTS.put('home', JSON.stringify(homeData.allPubs)));
     }
     await Promise.allSettled(snapshotTasks);
+
+    // 6. Persist daily stats to D1 (historical record)
+    if (env.DB) {
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        // Count current online sessions
+        const onlineList = await env.CARTELERA_SUBS.list({ prefix: 'online:' });
+        const maxOnline = onlineList.keys.length;
+        // Get today's visit count
+        const visitRaw = await env.CARTELERA_SUBS.get('visits:' + today);
+        const totalVisits = visitRaw ? parseInt(visitRaw, 10) : 0;
+        // Upsert into D1
+        await env.DB.prepare(
+          'INSERT INTO daily_stats (date, total_visits, max_online) VALUES (?, ?, ?) ON CONFLICT(date) DO UPDATE SET total_visits = excluded.total_visits, max_online = MAX(daily_stats.max_online, excluded.max_online)'
+        ).bind(today, totalVisits, maxOnline).run();
+      } catch (e) {
+        console.error('D1 stats error: ' + e.message);
+      }
+    }
   }
 };
 

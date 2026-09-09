@@ -1,4 +1,5 @@
 # Run: wrangler kv:namespace create CARTELERA_SUBS / CARTELERA_SNAPSHOTS to get IDs.
+# Run: wrangler d1 create correlatividades-stats — done
 # Set secret: wrangler secret put RESEND_API_KEY
 
 name = "cartelera-proxy"
@@ -15,3 +16,8 @@ id = "060bce2011564bf59da4e2178a925e6c"
 [[kv_namespaces]]
 binding = "CARTELERA_SNAPSHOTS"
 id = "46fa48b250524b4d986b39647c95e66f"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "correlatividades-stats"
+database_id = "61e64a5a-1ae1-40cb-a0c4-08c12a091961"

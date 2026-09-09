@@ -58,6 +58,53 @@
         </ul>
     </nav>`;
 
+        // === Online visitor badge ===
+        const WORKER_BASE = 'https://cartelera-proxy.felipestesta.workers.dev';
+        const badge = document.createElement('span');
+        badge.className = 'navbar-online-badge';
+        badge.textContent = '🟢 …';
+        badge.title = 'Visitors online / today';
+        badge.setAttribute('aria-label', 'Online visitors');
+        
+        // Insert badge at the end of the navbar (right side)
+        const navEl = container.querySelector('.app-navbar');
+        if (navEl) navEl.appendChild(badge);
+
+        // Generate or reuse session ID
+        let sessionId;
+        try {
+            sessionId = sessionStorage.getItem('visitorSessionId');
+            if (!sessionId) {
+                sessionId = 'admin-' + crypto.randomUUID();
+                sessionStorage.setItem('visitorSessionId', sessionId);
+            }
+        } catch (e) {
+            sessionId = 'fallback-' + Math.random().toString(36).slice(2);
+        }
+
+        // Heartbeat + badge update function
+        async function updateOnlineStatus() {
+            try {
+                // Send heartbeat
+                await fetch(WORKER_BASE + '/heartbeat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId })
+                });
+                // Get counts
+                const res = await fetch(WORKER_BASE + '/online');
+                const data = await res.json();
+                badge.textContent = '🟢 ' + (data.online || 0) + '/' + (data.visits || 0);
+            } catch (e) {
+                badge.textContent = '🟢 …';
+            }
+        }
+
+        // Initial fetch + heartbeat (after 2s delay to avoid startup race)
+        setTimeout(updateOnlineStatus, 2000);
+        // Poll every 30 seconds
+        setInterval(updateOnlineStatus, 30000);
+
         // Wire up toggle
         const toggle = document.getElementById('appNavbarToggle');
         const list = document.getElementById('appNavbarList');
@@ -88,6 +135,15 @@
             // Close menu on Escape
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && list.classList.contains('open')) {
+                    list.classList.remove('open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    try { localStorage.setItem(STORAGE_KEY, 'false'); } catch(e) {}
+                }
+            });
+
+            // Close menu on click outside (mobile UX)
+            document.addEventListener('click', (e) => {
+                if (list.classList.contains('open') && !list.contains(e.target) && e.target !== toggle) {
                     list.classList.remove('open');
                     toggle.setAttribute('aria-expanded', 'false');
                     try { localStorage.setItem(STORAGE_KEY, 'false'); } catch(e) {}
