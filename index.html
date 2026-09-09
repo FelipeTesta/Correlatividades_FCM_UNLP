@@ -39,23 +39,16 @@
     <input type="number" id="anioIngreso" value="2023" onblur="guardarAnio()">
   </div>
   <div class="top-bar-right">
+    <label class="abbreviate-switch-wrap">
+      <span class="abbreviate-switch-label">Abreviar nombres</span>
+      <label class="abbreviate-switch">
+        <input type="checkbox" id="toggleAbbreviateNames" onchange="toggleAbbreviateNames()">
+        <span class="abbreviate-slider"></span>
+      </label>
+    </label>
     <button id="btnHowToUse" class="btn-help" onclick="showHelpModal()">¿CÓMO USAR?</button>
     <button id="btnResetear" class="btn-reset-hold">⚠️ Resetear</button>
   </div>
-</div>
-
-<div class="optativas-box">
-<span>Horas Optativas Acumuladas:</span>
-<span id="horasOptativas" class="horas-count">0</span>
-<span class="horas-label">/ 270</span>
-<!-- NEW: Abbreviate names switch at far right -->
-<label class="abbreviate-switch-wrap" style="margin-left:auto;">
-  <span class="abbreviate-switch-label">Abreviar nombres</span>
-  <label class="abbreviate-switch">
-    <input type="checkbox" id="toggleAbbreviateNames" onchange="toggleAbbreviateNames()">
-    <span class="abbreviate-slider"></span>
-  </label>
-</label>
 </div>
 
 <hr>

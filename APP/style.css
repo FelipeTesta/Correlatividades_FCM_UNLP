@@ -185,37 +185,6 @@ h2 {
 }
 
 /* ============================= */
-/* OPTATIVAS BOX */
-/* ============================= */
-
-.optativas-box {
-    padding: 8px 12px;
-    background-color: var(--bg-elevated);
-    border: 1px solid #1a3a1a;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.optativas-box span:first-child {
-    color: var(--text-muted);
-    font-size: 14px;
-}
-
-.horas-count {
-    font-size: 18px;
-    font-weight: bold;
-    color: #6ee7a0;
-}
-
-.horas-label {
-    color: var(--text-muted);
-    font-size: 12px;
-}
-
-/* ============================= */
 /* PROGRESS CONTAINER */
 /* ============================= */
 
@@ -1126,26 +1095,6 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 
     .btn-help {
         width: 100%;
-    }
-
-    /* Optativas box */
-    .optativas-box {
-        flex-wrap: nowrap;
-        padding: 10px 8px;
-        gap: 6px;
-    }
-
-    .optativas-box span:first-child {
-        font-size: 12px;
-        white-space: nowrap;
-    }
-
-    .horas-count {
-        font-size: 20px; /* Maior para destaque */
-    }
-
-    .horas-label {
-        font-size: 14px;
     }
 
     /* Legend box */

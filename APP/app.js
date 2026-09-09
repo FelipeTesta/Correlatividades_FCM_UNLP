@@ -323,7 +323,6 @@ function eliminarProyectoExtension(id) {
 function render() {
 
     limpiarListas();
-    actualizarHorasOptativas();
     actualizarBarraProgreso();
 
     if (!materias) return;
@@ -1303,12 +1302,6 @@ function showHelpModal() {
             document.removeEventListener('keydown', handler);
         }
     });
-}
-
-function actualizarHorasOptativas() {
-    const horas = calcularHorasOptativas();
-    const el = document.getElementById("horasOptativas");
-    if (el) el.innerText = horas;
 }
 
 // ===============================
