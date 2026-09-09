@@ -8,47 +8,10 @@
 // BASE LOCAL
 // ===============================
 
-// ---- State cache (perf: avoid repeated JSON.parse of localStorage) ----
-var _stateCache = { estados: null, cursando: null, optativasFavoritas: null };
-function getCachedState(key) {
-    if (_stateCache[key] === null) {
-        try { _stateCache[key] = JSON.parse(localStorage.getItem(key) || '{}'); }
-        catch(e) { _stateCache[key] = {}; }
-    }
-    return _stateCache[key];
-}
-function invalidateStateCache(key) { _stateCache[key] = null; }
-// Cross-tab sync: re-read localStorage when tab regains focus
-window.addEventListener('focus', function() { invalidateStateCache('estados'); invalidateStateCache('cursando'); invalidateStateCache('optativasFavoritas'); });
-
-// ---- Abbreviate names state (medical student shorthand) ----
-var _abbreviateNames = (function() {
-    var stored = localStorage.getItem('mainAbbreviateNames');
-    return stored !== null ? stored === 'true' : true; // default ON
-})();
-function isAbbreviatingNames() { return _abbreviateNames; }
-function toggleAbbreviateNames() {
-    _abbreviateNames = !_abbreviateNames;
-    try { localStorage.setItem('mainAbbreviateNames', _abbreviateNames); } catch(e) {}
-    updateAbbreviateModeClass();
+// Abbreviation system — shared module handles init, toggle calls onAbbreviationToggle
+function onAbbreviationToggle() {
     guardarLocalYRender();
 }
-function updateAbbreviateModeClass() {
-    var body = document.body;
-    if (body) {
-        if (_abbreviateNames) {
-            body.classList.add('abbreviated-mode');
-        } else {
-            body.classList.remove('abbreviated-mode');
-        }
-    }
-    var cb = document.getElementById('toggleAbbreviateNames');
-    if (cb) cb.checked = _abbreviateNames;
-}
-// Apply on DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    updateAbbreviateModeClass();
-});
 
 function abreviarCategoria(cat) {
     if (!cat) return "";
@@ -246,13 +209,6 @@ function obtenerTodasFechas(codigo) {
     return { proximas, anteriores };
 }
 
-function formatearFechaDMA(fecha) {
-    const dia = fecha.getDate();
-    const mes = fecha.getMonth();
-    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-    return dia + "/" + meses[mes];
-}
-
 document.getElementById("anioIngreso").value = anioIngreso;
 
 // ===============================
@@ -359,23 +315,6 @@ function eliminarProyectoExtension(id) {
 // ===============================
 // VERIFICACIONES
 // ===============================
-
-function cumpleRequisitos(lista, materia = null) {
-
-    // Verificar año de matrícula para optativas
-    if (materia && materia.categoria === "optativa" && materia.anio) {
-        const aniosMatricula = new Date().getFullYear() - anioIngreso + 1;
-        if (aniosMatricula < materia.anio) {
-            return false;
-        }
-    }
-
-    for (let req of lista) {
-        if (!verificarRequisito(req)) return false;
-    }
-
-    return true;
-}
 
 // ===============================
 // RENDER
@@ -568,20 +507,6 @@ function actualizarContadores() {
 // UTILIDADES
 // ===============================
 
-function calcularHorasOptativas() {
-    let horas = 0;
-    materias.forEach(m => {
-        if (m.categoria === "optativa" && m.horas && estados[m.codigo] === "aprobada") {
-            horas += m.horas;
-        }
-    });
-    // sumar horas de proyectos de extensión
-    proyectosExtension.forEach(p => {
-        horas += p.horas;
-    });
-    return horas;
-}
-
 function actualizarBarraProgreso() {
     // solo contar materias obligatorias (no optativas)
     const obligatorias = materias.filter(m => m.categoria !== "optativa");
@@ -662,19 +587,6 @@ function actualizarBarraProgreso() {
   
   // actualizar porcentaje total
   document.getElementById("progressPercent").innerText = Math.round(pctTotal) + "%";
-}
-
-function verificarRequisito(req) {
-    // Si es un requisito especial de horas de optativas
-    if (req.materia === "OPT-HORAS") {
-        const horas = calcularHorasOptativas();
-        if (req.condicion === ">=270") return horas >= 270;
-        return false;
-    }
-    const estadoMateria = estados[req.materia];
-    if (req.condicion === "aprobada") return estadoMateria === "aprobada";
-    if (req.condicion === "regularizada") return !!estadoMateria;
-    return false;
 }
 
 function resolverRequisitosTransitivos(requisitos) {

@@ -24,51 +24,11 @@ const STATUS_CLASS_MAP = {
     'optativa-no-puede-cursar': 'status-optativa-no-puede-cursar'
 };
 
-// ---- State cache (perf: avoid repeated JSON.parse of localStorage) ----
-var _stateCache = { estados: null, cursando: null };
-
-// ---- Subject name abbreviation system (medical student shorthand) ----
-var _abbreviateNames = (function() {
-    var stored = localStorage.getItem('arbolAbbreviateNames');
-    return stored !== null ? stored === 'true' : true;
-})();
-function isAbbreviatingNames() { return _abbreviateNames; }
-function toggleAbbreviateNames() {
-    _abbreviateNames = !_abbreviateNames;
-    try { localStorage.setItem('arbolAbbreviateNames', _abbreviateNames); } catch(e) {}
-    updateAbbreviateModeClass();
+// State cache, abbreviation — loaded from shared modules (state-cache.js, abbreviation.js)
+// arbol.html sets ABBREVIATION_CONFIG before abbreviation.js loads
+function onAbbreviationToggle() {
     updateTree();
 }
-function updateAbbreviateModeClass() {
-    var container = document.getElementById('treeContent') || document.querySelector('.tree-content');
-    if (container) {
-        if (_abbreviateNames) {
-            container.classList.add('abbreviated-mode');
-            container.classList.add('abbreviated-names');
-        } else {
-            container.classList.remove('abbreviated-mode');
-            container.classList.remove('abbreviated-names');
-        }
-    }
-}
-// Apply on DOMContentLoaded as well
-document.addEventListener('DOMContentLoaded', function() {
-    updateAbbreviateModeClass();
-    var cb = document.getElementById('toggleAbbreviateNames');
-    if (cb) {
-        cb.checked = _abbreviateNames;
-    }
-});
-function getCachedState(key) {
-    if (_stateCache[key] === null) {
-        try { _stateCache[key] = JSON.parse(localStorage.getItem(key) || '{}'); }
-        catch(e) { _stateCache[key] = {}; }
-    }
-    return _stateCache[key];
-}
-function invalidateStateCache(key) { _stateCache[key] = null; }
-// Cross-tab sync: re-read localStorage when tab regains focus
-window.addEventListener('focus', function() { invalidateStateCache('estados'); invalidateStateCache('cursando'); });
 
 // ===============================
 // INIT
@@ -464,40 +424,7 @@ function canTakeFinal(codigo) {
     return cumpleRequisitos(m.paraAprobar);
 }
 
-function cumpleRequisitos(lista) {
-    if (!lista || lista.length === 0) return true;
 
-    for (var i = 0; i < lista.length; i++) {
-        var req = lista[i];
-        if (!verificarRequisito(req)) return false;
-    }
-    return true;
-}
-
-function verificarRequisito(req) {
-    // Special prerequisite: optativa hours
-    if (req.materia === 'OPT-HORAS') {
-        var horas = calcularHorasOptativas();
-        if (req.condicion === '>=270') return horas >= 270;
-        return false;
-    }
-
-    var estadoMateria = estados[req.materia];
-    if (req.condicion === 'aprobada') return estadoMateria === 'aprobada';
-    if (req.condicion === 'regularizada') return !!estadoMateria;
-    return false;
-}
-
-function calcularHorasOptativas() {
-    var horas = 0;
-    for (var i = 0; i < materias.length; i++) {
-        var m = materias[i];
-        if (m.categoria === 'optativa' && m.horas && estados[m.codigo] === 'aprobada') {
-            horas += m.horas;
-        }
-    }
-    return horas;
-}
 
 function countMissingPrerequisites(codigo, visited) {
     // Prevent infinite loops (forward references like PD001→I0001)

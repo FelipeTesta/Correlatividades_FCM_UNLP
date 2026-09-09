@@ -33,10 +33,8 @@ const HOME_LABEL = "Avisos Generales de la Facultad";
 
 // State
 let currentDays = 90;
-try {
-  var saved = parseInt(localStorage.getItem(FILTER_DAYS_KEY), 10);
-  if (saved && saved > 0) currentDays = saved;
-} catch (e) {}
+var savedDays = getLocalStorageJSON(FILTER_DAYS_KEY, 90);
+if (typeof savedDays === "number" && savedDays > 0) currentDays = savedDays;
 let currentMode = "subject"; // "subject" or "chrono"
 let fetchedData = null; // { codigo: { catedraName, id, pubs: [...], error: null|string } }
 let catedrasData = {}; // loaded from finales.json { CODE: { "CatedraName": [...] } }
@@ -86,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var daysInput = document.getElementById("daysInput");
       if (daysInput) { daysInput.value = currentDays; }
       syncFilterUI();
-      try { localStorage.setItem(FILTER_DAYS_KEY, String(currentDays)); } catch (e) {}
+        saveState(FILTER_DAYS_KEY, currentDays);
       if (fetchedData) {
         render();
       }
@@ -100,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var val = parseInt(daysInput.value, 10);
       if (val && val > 0) {
         currentDays = val;
-        try { localStorage.setItem(FILTER_DAYS_KEY, String(currentDays)); } catch (e) {}
+      saveState(FILTER_DAYS_KEY, currentDays);
         syncFilterUI();
         if (fetchedData) {
           render();
@@ -293,49 +291,21 @@ function loadCatedrasData() {
 // =============================
 
 function getCursandoCodes() {
-  var raw;
-  try {
-    raw = localStorage.getItem("cursando");
-  } catch (e) {
-    return [];
-  }
-  if (!raw) return [];
-  var obj;
-  try {
-    obj = JSON.parse(raw);
-  } catch (e) {
-    return [];
-  }
+  var obj = getLocalStorageJSON("cursando", {});
   return Object.keys(obj).filter(function (code) {
     return obj[code] === true;
   });
 }
 
 function getRegularizadaCodes() {
-  var raw;
-  try {
-    raw = localStorage.getItem("estados");
-  } catch (e) {
-    return [];
-  }
-  if (!raw) return [];
-  var obj;
-  try {
-    obj = JSON.parse(raw);
-  } catch (e) {
-    return [];
-  }
+  var obj = getLocalStorageJSON("estados", {});
   return Object.keys(obj).filter(function (code) {
     return obj[code] === "regularizada";
   });
 }
 
 function getSubscribedCodes() {
-  try {
-    var raw = localStorage.getItem(SUBSCRIBED_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return [];
+  return getLocalStorageJSON(SUBSCRIBED_KEY, []);
 }
 
 function saveSubscribedCodes(codes) {
@@ -344,41 +314,21 @@ function saveSubscribedCodes(codes) {
   (codes || []).forEach(function (c) {
     if (!seen[c]) { seen[c] = true; unique.push(c); }
   });
-  try { localStorage.setItem(SUBSCRIBED_KEY, JSON.stringify(unique)); } catch (e) {}
+  saveState(SUBSCRIBED_KEY, unique);
 }
 
 function guardarCatedraSeleccionada(codigo, catedraName) {
-  var seleccionadas = {};
-  try {
-    var raw = localStorage.getItem("catedrasSeleccionadas");
-    if (raw) { seleccionadas = JSON.parse(raw); }
-  } catch (e) {
-    // fallback to empty
-  }
+  var seleccionadas = getLocalStorageJSON("catedrasSeleccionadas", {});
   seleccionadas[codigo] = catedraName;
-  try {
-    localStorage.setItem("catedrasSeleccionadas", JSON.stringify(seleccionadas));
-  } catch (e) {
-    // storage unavailable
-  }
+  saveState("catedrasSeleccionadas", seleccionadas);
 }
 
 function getCatedrasSeleccionadas() {
-  try {
-    var raw = localStorage.getItem("catedrasSeleccionadas");
-    if (raw) return JSON.parse(raw);
-  } catch (e) {
-    // fallback
-  }
-  return {};
+  return getLocalStorageJSON("catedrasSeleccionadas", {});
 }
 
 function getLeidas() {
-  try {
-    var raw = localStorage.getItem(LEIDAS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return {};
+  return getLocalStorageJSON(LEIDAS_KEY, {});
 }
 
 function isLeida(link, currentModTimestamp) {
@@ -397,7 +347,7 @@ function marcarLeida(link, modificadaTimestamp) {
   if (!link) return;
   var leidas = getLeidas();
   leidas[link] = { read: true, mod: modificadaTimestamp || null };
-  try { localStorage.setItem(LEIDAS_KEY, JSON.stringify(leidas)); } catch (e) {}
+  saveState(LEIDAS_KEY, leidas);
   render();
 }
 
@@ -405,7 +355,7 @@ function desmarcarLeida(link) {
   if (!link) return;
   var leidas = getLeidas();
   delete leidas[link];
-  try { localStorage.setItem(LEIDAS_KEY, JSON.stringify(leidas)); } catch (e) {}
+  saveState(LEIDAS_KEY, leidas);
   render();
 }
 
@@ -465,16 +415,12 @@ function marcarTodasLeidas() {
       });
     });
   }
-  try { localStorage.setItem(LEIDAS_KEY, JSON.stringify(leidas)); } catch (e) {}
+  saveState(LEIDAS_KEY, leidas);
   render();
 }
 
 function getCollapsed() {
-  try {
-    var raw = localStorage.getItem(COLLAPSED_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return {};
+  return getLocalStorageJSON(COLLAPSED_KEY, {});
 }
 
 function isCollapsed(source) {
@@ -488,12 +434,12 @@ function toggleCollapse(source) {
   } else {
     collapsed[source] = true;
   }
-  try { localStorage.setItem(COLLAPSED_KEY, JSON.stringify(collapsed)); } catch (e) {}
+  saveState(COLLAPSED_KEY, collapsed);
   render();
 }
 
 function getCollapsedSubjects() {
-  try { return JSON.parse(localStorage.getItem(COLLAPSED_SUBJECTS_KEY) || "{}"); } catch (e) { return {}; }
+  return getLocalStorageJSON(COLLAPSED_SUBJECTS_KEY, {});
 }
 function isSubjectCollapsed(codigo) {
   var c = getCollapsedSubjects();
@@ -502,7 +448,7 @@ function isSubjectCollapsed(codigo) {
 function toggleSubjectCollapse(codigo) {
   var c = getCollapsedSubjects();
   c[codigo] = !c[codigo];
-  try { localStorage.setItem(COLLAPSED_SUBJECTS_KEY, JSON.stringify(c)); } catch (e) {}
+  saveState(COLLAPSED_SUBJECTS_KEY, c);
   render();
 }
 
@@ -1003,8 +949,7 @@ function resolveAndFetch() {
   });
 
   // Add subscribed codes (extra subjects the user chose to follow)
-  var estados = {};
-  try { estados = JSON.parse(localStorage.getItem("estados") || "{}"); } catch (e) {}
+  var estados = getLocalStorageJSON("estados", {});
   var subscribedCodes = getSubscribedCodes();
   subscribedCodes.forEach(function (code) {
     if (codeSourceMap[code]) return; // already present
@@ -1238,7 +1183,7 @@ function renderSubjectMode(subjectData) {
     withoutPubsCodes.forEach(function(code) {
       collapsedData[code] = true;
     });
-    try { localStorage.setItem(COLLAPSED_SUBJECTS_KEY, JSON.stringify(collapsedData)); } catch (e) {}
+    saveState(COLLAPSED_SUBJECTS_KEY, collapsedData);
 
     // === Render subjects WITH publications ===
     withPubsCodes.forEach(function (code) {
@@ -1308,7 +1253,7 @@ function renderSubjectMode(subjectData) {
       // Expand subjects that have pubs (they might have been collapsed before)
       if (collapsedData[code]) {
         delete collapsedData[code];
-        try { localStorage.setItem(COLLAPSED_SUBJECTS_KEY, JSON.stringify(collapsedData)); } catch (e) {}
+        saveState(COLLAPSED_SUBJECTS_KEY, collapsedData);
       }
 
       // Skip pubs if collapsed
