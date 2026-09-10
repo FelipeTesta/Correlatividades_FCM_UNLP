@@ -1,9 +1,9 @@
-锘縞onst EXTENSION_PROJECTS = [
+const EXTENSION_PROJECTS = [
   {
     id: 'a-mi-no-me-duele',
     nombre: 'A mi no me duele',
     director: 'Pablo Vetere',
-    descripcion: 'Prevenci贸n y abordaje integral del dolor cr贸nico y agudo en la comunidad de La Plata, con perspectiva de salud comunitaria.',
+    descripcion: 'Prevenci髇 y abordaje integral del dolor cr髇ico y agudo en la comunidad de La Plata, con perspectiva de salud comunitaria.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/a-mi-no-me-duele',
@@ -13,13 +13,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.instagram.com/aminomedueleunlp/'
   },
   {
     id: 'abordaje-integral-manuel-b-gonnet',
     nombre: 'Abordaje integral de Salud en Manuel B. Gonnet',
     director: 'Claudia Corti',
-    descripcion: 'Asistencia sanitaria, controles de salud y educaci贸n preventiva en la localidad de Manuel B. Gonnet, articulando con centros de atenci贸n primaria locales.',
+    descripcion: 'Asistencia sanitaria, controles de salud y educaci髇 preventiva en la localidad de Manuel B. Gonnet, articulando con centros de atenci髇 primaria locales.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/abordaje-integral-de-salud-en-manuel-b-gonnet',
@@ -29,13 +28,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/abordaje-integral-de-salud-en-manuel-b-gonnet'
   },
   {
     id: 'arriba-la-fruta',
-    nombre: 'Arriba la fruta, abajo el az煤car!',
-    director: 'Lic Silvia Garc铆a',
-    descripcion: 'Promoci贸n de h谩bitos alimentarios saludables y consumo consciente en ni帽os y adolescentes, fomentando la reducci贸n de az煤cares refinados y el consumo de frutas en escuelas de la regi贸n.',
+    nombre: 'Arriba la fruta, abajo el az鷆ar!',
+    director: 'Lic Silvia Garc韆',
+    descripcion: 'Promoci髇 de h醔itos alimentarios saludables y consumo consciente en ni駉s y adolescentes, fomentando la reducci髇 de az鷆ares refinados y el consumo de frutas en escuelas de la regi髇.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/arriba-la-fruta-abajo-el-azucar',
@@ -45,13 +43,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.instagram.com/arribalafrutaabajoelazucar/'
   },
   {
     id: 'cronotipos-estado-nutricional',
     nombre: 'Cronotipos, estado nutricional y aspectos cognitivos',
     director: 'Fernando Luna',
-    descripcion: 'Investigaci贸n y extensi贸n orientada a evaluar la relaci贸n entre los ritmos circadianos (cronotipos), los h谩bitos nutricionales y el rendimiento cognitivo en estudiantes universitarios.',
+    descripcion: 'Investigaci髇 y extensi髇 orientada a evaluar la relaci髇 entre los ritmos circadianos (cronotipos), los h醔itos nutricionales y el rendimiento cognitivo en estudiantes universitarios.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/cronotipos-estado-nutricional-y-aspectos-cognitivos',
@@ -61,13 +58,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/cronotipos-estado-nutricional-y-aspectos-cognitivos'
   },
   {
     id: 'del-ombligo-para-arriba',
     nombre: 'Del ombligo para arriba',
-    director: 'Gustavo Mar铆n',
-    descripcion: 'Abordaje integral de salud materno-infantil y prevenci贸n de patolog铆as prevalentes en sectores vulnerables de la regi贸n platense.',
+    director: 'Gustavo Mar韓',
+    descripcion: 'Abordaje integral de salud materno-infantil y prevenci髇 de patolog韆s prevalentes en sectores vulnerables de la regi髇 platense.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/del-ombligo-para-arriba',
@@ -77,13 +73,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/del-ombligo-para-arriba'
   },
   {
     id: 'el-desafio-de-prevenir-las-violencias',
-    nombre: 'El desaf铆o de prevenir las violencias',
+    nombre: 'El desaf韔 de prevenir las violencias',
     director: 'Cecilia Cambareri',
-    descripcion: 'Talleres de sensibilizaci贸n y prevenci贸n de distintas formas de violencia en 谩mbitos comunitarios e institucionales, promoviendo espacios de di谩logo y construcci贸n de v铆nculos saludables.',
+    descripcion: 'Talleres de sensibilizaci髇 y prevenci髇 de distintas formas de violencia en 醡bitos comunitarios e institucionales, promoviendo espacios de di醠ogo y construcci髇 de v韓culos saludables.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/el-desafio-de-prevenir-las-violencias',
@@ -93,13 +88,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/el-desafio-de-prevenir-las-violencias'
   },
   {
     id: 'el-estado-nutricional-de-nuestros-ninos',
-    nombre: 'El estado nutricional de nuestros ni帽os y ni帽as',
-    director: 'Gustavo Mar铆n',
-    descripcion: 'Evaluaci贸n antropom茅trica y consejer铆a nutricional dirigida a la poblaci贸n infantil en comedores comunitarios y escuelas de La Plata.',
+    nombre: 'El estado nutricional de nuestros ni駉s y ni馻s',
+    director: 'Gustavo Mar韓',
+    descripcion: 'Evaluaci髇 antropom閠rica y consejer韆 nutricional dirigida a la poblaci髇 infantil en comedores comunitarios y escuelas de La Plata.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/el-estado-nutricional-de-nuestros-ninos-y-ninas',
@@ -109,13 +103,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/el-estado-nutricional-de-nuestros-ninos-y-ninas'
   },
   {
     id: 'flexibilizar-ensenanza-ciencias-duras',
-    nombre: 'Flexibilizar la ense帽anza en las llamadas Ciencias Duras',
-    director: 'N茅stor D铆az',
-    descripcion: 'Adaptaci贸n de estrategias pedag贸gicas y metodol贸gicas para facilitar el aprendizaje de ciencias exactas y naturales en el 谩mbito universitario y secundario.',
+    nombre: 'Flexibilizar la ense馻nza en las llamadas Ciencias Duras',
+    director: 'N閟tor D韆z',
+    descripcion: 'Adaptaci髇 de estrategias pedag骻icas y metodol骻icas para facilitar el aprendizaje de ciencias exactas y naturales en el 醡bito universitario y secundario.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/flexibilizar-la-ensenanza-en-las-llamadas-ciencias-duras',
@@ -125,13 +118,12 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/flexibilizar-la-ensenanza-en-las-llamadas-ciencias-duras'
   },
   {
     id: 'lactancia-materna',
     nombre: 'Lactancia Materna, una experiencia fundante',
     director: 'Gustavo Sager',
-    descripcion: 'Asesoramiento, apoyo y difusi贸n sobre los beneficios inmunol贸gicos y nutricionales de la lactancia materna exclusiva en centros de salud y hospitales de la regi贸n.',
+    descripcion: 'Asesoramiento, apoyo y difusi髇 sobre los beneficios inmunol骻icos y nutricionales de la lactancia materna exclusiva en centros de salud y hospitales de la regi髇.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/lactancia-materna-una-experiencia-fundante',
@@ -141,29 +133,27 @@
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/lactancia-materna-una-experiencia-fundante'
   },
   {
     id: 'las-raices-de-las-ollas-de-berisso',
-    nombre: 'Las ra铆ces de las ollas de Berisso',
+    nombre: 'Las ra韈es de las ollas de Berisso',
     director: 'Marina Isla Larrain',
     descripcion: 'Relevamiento socio-sanitario y apoyo a comedores comunitarios y ollas populares en el partido de Berisso, analizando la seguridad alimentaria local.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/las-raices-de-las-ollas-de-berisso',
-      instagram: null,
+      instagram: 'https://www.instagram.com/raicesyollas.berisso/',
       facebook: null,
       twitter: null,
       youtube: null
     },
     ultimaActividad: '2025',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/las-raices-de-las-ollas-de-berisso'
   },
   {
     id: 'los-mayores-primero',
     nombre: 'Los mayores primero',
-    director: 'Adri谩n Zelayeta',
-    descripcion: 'Contribuir a promover la salud y fortalecer las redes sociales y comunitarias de protecci贸n de las y los adultos mayores de la ciudad de La Plata.',
+    director: 'Adri醤 Zelayeta',
+    descripcion: 'Contribuir a promover la salud y fortalecer las redes sociales y comunitarias de protecci髇 de las y los adultos mayores de la ciudad de La Plata.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/los-mayores-primero',
@@ -173,13 +163,12 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/los-mayores-primero'
   },
   {
     id: 'los-nuevos-desafios-alimentacion',
-    nombre: 'Los nuevos desaf铆os de la alimentaci贸n saludable',
+    nombre: 'Los nuevos desaf韔s de la alimentaci髇 saludable',
     director: 'Norberto Santos',
-    descripcion: 'Sistematizar estrategias de promoci贸n de conductas y h谩bitos de alimentaci贸n saludable en ni帽os y ni帽as de nivel primario mediante talleres articulados con la Fundaci贸n Pro Infantia.',
+    descripcion: 'Sistematizar estrategias de promoci髇 de conductas y h醔itos de alimentaci髇 saludable en ni駉s y ni馻s de nivel primario mediante talleres articulados con la Fundaci髇 Pro Infantia.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/los-nuevos-desafios-de-la-alimentacion-saludable',
@@ -189,13 +178,12 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/los-nuevos-desafios-de-la-alimentacion-saludable'
   },
   {
     id: 'los-unicos-privilegiados',
-    nombre: 'Los 煤nicos privilegiados',
-    director: 'Joaqu铆n Cara',
-    descripcion: 'Controles de salud integrales (vacunas, peso, talla, agudeza visual y desarrollo) a ni帽os de 0 a 18 a帽os en Punta Lara, Isla Santiago y barrios perif茅ricos.',
+    nombre: 'Los 鷑icos privilegiados',
+    director: 'Joaqu韓 Cara',
+    descripcion: 'Controles de salud integrales (vacunas, peso, talla, agudeza visual y desarrollo) a ni駉s de 0 a 18 a駉s en Punta Lara, Isla Santiago y barrios perif閞icos.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/los-unicos-privilegiados',
@@ -205,13 +193,12 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/los-unicos-privilegiados'
   },
   {
     id: 'para-decidir',
     nombre: 'Para decidir',
-    director: 'Pedro Hern谩ndez',
-    descripcion: 'Promueve la salud sexual integral en j贸venes del Partido de Ensenada mediante educaci贸n popular, fomentando la autonom铆a y la toma de decisiones responsables.',
+    director: 'Pedro Hern醤dez',
+    descripcion: 'Promueve la salud sexual integral en j髒enes del Partido de Ensenada mediante educaci髇 popular, fomentando la autonom韆 y la toma de decisiones responsables.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/para-decidir',
@@ -221,7 +208,6 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/para-decidir'
   },
   {
     id: 'parto-respetado',
@@ -231,19 +217,18 @@
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/parto-respetado',
-      instagram: null,
+      instagram: 'https://www.instagram.com/partorespetado.unlp/',
       facebook: null,
       twitter: null,
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/parto-respetado'
   },
   {
     id: 'pasantias-secundarias',
-    nombre: 'Pasant铆as de alumnos secundarias a la academia',
+    nombre: 'Pasant韆s de alumnos secundarias a la academia',
     director: 'Dra. Alejandra Tricerri',
-    descripcion: 'Estimula en estudiantes secundarios la posibilidad de acceso al ambiente acad茅mico mediante un acercamiento personalizado a grupos de docentes-investigadores.',
+    descripcion: 'Estimula en estudiantes secundarios la posibilidad de acceso al ambiente acad閙ico mediante un acercamiento personalizado a grupos de docentes-investigadores.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/pasantias-de-alumnos-secundarias-a-la-academia',
@@ -253,13 +238,12 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/pasantias-de-alumnos-secundarias-a-la-academia'
   },
   {
     id: 'plaza-de-la-salud',
     nombre: 'Plaza de la Salud',
-    director: 'Adri谩n Zelayeta',
-    descripcion: 'Instalaci贸n itinerante de espacios p煤blicos en plazas para actividades de promoci贸n de la salud, h谩bitos saludables y detecci贸n de factores de riesgo.',
+    director: 'Adri醤 Zelayeta',
+    descripcion: 'Instalaci髇 itinerante de espacios p鷅licos en plazas para actividades de promoci髇 de la salud, h醔itos saludables y detecci髇 de factores de riesgo.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/plaza-de-la-salud',
@@ -269,11 +253,10 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/plaza-de-la-salud'
   },
   {
     id: 'prevencion-cardiovascular',
-    nombre: 'Prevenci贸n de enfermedades cardiovasculares en ni帽os y adolescentes',
+    nombre: 'Prevenci髇 de enfermedades cardiovasculares en ni駉s y adolescentes',
     director: 'Mariana Arce',
     descripcion: 'Crea un cuerpo multidisciplinario de estudiantes y docentes entrenados para intervenir en la comunidad identificando y analizando factores de riesgo cardiovascular.',
     status: 'en_curso',
@@ -285,13 +268,12 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/prevencion-de-enfermedades-cardiovasculares-en-ninos-y-adolescentes'
   },
   {
     id: 'prevencion-de-la-gestante',
-    nombre: 'Prevenci贸n de la gestante',
+    nombre: 'Prevenci髇 de la gestante',
     director: 'Patricia Mattarollo',
-    descripcion: 'Previene infecciones de transmisi贸n vertical madre-feto informando sobre conductas riesgosas y posibles complicaciones en gestantes de unidades sanitarias.',
+    descripcion: 'Previene infecciones de transmisi髇 vertical madre-feto informando sobre conductas riesgosas y posibles complicaciones en gestantes de unidades sanitarias.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/prevencion-de-la-gestante',
@@ -301,13 +283,12 @@
       youtube: null
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/prevencion-de-la-gestante'
   },
   {
     id: 'procopin',
     nombre: 'PROCOPIN',
-    director: 'Marta Mivielle, Betina Pezzani, Mar铆a Laura Ciaramella',
-    descripcion: 'Programa de Control de las Parasitosis Intestinales y Nutrici贸n orientado a la detecci贸n y prevenci贸n en escuelas y organizaciones sociales de Villa Arg眉ello, Malvinas Argentinas y Abasto.',
+    director: 'Marta Mivielle, Betina Pezzani, Mar韆 Laura Ciaramella',
+    descripcion: 'Programa de Control de las Parasitosis Intestinales y Nutrici髇 orientado a la detecci髇 y prevenci髇 en escuelas y organizaciones sociales de Villa Arg黣llo, Malvinas Argentinas y Abasto.',
     status: 'en_curso',
     links: {
       oficial: 'https://www.med.unlp.edu.ar/index.php/extension/proyectos/procopin',
@@ -317,6 +298,5 @@
       youtube: 'https://drive.google.com/file/d/1FS3T95_-nAUXh77frui2sXt7JdjpuoT4/preview'
     },
     ultimaActividad: '2026',
-    evidencia: 'https://www.instagram.com/procopin/'
   }
 ];

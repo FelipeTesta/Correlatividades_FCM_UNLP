@@ -10,7 +10,7 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 - **Progreso visual**: Barra de progreso con sistema de puntos por categoría (anual, cuatrimestral, bimestral, optativas)
 - **Modo Árbol**: Vista visual de árbol de correlatividades con líneas de conexión SVG, zoom, y selección interactiva
 - **Cursando**: Marca materias que estás cursando actualmente (toggle con animación cyan)
-- **Abreviar nomes**: Toggle "Abreviar nomes" mostra apelidos/siglas médicas (`nombreCorto` de cada matéria) em vez do nome completo. Disponível no modo Árvore (painel da Legenda) e na página principal (switch na linha de horas optativas). Persistido em localStorage (`arbolAbbreviateNames` / `mainAbbreviateNames`, padrão ativado). Quando ativo, a fonte do nome aumenta ~30%.
+- **Abreviar nombres**: Toggle "Abreviar nombres" muestra abreviaturas/siglas médicas (`nombreCorto` de cada materia) en vez del nombre completo. Disponible en modo Árbol (panel de Leyenda) y en la página principal (en la barra superior, junto a "¿CÓMO USAR?"). Persistido en localStorage (`arbolAbbreviateNames` / `mainAbbreviateNames`, default activado). Cuando activo, la fuente del nombre aumenta ~30%.
 - **Fechas de finales**: Consulta las fechas de exámenes finales disponibles (actualizado Feb-Dic 2026, 61 materias)
 - **Vacunas**: Seguimiento de vacunación requerida para la carrera
 - **Cartelera**: Verifica publicaciones de cátedras (avisos, exámenes, notas) con filtros por fecha y modos de visualización (por materia / cronológico)
@@ -27,7 +27,7 @@ Marca tus materias como aprobadas (✅) o regularizadas (🟧). Las listas se ac
 
 ### Modo Árbol (arbol.html)
 
-Vista visual de todas las correlatividades organizadas por año. Hacé click en una materia para destacar sus correlativas (prerrequisitos y dependientes). Usá los botones ✅🟧🔄 en cada nodo para cambiar el estado. Activá el toggle "Cursando" en las materias disponibles. El toggle "Abreviar nomes" fica disponível no painel da Legenda del modo Árbol. Ajustá el zoom (30%–300%) y ocultá las optativas con el toggle correspondiente.
+Vista visual de todas las correlatividades organizadas por año. Hacé click en una materia para destacar sus correlativas (prerrequisitos y dependientes). Usá los botones ✅🟧🔄 en cada nodo para cambiar el estado. Activá el toggle "Cursando" en las materias disponibles. El toggle "Abreviar nombres" está disponible en el panel de Leyenda del modo Árbol. Ajustá el zoom (30%–300%) y ocultá las optativas con el toggle correspondiente.
 
 ### Cartelera (cartelera.html)
 
@@ -39,6 +39,7 @@ v0.08 — Agosto 2026
 
 ## Registro de cambios
 
+- **10/09/2026:** Extension data cleanup: removido campo `evidencia` (dato muerto, nunca referenciado por extension.js). Agregado Instagram de Parto respetado (partorespetado.unlp). AGENTS.md: folder layout actualizado (extension_data.js, extension.js), consolidadas entradas duplicadas en # IMPLEMENT.
 - **09/09/2026:** Contador de visitantes en tiempo real — badge `🟢 online/hoy` en el navbar de todas las páginas. Worker con heartbeat cada 30s, sesiones únicas por día, exclusiones admin. Menú hamburguesa mobile rediseñado como panel flutuante. Enlace "Sin nuevas publicaciones" en Cartelera (cada nombre es un link a la cátedra). Fix mobile: "Horas Optativas Acumuladas" en una sola línea. Fix navbar flex para badge en extremo derecho (desktop). D1 database para stats históricas (daily_stats).
 - **05/09/2026:** Design system unificado — criado `variables.css` (paleta centralizada em 18 variáveis CSS) e refatorados os 3 CSS (style, arbol, cartelera) para usar var(--). Página principal: headers de boxes coloridos (padrão Cartelera), animação de colapso vertical (sem movimiento horizontal), fundos removidos, espaçamento reducido, seleção de texto desabilitada, margens laterais desktop 12%. Nova funcionalidade estrelas ⭐ para optativas (lista "Optativas ⭐ | 00 Horas" com soma de horas, persistência localStorage). Sistema "Abreviar nomes" portado para a página principal (switch na linha de horas optativas, default ON). Abreviações de texto e categorias (Prox final libre, Bi/Tri/Quatri/Opt). Barra de progresso com segmento silver para cursando=on. Procedimento FLOW/finales-update.dot para atualização periódica de datas de finais.
 - **28/08/2026:** Animação glassShine (reflexo vidro nos nós aprovados) não respeita mais prefers-reduced-motion — funciona mesmo com "Reduzir animações" ativado no dispositivo.
@@ -64,3 +65,52 @@ v0.08 — Agosto 2026
 - **29/06/2026:** Cartelera de cátedras (publicaciones, filtros, modos)
 - 
 Ver [LOG.md](LOG.md) para el historial completo de modificaciones.
+
+---
+
+## Arquitectura Técnica
+
+Detalles técnicos de implementación para referencia. Ver también [AGENTS.md](AGENTS.md) para orientación a agentes de IA.
+
+### Modo Árbol — Detalles
+
+- **Layout:** Filas horizontales por año. Cada año tiene `.year-section` > `.year-header` + `.subjects-row.obrigatorias` + `.subjects-row.optativas`. Listas largas se dividen en 2 `.sub-row` divs (obrigatórias >8, optativas >6). Centrado con `max-width: 1200px; margin: 0 auto`.
+- **Colores de nodo:** aprobada=#22c55e (gradiente verde oscuro + animación glass reflection), regularizada=#f97316 (gradiente naranja oscuro, sin glass), pode-cursar=#facc15, no-puede-cursar=#333 (texto dimmed #4a4a4a), optativa-puede-cursar=#a855f7, optativa-no-puede-cursar=#581c87, cursando-active=#22d3ee (gradiente cyan + borde animado glow)
+- **Botones de acción:** 3 botones por nodo (✅ aprobar, 🟧 regularizar, 🔄 resetear). Ocultos por defecto, visibles en hover. En mobile (≤768px): reemplazados por FAB de toque y mantenimiento (400ms).
+- **Selección:** Click en nodo resalta correlativas (prerrequisitos + dependientes), dim los demás. ESC o "✕ Limpiar" para deseleccionar. Líneas solo visibles en modo selección.
+- **Líneas SVG:** Curvas Bezier verticales desde centro-inferior del prerrequisito hasta centro-superior del dependiente. 4 estados visuales según `paraCursar` + `paraAprobar`: (1) Gris #666 sólido = no puede cursar, falta cursada; (2) Blanco #ffffff sólido = no puede cursar, falta final; (3) Verde #22c55e punteado = puede cursar pero no puede final; (4) Verde #22c55e sólido = todo cumplido. Púrpura #a855f7 = optativa. Usa `getConnectionVisualStyle()`.
+- **Leyenda:** Fijo abajo-derecha, auto-oculta después de 10s. "📋 Leyenda" alterna visibilidad.
+- **Optativas:** Etiqueta "Optativa" en púrpura antes de cada fila. Toggle "Optativas" oculta/muestra filas + labels.
+- **Zoom:** CSS transform scale con controles +, -, reset (30%–300%).
+- **🟡 Indicator:** Materias bloqueadas por exactamente 1 prerrequisito faltante muestran 🟡 al lado del nombre.
+- **Glass Effect:** Nodos aprobados (`.status-aprobada`) tienen `::after` pseudo-element con gradiente blanco animado (keyframe glassShine).
+- **Cursando:** Toggle switch en nodos puede-cursar. ON: gradiente cyan + borde rotativo conic-gradient (con glow). Correlativas pendientes: borde rotativo blanco/negro sutil (sin glow). Estado en localStorage `cursando: { "CODE": true }`. Se limpia al resetear materia.
+- **Mobile:** Retrato: layout vertical con cards compactas (min-width 65px, max-width 110px), zoom 65%. Sin truncamiento — texto wrap natural. Landscape: layout normal 100% zoom. FAB de toque y mantenimiento. Touch targets, 100dvh viewport.
+- **Scroll:** `html overflow:visible` (override de base.css `overflow-x:clip`), `body overflow-x:hidden` (único contenedor scroll). `overscroll-behavior:none` en base.css (compartido).
+- **SVG Dimensions:** `updateSvgDimensions()` usa hide-SVG → medir `scrollWidth/scrollHeight` → restore-SVG para evitar loop de feedback.
+- **Scroll Listener:** Registrado una vez en DOMContentLoaded (no dentro de initTree). Solo llama `drawConnections()`, no `updateSvgDimensions()`.
+
+### Cartelera — Detalles
+
+- **Arquitectura:** Página standalone compartiendo localStorage. Accedida desde "📋 Verificar Cartelera" en arbol.html top-bar.
+- **Fuentes de estado:** Lee `localStorage.cursando` + `localStorage.estados` (regularizada). Cursando tiene precedencia.
+- **Resolución de cátedra:** Código de materia → `localStorage.catedrasSeleccionadas[CODE]` → lookup en `APP/finales/finales.json` → ID de cartelera en `APP/cartelera_ids.js`. Fallbacks: `CARTELERA_FALLBACK_CATEDRAS` para SEM91 (6 opciones Medicina Interna A–F), P9001 (Psiquiatría I), HG001, C2001, BG008/BG013, EDS13, PINV.
+- **Fetch:** `cartelera.js` → Cloudflare Worker proxy (`CARTELERA_PROXY`) → `cartelera.med.unlp.edu.ar`. AbortController 15s timeout.
+- **Cache:** `sessionStorage` key `carteleraCache` con 30min expiración por URL de cátedra.
+- **Parse:** `DOMParser` en HTML → `.ribbon-wrapper.card` → extraer título, fecha, descripción, profesor, imagen, tipo (Avisos/Exámenes/Notas/Otros) por keyword matching.
+- **Modos de renderizado:**
+  - **Por materia** (default): Agrupado por materia. Headers coloreados: Cursando = cyan, Regularizada = naranja. Colapsable por materia y por sección.
+  - **Cronológico:** Timeline plana ordenada por fecha. Badge de materia + badge de origen.
+- **Filtros:** Fecha con cutoff `currentDays + 3` (margen invisible). Input personalizado `#daysInput` (default 90d) + presets 60/30/7d. Persistido en `carteleraFilterDays`.
+- **Lectura:** Botón "👁 lido" por publicación → marca leída, colapsa card. "👁 todas lidas" en top-bar alterna: 1er clic marca todas, 2do clic desmarca.
+- **Modificación:** Detección de publicaciones editadas (fecha de modificación en `text-muted`). Badge "🔄 Actualizada" en cards. Read state reset si modificado.
+- **Home / Generales:** Publicaciones generales de la Facultad (no vinculadas a materia) en sección púrpura "🏛 Avisos Generales". Siempre visible en página. En email: solo si usuario opta vía checkbox.
+- **Notificaciones email:** Cron 3x/día (9h/13h/19h ART). Snapshot KV para detectar cambios. API Resend. Modal de inscripción. Botón "Remover mi email" con hold-to-confirm. KV format: `{codes, names, home}`.
+
+### Versión Auto-Reload
+
+- `version.json` en root con `{"version":"<git-hash>","timestamp":"..."}`. Script inline en cada HTML compara con `localStorage.lastVersion`. Si diferente → reload silencioso (localStorage intacto). Deploy automatizado via `deploy.ps1`.
+
+### Aviso de Privacidad
+
+- Barra fija (position:fixed; top:0) en las 3 páginas. Comienza oculta, se muestra tras confirmar no-reload. Botón ✕ oculta (sin sessionStorage). Anti-bucle: 3s cooldown.
