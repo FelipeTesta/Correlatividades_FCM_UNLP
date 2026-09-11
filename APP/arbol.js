@@ -1423,9 +1423,19 @@ function createVideoThumbnailsContainer() {
 // ===============================
 
 function showTreeHelpModal() {
+    // Close legend if open to prevent overlap/conflict
+    var legend = document.getElementById('treeLegend');
+    var legendOverlay = document.getElementById('legendOverlay');
+    if (legend && !legend.classList.contains('hidden')) {
+        legend.classList.remove('visible');
+        legend.classList.add('hidden');
+        if (legendOverlay) legendOverlay.classList.remove('visible');
+        clearTimeout(legendTimeout);
+    }
+
     var overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
-    overlay.onclick = function() { document.body.removeChild(overlay); };
+    overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
 
     var modal = document.createElement('div');
     modal.className = 'modal-content';
@@ -1448,17 +1458,13 @@ function showTreeHelpModal() {
     var isMobile = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     var items = [
-        '<b>\uD83D\uDD0D Navegaci\u00F3n:</b> Cada columna es un a\u00F1o (1\u00BA a 6\u00BA). Las filas muestran obligatorias y optativas.',
-        '<b>\uD83D\uDC46 Selecci\u00F3n:</b> Toca/haz clic en una materia para resaltar sus correlativas (prerrequisitos + dependientes). ESC o toca vac\u00EDo para deseleccionar.',
-        '<b>\u2705 \uD83D\uDFE7 \uD83D\uDD04 Acciones:</b>' + (isMobile
-            ? ' <i>Long-press</i> (mantener pulsado 400ms) sobre una materia para ver botones de Aprobar, Regularizar y Resetear.'
-            : ' Pasa el mouse sobre una materia para ver los botones de Aprobar, Regularizar y Resetear.'),
-        '<b>\uD83D\uDCAD Cursando:</b> En materias "Puede cursar", activa el interruptor para marcar que la est\u00E1s cursando. Las dependientes muestran un borde animado.',
-        '<b>\uD83D\uDD04 Zoom:</b> Usa los controles + \u2212 \u223C para alejar/acercar (30%\u2013300%). En m\u00F3vil: pellizca con 2 dedos.',
-        '<b>\uD83D\uDCD0 Optativas:</b> El toggle "Optativas" muestra/oculta las materias optativas.',
-        '<b>\uD83D\uDFE1:</b> Aparece al lado de materias que faltan exactamente 1 requisito para poder cursar.',
-        '<b>\uD83D\uDCCA Leyenda:</b> El bot\u00F3n "Leyenda" muestra el significado de colores, l\u00EDneas e iconos.',
-        '<b>\uD83D\uDCCB Cartelera:</b> "Verificar Cartelera" muestra publicaciones de las c\u00E1tedras de materias en curso.'
+        '<b>🔍 Estructura:</b> Columnas de 1º a 6º año con materias obligatorias y optativas.',
+        '<b>👆 Selección:</b> Toca una materia para resaltar sus correlativas y dependencias. Toca fuera para desseleccionar.',
+        '<b>⚡ Acciones:</b> ' + (isMobile
+            ? 'Mantén pulsado 400ms (<i>long-press</i>) sobre una materia para Aprobar, Regularizar o Resetear.'
+            : 'Pasa el cursor sobre una materia para ver los botones de estado.'),
+        '<b>📌 Cursando:</b> Activa "Cursando" en materias disponibles para ver el borde animado de dependencias.',
+        '<b>📖 Leyenda y Ayuda:</b> Consulta la leyenda de colores e iconos, o revisa la cartelera de tus cátedras activas.'
     ];
 
     var list = document.createElement('ul');
@@ -1493,7 +1499,7 @@ function showTreeHelpModal() {
     abbrevToggle.style.background = '#1a1a1a';
     abbrevToggle.style.borderRadius = '4px';
     abbrevToggle.style.border = '1px solid #444';
-    abbrevToggle.innerHTML = '<span style="color:#999; font-size:12px; margin-right:8px;">Abreviar nombres</span>' + (_abbreviateNames ? '<span style="color:#22c55e; font-size:12px;">✓ Activado</span>' : '<span style="color:#f97316; font-size:12px;">Desactivado</span>');
+    abbrevToggle.innerHTML = '<span style="color:#999; font-size:12px; margin-right:8px;">Abreviar nombres</span>' + (isAbbreviatingNames() ? '<span style="color:#22c55e; font-size:12px;">✓ Activado</span>' : '<span style="color:#f97316; font-size:12px;">Desactivado</span>');
     // Click to toggle
     abbrevToggle.addEventListener('click', function(e) {
         if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SPAN') return;
@@ -1502,7 +1508,7 @@ function showTreeHelpModal() {
         updateTree();
         // Update the visual text
         var statusSpan = abbrevToggle.querySelector('span:last-child');
-        if (_abbreviateNames) {
+        if (isAbbreviatingNames()) {
             statusSpan.textContent = '✓ Activado';
             statusSpan.style.color = '#22c55e';
         } else {
