@@ -11,6 +11,7 @@
 /* ---- HTML/Body Baseline ---- */
 html, body {
     max-width: 100vw;
+    overflow-x: hidden; /* fallback for iOS < 15.4 */
     overflow-x: clip;
     overscroll-behavior: none;
 }
@@ -20,8 +21,6 @@ body {
     font-family: system-ui, -apple-system, Arial, Helvetica, sans-serif;
     background-color: var(--bg);
     color: var(--text);
-    -webkit-user-select: none;
-    user-select: none;
     color-scheme: dark;
     padding-top: 48px;
 }

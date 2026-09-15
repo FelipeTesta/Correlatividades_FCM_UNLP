@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
++ Visitor counter: removed `'admin-'` prefix from session IDs in `nav.js`. Admin detection now IP-based (`ADMIN_IPS` array in `worker.js` using `cf-connecting-ip` header) instead of session prefix. Admin sessions no longer excluded from heartbeat but excluded from daily visit history.
++ iPhone CSS: replaced `max-height: none` with `max-height: 9999px` in `.sub-content` and `.box-content` collapse animations (`style.css`) to fix content clipping on iOS Safari initial load.
++ iOS Safari `100vh` bug: added `height: 100dvh` fallback in video overlay (`style.css`, `arbol.css`) to prevent dynamic address bar overlap.
++ iOS Safari `overflow-x: clip` fallback: added `overflow-x: hidden` before `clip` in `base.css` for compatibility with iOS < 15.4.
++ Removed global `user-select: none` from `body` (`base.css`) — was preventing text selection on all pages.
++ Moved `touch-action: manipulation` from global `html,body` to interactive elements only (`cartelera.css`) to restore pinch-to-zoom accessibility.
+
 ## [0.08] — 2026-09-10
 
 ### Added

@@ -361,7 +361,9 @@ export default {
         const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
         const visitedKey = 'visited:' + sessionId + ':' + today;
         const alreadyVisited = await env.CARTELERA_SUBS.get(visitedKey);
-        const isAdmin = sessionId.startsWith('admin-');
+        const ADMIN_IPS = ['192.168.0.27'];
+        const clientIp = request.headers.get('cf-connecting-ip') || '';
+        const isAdmin = ADMIN_IPS.includes(clientIp);
         if (!alreadyVisited && !isAdmin) {
           // First heartbeat today from this session — increment daily counter
           const visitKey = 'visits:' + today;

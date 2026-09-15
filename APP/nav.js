@@ -75,7 +75,7 @@
         try {
             sessionId = sessionStorage.getItem('visitorSessionId');
             if (!sessionId) {
-                sessionId = 'admin-' + crypto.randomUUID();
+                sessionId = crypto.randomUUID();
                 sessionStorage.setItem('visitorSessionId', sessionId);
             }
         } catch (e) {

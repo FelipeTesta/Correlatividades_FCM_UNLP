@@ -100,7 +100,8 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100vh; /* fallback */
+    height: 100dvh;
     background: rgba(0, 0, 0, 0.9);
     z-index: 10000;
     display: flex;
@@ -739,7 +740,7 @@ li button:hover {
 /* Conte�"o�'do colaps�"o��vel dentro de sub-sections */
 .sub-content {
     overflow: hidden;
-    max-height: none;
+    max-height: 9999px;
     opacity: 1;
     transition:
         max-height 0.3s ease,
@@ -942,7 +943,7 @@ li button:hover {
 /* Conte�"o�'do interno */
 .box-content {
     overflow: hidden;
-    max-height: none;
+    max-height: 9999px;
     opacity: 1;
     transition:
         max-height 0.3s ease,

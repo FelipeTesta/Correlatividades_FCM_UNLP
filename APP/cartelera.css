@@ -5,7 +5,6 @@
 
 html, body {
     min-height: 100vh;
-    touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -1159,4 +1158,9 @@ a.no-pubs-link {
   .subscribe-year-divider {
     font-size: 12px;
   }
+}
+
+/* Touch action for interactive elements only */
+button, a, .btn-cartelera, .btn-subscribe, select {
+    touch-action: manipulation;
 }
