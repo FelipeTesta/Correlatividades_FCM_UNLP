@@ -73,10 +73,10 @@
         // Generate or reuse session ID
         let sessionId;
         try {
-            sessionId = sessionStorage.getItem('visitorSessionId');
+            sessionId = localStorage.getItem('visitorSessionId');
             if (!sessionId) {
                 sessionId = crypto.randomUUID();
-                sessionStorage.setItem('visitorSessionId', sessionId);
+                localStorage.setItem('visitorSessionId', sessionId);
             }
         } catch (e) {
             sessionId = 'fallback-' + Math.random().toString(36).slice(2);
