@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
++ Finales data: merged 8 split entries in `finales.json` (GE001, IM001, IMD01, NEUAT, LCM01, H0001, F9002, IAA01) where second-half dates were orphaned in generic/misspelled entries. Renamed T0100 generic → "Regular". Removed misplaced Nutrición Clínica from BC002.
++ Finales inline display: optativas now show correct label ("Libre:" or "Regular:") based on `catedrasSeleccionadas` from the "Ver Fechas" popup. Clicking the label toggles between modalities inline.
++ Finales 3-day filter: exams with registration closed (< 3 days away) are now hidden (`diffDias >= 3`).
++ Finales date dedup: Set-based dedup when Regular+Libre share identical dates (NEUAT, GE001, IM001, IMD01, TIN01).
++ Removed dead `!== 'Regular'` guards from `obtenerProximasFechas`, `obtenerTodasFechas`, and popup filter.
 + Visitor counter: removed `'admin-'` prefix from session IDs in `nav.js`. Admin detection now IP-based (`ADMIN_IPS` array in `worker.js` using `cf-connecting-ip` header) instead of session prefix. Admin sessions no longer excluded from heartbeat but excluded from daily visit history.
 + Visitor counter dedup: switched `visitorSessionId` storage from `sessionStorage` to `localStorage` (`nav.js`). `sessionStorage` resets on every new tab/session, causing each page open to be counted as a new visitor. `localStorage` persists the ID across sessions, so the same device is only counted once per day.
 + iPhone CSS: replaced `max-height: none` with `max-height: 9999px` in `.sub-content` and `.box-content` collapse animations (`style.css`) to fix content clipping on iOS Safari initial load.
