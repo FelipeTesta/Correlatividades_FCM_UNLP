@@ -1,5 +1,6 @@
 # Pasta de referência (não necessária no deploy)
 REF/
+FLOW/
 
 # Arquivos markdown exceto README
 AGENTS.md
