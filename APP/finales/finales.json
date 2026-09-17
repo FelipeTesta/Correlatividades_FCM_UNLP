@@ -421,8 +421,7 @@
         "fecha": "2026-12-14",
         "label": "2° Dic"
       }
-    ],
-    "Nutrición Clínica": []
+    ]
   },
   "B0001": {
     "Bioquímica y Biología Molecular": [
@@ -1091,9 +1090,7 @@
       {
         "fecha": "2026-04-06",
         "label": "Abril"
-      }
-    ],
-    "Citología Histología y Embriología": [
+      },
       {
         "fecha": "2026-05-11",
         "label": "Mayo"
@@ -1611,9 +1608,7 @@
       {
         "fecha": "2026-04-06",
         "label": "Abril"
-      }
-    ],
-    "Farmacología Aplicada- Farmacologia P/V": [
+      },
       {
         "fecha": "2026-05-11",
         "label": "Mayo"
@@ -1869,6 +1864,46 @@
       {
         "fecha": "2026-04-07",
         "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-12",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-23",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-14",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-11",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-25",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-15",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-20",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "2° Dic"
       }
     ],
     "Genética-Libre": [
@@ -1891,9 +1926,7 @@
       {
         "fecha": "2026-04-07",
         "label": "Abril"
-      }
-    ],
-    "Genética": [
+      },
       {
         "fecha": "2026-05-12",
         "label": "Mayo"
@@ -2273,9 +2306,7 @@
       {
         "fecha": "2026-04-07",
         "label": "Abril"
-      }
-    ],
-    "La Informática aplicada al análisis y presentación de trabajos científicos en Ciencias de la Salud": [
+      },
       {
         "fecha": "2026-05-12",
         "label": "Mayo"
@@ -2467,6 +2498,46 @@
       {
         "fecha": "2026-04-06",
         "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-26",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
       }
     ],
     "Ingles Médico-Libre": [
@@ -2489,9 +2560,7 @@
       {
         "fecha": "2026-04-06",
         "label": "Abril"
-      }
-    ],
-    "Ingles Médico": [
+      },
       {
         "fecha": "2026-05-11",
         "label": "Mayo"
@@ -2555,6 +2624,46 @@
       {
         "fecha": "2026-04-06",
         "label": "Abril"
+      },
+      {
+        "fecha": "2026-05-11",
+        "label": "Mayo"
+      },
+      {
+        "fecha": "2026-06-22",
+        "label": "Junio"
+      },
+      {
+        "fecha": "2026-07-13",
+        "label": "1° Julio"
+      },
+      {
+        "fecha": "2026-08-10",
+        "label": "2° Julio"
+      },
+      {
+        "fecha": "2026-08-24",
+        "label": "Agosto"
+      },
+      {
+        "fecha": "2026-09-14",
+        "label": "Septiembre"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "Octubre"
+      },
+      {
+        "fecha": "2026-11-09",
+        "label": "Noviembre"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "1° Dic"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "2° Dic"
       }
     ],
     "Inmunología-Libre": [
@@ -2577,9 +2686,7 @@
       {
         "fecha": "2026-04-06",
         "label": "Abril"
-      }
-    ],
-    "Inmunología": [
+      },
       {
         "fecha": "2026-05-11",
         "label": "Mayo"
@@ -2707,9 +2814,7 @@
       {
         "fecha": "2026-04-09",
         "label": "Abril"
-      }
-    ],
-    "Literatura Cine y Medicina": [
+      },
       {
         "fecha": "2026-05-15",
         "label": "Mayo"
@@ -3263,7 +3368,7 @@
     ]
   },
   "NEUAT": {
-    "Neuroanatomía Semiológica – Regular": [
+    "Neuroanatomía Semiológica-Regular": [
       {
         "fecha": "2026-02-09",
         "label": "Febrero"
@@ -3283,31 +3388,7 @@
       {
         "fecha": "2026-04-06",
         "label": "Abril"
-      }
-    ],
-    "Neuroanatomía Semiológica – Libre": [
-      {
-        "fecha": "2026-02-09",
-        "label": "Febrero"
       },
-      {
-        "fecha": "2026-03-02",
-        "label": "1° Marzo"
-      },
-      {
-        "fecha": "2026-03-16",
-        "label": "2° Marzo"
-      },
-      {
-        "fecha": "2026-03-25",
-        "label": "3° Marzo"
-      },
-      {
-        "fecha": "2026-04-06",
-        "label": "Abril"
-      }
-    ],
-    "Neuroanatomía Semiológica - REGULARES": [
       {
         "fecha": "2026-05-11",
         "label": "Mayo"
@@ -3349,14 +3430,34 @@
         "label": "2° Dic"
       }
     ],
-    "Neuroanatomía Semiológica - LIBRES": [
+    "Neuroanatomía Semiológica-Libre": [
+      {
+        "fecha": "2026-02-09",
+        "label": "Febrero"
+      },
+      {
+        "fecha": "2026-03-02",
+        "label": "1° Marzo"
+      },
+      {
+        "fecha": "2026-03-16",
+        "label": "2° Marzo"
+      },
+      {
+        "fecha": "2026-03-25",
+        "label": "3° Marzo"
+      },
+      {
+        "fecha": "2026-04-06",
+        "label": "Abril"
+      },
       {
         "fecha": "2026-07-13",
         "label": "1° Julio"
       },
       {
         "fecha": "2026-08-24",
-        "label": "2° Julio"
+        "label": "Agosto"
       },
       {
         "fecha": "2026-11-09",
@@ -4582,7 +4683,7 @@
     ]
   },
   "T0100": {
-    "Transplante de Órganos": [
+    "Transplante de Órganos-Regular": [
       {
         "fecha": "2026-02-11",
         "label": "Febrero"

@@ -125,7 +125,7 @@ function cargarFechasFinales() {
         .catch(err => console.error('Error cargando fechas de finales:', err));
 }
 
-function obtenerProximasFechas(codigo, soloLibre = false) {
+function obtenerProximasFechas(codigo, soloLibre = false, soloRegular = false) {
     const ahora = new Date();
     ahora.setHours(0, 0, 0, 0);
     
@@ -136,7 +136,8 @@ function obtenerProximasFechas(codigo, soloLibre = false) {
     const todasFechas = [];
     entradas.forEach(entrada => {
         if (soloLibre && !entrada.esLibre) return;
-        if (catedraSel && catedraSel !== 'Regular' && entrada.catedra !== catedraSel) {
+        if (soloRegular && entrada.esLibre) return;
+        if (!soloLibre && !soloRegular && catedraSel && entrada.catedra !== catedraSel) {
             return;
         }
         entrada.fechas.forEach(f => {
@@ -154,11 +155,19 @@ function obtenerProximasFechas(codigo, soloLibre = false) {
     
     todasFechas.sort((a, b) => a.fecha - b.fecha);
     
+    const seenDates = new Set();
+    const uniqueFechas = todasFechas.filter(f => {
+        const key = f.fecha.getTime() + '|' + f.label;
+        if (seenDates.has(key)) return false;
+        seenDates.add(key);
+        return true;
+    });
+    
     const proximas = [];
-    for (let f of todasFechas) {
+    for (let f of uniqueFechas) {
         const diffTiempo = f.fecha - ahora;
         const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
-        if (diffDias >= 0 && proximas.length < 3) {
+        if (diffDias >= 3 && proximas.length < 3) {
             proximas.push({ ...f, diffDias });
         }
     }
@@ -177,7 +186,7 @@ function obtenerTodasFechas(codigo) {
     const catedraSel = catedrasSeleccionadas[codigo];
     const todasFechas = [];
     entradas.forEach(entrada => {
-        if (catedraSel && catedraSel !== 'Regular' && entrada.catedra !== catedraSel) {
+        if (catedraSel && entrada.catedra !== catedraSel) {
             return;
         }
         entrada.fechas.forEach(f => {
@@ -195,10 +204,18 @@ function obtenerTodasFechas(codigo) {
     
     todasFechas.sort((a, b) => a.fecha - b.fecha);
     
+    const seenDates = new Set();
+    const uniqueFechas = todasFechas.filter(f => {
+        const key = f.fecha.getTime() + '|' + f.label;
+        if (seenDates.has(key)) return false;
+        seenDates.add(key);
+        return true;
+    });
+    
     const proximas = [];
     const anteriores = [];
     
-    for (let f of todasFechas) {
+    for (let f of uniqueFechas) {
         if (f.fecha >= ahora) {
             proximas.push(f);
         } else {
@@ -997,27 +1014,48 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
             if (esPuedeCursarOptativa && !tieneOpcionLibre) {
                 // No mostrar nada
             } else {
-                const proximas = obtenerProximasFechas(codigo, esPuedeCursarOptativa);
-                const catedraSel = catedrasSeleccionadas[codigo];
-                const esOptativa = materia && materia.categoria === "optativa";
-                
-                if (proximas && proximas.length > 0) {
-                    let textoFechas = esRegularizada ? "Finales: " : "Prox final libre: ";
-                    
-                    
-                    textoFechas += proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
-                    
-                    fechasSpan = document.createElement("span");
-                    fechasSpan.innerText = textoFechas;
-                    fechasSpan.className = "fechas-proximas";
-                    
-                    if (proximas[0].diffDias < 4) {
-                        fechasSpan.classList.add("urgente");
+                if (esPuedeCursarOptativa) {
+                    const catedraSel = catedrasSeleccionadas[codigo];
+                    const esLibre = !catedraSel || catedraSel.toLowerCase().includes('libre');
+                    const label = esLibre ? "Libre: " : "Regular: ";
+                    const proximas = obtenerProximasFechas(codigo, esLibre, !esLibre);
+                    if (proximas && proximas.length > 0) {
+                        fechasSpan = document.createElement("span");
+                        fechasSpan.className = "fechas-proximas";
+                        const labelSpan = document.createElement("span");
+                        labelSpan.innerText = label;
+                        labelSpan.style.cursor = "pointer";
+                        labelSpan.onclick = (e) => {
+                            e.stopPropagation();
+                            const actual = fechasFinales[codigo].find(en => en.catedra === catedraSel) || fechasFinales[codigo].find(en => en.esLibre === esLibre);
+                            const counterpart = actual ? fechasFinales[codigo].find(en => en.esLibre !== actual.esLibre) : null;
+                            if (counterpart) {
+                                guardarCatedraSeleccionada(codigo, counterpart.catedra);
+                                render();
+                            }
+                        };
+                        const datesSpan = document.createElement("span");
+                        datesSpan.innerText = proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
+                        fechasSpan.appendChild(labelSpan);
+                        fechasSpan.appendChild(datesSpan);
+                        if (proximas[0].diffDias <= 3) fechasSpan.classList.add("urgente");
+                    } else if (tieneDatos) {
+                        fechasSpan = document.createElement("span");
+                        fechasSpan.innerText = "-";
+                        fechasSpan.className = "fechas-proximas";
                     }
-                } else if (tieneDatos) {
-                    fechasSpan = document.createElement("span");
-                    fechasSpan.innerText = "-";
-                    fechasSpan.className = "fechas-proximas";
+                } else {
+                    const proximas = obtenerProximasFechas(codigo, false);
+                    if (proximas && proximas.length > 0) {
+                        fechasSpan = document.createElement("span");
+                        fechasSpan.innerText = "Finales: " + proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
+                        fechasSpan.className = "fechas-proximas";
+                        if (proximas[0].diffDias <= 3) fechasSpan.classList.add("urgente");
+                    } else if (tieneDatos) {
+                        fechasSpan = document.createElement("span");
+                        fechasSpan.innerText = "-";
+                        fechasSpan.className = "fechas-proximas";
+                    }
                 }
                 
                 if (fechasSpan || tieneDatos) {
@@ -1394,9 +1432,17 @@ function mostrarPopupFechas(codigo, nombreMateria) {
     ahora.setHours(0, 0, 0, 0);
     todasFechas.sort((a, b) => a.fecha - b.fecha);
     
+    const seenDates = new Set();
+    const uniqueFechas = todasFechas.filter(f => {
+        const key = f.fecha.getTime() + '|' + f.label;
+        if (seenDates.has(key)) return false;
+        seenDates.add(key);
+        return true;
+    });
+    
     const proximas = [];
     const anteriores = [];
-    for (let f of todasFechas) {
+    for (let f of uniqueFechas) {
         if (f.fecha >= ahora) {
             proximas.push(f);
         } else {
@@ -1443,7 +1489,8 @@ function mostrarPopupFechas(codigo, nombreMateria) {
         catedrasData[codigo].catedras.forEach(cat => {
             const option = document.createElement("option");
             option.value = cat;
-            option.textContent = cat === 'Regular' ? 'Cátedra Regular' : `Cátedra ${cat}`;
+            const esLibreCat = cat.toLowerCase().includes('libre');
+            option.textContent = esLibreCat ? 'Libre' : 'Regular';
             selectCatedra.appendChild(option);
         });
         
@@ -1477,7 +1524,7 @@ function mostrarPopupFechas(codigo, nombreMateria) {
         
         let fechasFiltradas = { proximas: [], anteriores: [] };
         
-        if (catedraSel && catedraSel !== 'Regular') {
+        if (catedraSel) {
             const entrada = fechasFinales[cod].find(e => e.catedra === catedraSel);
             if (entrada) {
                 const ahora = new Date();
