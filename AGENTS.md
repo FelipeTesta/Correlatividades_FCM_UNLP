@@ -160,6 +160,9 @@ _(New features and pending tasks — mark ✅ when done)_
 - [x] Visitor counter fix: admin detection now IP-based (`ADMIN_IPS` in `worker.js`), session IDs no longer use `admin-` prefix.
 - [x] Visitor counter dedup: `visitorSessionId` now stored in `localStorage` (was `sessionStorage`) so same device counts once per day, not per page load.
 - [x] iOS Safari CSS fixes: `max-height: 9999px` for box collapse, `100dvh` fallback for video overlay, `overflow-x: hidden` fallback, removed global `user-select: none`, scoped `touch-action: manipulation`.
+- [x] Finales data cleanup: merged 10 split/duplicate entries in `finales.json` (GE001, IM001, IMD01, NEUAT, LCM01, H0001, F9002, IAA01, T0100, BC002). Regular/Libre pairs now correctly structured.
+- [x] Finales inline display: optativas show "Libre:" or "Regular:" label based on `catedrasSeleccionadas`. Click label to toggle modalidad (no visual change). 3-day registration filter. Date dedup for shared Regular/Libre dates.
+- [x] Finales monitoring (`worker.js`): automated detection of exam date changes from UNLP HTML table. Cron: 1st/15th of month. Email admin on changes. Endpoints: `/test-finales` (diagnostic), `/test-finales-send` (force). Process map: `FLOW/finals-cycle.dot`.
 - [ ] Añadir exportar/importar estado (REMOVIDO: feature nunca implementada — menção falsa removida do app/README)
 - [ ] REVERTIDO: Mover el scroll de toda la página en el Modo Árbol — regresó al sistema original (scroll en .tree-wrapper, barra superior fija)
 - [ ] Corregir el scroll en retrato móvil: espacio vacío debajo del contenido visual (transform:scale no afecta el diseño) — pendiente

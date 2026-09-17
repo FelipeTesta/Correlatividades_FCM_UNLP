@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
++ Finales monitoring system (`worker.js`): automated detection of exam date changes from the official UNLP HTML table. `parseFinalesHtml()` parses `<td class='asig'>` rows into subject→dates map. `checkFinales()` fetches → hashes → diffs → sends admin email (felipetesta@gmail.com) if changes detected. Cron: 1st and 15th of each month via existing `scheduled` handler. KV snapshot stored as `finale-snapshot` in `CARTELERA_SUBS`. Endpoints: `GET /test-finales` (diagnostic JSON), `POST /test-finales-send` (force send).
++ `FLOW/finals-cycle.dot` — process map for the finales monitoring + update cycle (automated Phase 1 + agent Phase 2).
+
 ### Fixed
 + Finales data: merged 8 split entries in `finales.json` (GE001, IM001, IMD01, NEUAT, LCM01, H0001, F9002, IAA01) where second-half dates were orphaned in generic/misspelled entries. Renamed T0100 generic → "Regular". Removed misplaced Nutrición Clínica from BC002.
 + Finales inline display: optativas now show correct label ("Libre:" or "Regular:") based on `catedrasSeleccionadas` from the "Ver Fechas" popup. Clicking the label toggles between modalities inline.

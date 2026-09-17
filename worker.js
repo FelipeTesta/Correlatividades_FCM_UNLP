@@ -425,6 +425,53 @@ export default {
       }
     }
 
+    // GET /test-finales — diagnostic endpoint for finales monitoring
+    if (url.pathname === '/test-finales') {
+      try {
+        const html = await fetchFinalesTable();
+        const newData = parseFinalesHtml(html);
+        const newHash = computeFinalesHash(newData);
+        const snapshotRaw = await env.CARTELERA_SUBS.get('finale-snapshot');
+        const snapshot = snapshotRaw ? JSON.parse(snapshotRaw) : { hash: null, data: {} };
+        const changes = snapshot.data ? diffFinales(snapshot.data, newData) : { added: Object.keys(newData).map(k => ({ name: k, dates: newData[k] })), removed: [], modified: [] };
+
+        return new Response(JSON.stringify({
+          ok: true,
+          resendConfigured: !!env.RESEND_API_KEY,
+          currentHash: newHash,
+          storedHash: snapshot.hash || null,
+          hasChanges: snapshot.hash !== newHash,
+          totalSubjects: Object.keys(newData).length,
+          changes: {
+            added: changes.added.length,
+            modified: changes.modified.length,
+            removed: changes.removed.length
+          },
+          subjects: Object.keys(newData).sort()
+        }, null, 2), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // POST /test-finales-send — force send finales email (diagnostic)
+    if (url.pathname === '/test-finales-send' && request.method === 'POST') {
+      try {
+        const result = await checkFinales(env);
+        return new Response(JSON.stringify({ ok: true, ...result }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
     // Default: proxy behavior (existing)
     const id = url.searchParams.get('id');
     const tag = url.searchParams.get('tag');
@@ -629,6 +676,16 @@ export default {
         console.error('D1 stats error: ' + e.message);
       }
     }
+
+    // 7. Finales check — 1st and 15th of each month only
+    const checkDay = new Date().getUTCDate();
+    if (checkDay === 1 || checkDay === 15) {
+      try {
+        await checkFinales(env);
+      } catch (e) {
+        console.error('Finales cron check error: ' + e.message);
+      }
+    }
   }
 };
 
@@ -789,6 +846,182 @@ function buildUpdateEmailHtml(addedCodes, names) {
   html += '</ul><p>Recibirás notificaciones cuando haya nuevas publicaciones en estas cátedras.</p>';
   html += '<hr><p style="color:#888;font-size:12px">Para cancelar la suscripción, visita <a href="https://felipetesta.github.io/Correlatividades_FCM_UNLP/cartelera.html" style="color:#0066cc">Cartelera UNLP</a> y mantén presionado el botón "Remover mi email".</p>';
   return html;
+}
+
+// ─── Finales Monitoring ───────────────────────────────────────────────
+
+const FINALES_URL = 'https://www.med.unlp.edu.ar/index.php/estudiantes/fechas-de-finales?catid=441&id=1018&view=article';
+const FINALES_ADMIN_EMAIL = 'felipetesta@gmail.com';
+const MONTH_MAP = { 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dic': '12' };
+
+function parseFinalesHtml(html) {
+  const result = {};
+  // Split by <tr> rows in tbody
+  const rows = html.split(/<tr[^>]*>/i);
+  for (const row of rows) {
+    // Extract subject name from <td class='asig'>
+    const nameMatch = row.match(/class=['"]asig['"][^>]*>\s*([^<]+)/i);
+    if (!nameMatch) continue;
+    const subjectName = nameMatch[1].replace(/&aacute;/g, 'á').replace(/&eacute;/g, 'é')
+      .replace(/&iacute;/g, 'í').replace(/&oacute;/g, 'ó').replace(/&uacute;/g, 'ú')
+      .replace(/&ntilde;/g, 'ñ').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(c))
+      .trim();
+    if (!subjectName) continue;
+
+    // Extract all date cells (DD/MM format or - - -)
+    const cells = [...row.matchAll(/<td[^>]*>\s*(.*?)\s*<\/td>/gi)];
+    const dates = [];
+    const monthOrder = ['Ago', 'Sep', 'Oct', 'Nov', 'Dic']; // headers from table
+    let dicTurno = 0;
+
+    for (const cell of cells) {
+      const val = cell[1].replace(/<[^>]*>/g, '').trim();
+      if (!val || val === '- - -') {
+        // Track Dic turns (two cells for Dic)
+        if (monthOrder.length > 0 && monthOrder[monthOrder.length - 1] === 'Dic') {
+          dicTurno++;
+        }
+        continue;
+      }
+      // Match DD/MM pattern
+      const dateMatch = val.match(/^(\d{2})\/(\d{2})$/);
+      if (!dateMatch) continue;
+      const day = dateMatch[1];
+      const monthNum = dateMatch[2];
+      // Determine month from position: Ago(0), Sep(1), Oct(2), Nov(3), Dic(4-5)
+      const cellIdx = dates.length;
+      let monthName;
+      if (cellIdx < 4) {
+        monthName = monthOrder[cellIdx];
+      } else {
+        monthName = 'Dic';
+      }
+      const year = '2026';
+      dates.push({
+        fecha: `${year}-${monthNum}-${day}`,
+        label: `${day}/${monthNum}`
+      });
+    }
+
+    if (dates.length > 0) {
+      result[subjectName] = dates;
+    }
+  }
+  return result;
+}
+
+async function fetchFinalesTable() {
+  const res = await fetch(FINALES_URL);
+  if (!res.ok) throw new Error('Finales fetch HTTP ' + res.status);
+  return await res.text();
+}
+
+function computeFinalesHash(data) {
+  // Simple deterministic hash of sorted JSON
+  const sorted = JSON.stringify(data, Object.keys(data).sort());
+  let hash = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    const chr = sorted.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return hash.toString(36);
+}
+
+function diffFinales(oldData, newData) {
+  const changes = { added: [], removed: [], modified: [] };
+  const oldKeys = new Set(Object.keys(oldData));
+  const newKeys = new Set(Object.keys(newData));
+
+  for (const name of newKeys) {
+    if (!oldKeys.has(name)) {
+      changes.added.push({ name, dates: newData[name] });
+    } else {
+      const oldDates = JSON.stringify(oldData[name]);
+      const newDates = JSON.stringify(newData[name]);
+      if (oldDates !== newDates) {
+        changes.modified.push({ name, old: oldData[name], new: newData[name] });
+      }
+    }
+  }
+  for (const name of oldKeys) {
+    if (!newKeys.has(name)) {
+      changes.removed.push({ name, dates: oldData[name] });
+    }
+  }
+  return changes;
+}
+
+function buildFinalesEmailHtml(changes) {
+  let html = '<h2>📋 Fechas de Finales - Actualización detectada</h2>';
+  html += '<p>Se detectaron cambios en las fechas de finales de la Facultad de Ciencias Médicas (UNLP).</p>';
+
+  if (changes.added.length > 0) {
+    html += '<div style="margin-bottom:16px;padding:12px;background:#e8f5e9;border-radius:8px">';
+    html += '<h3 style="margin:0 0 8px;color:#2e7d32">✅ Materias agregadas (' + changes.added.length + ')</h3><ul style="margin:0">';
+    changes.added.forEach(m => {
+      html += '<li><strong>' + escapeHtml(m.name) + '</strong>: ' + m.dates.map(d => d.label).join(', ') + '</li>';
+    });
+    html += '</ul></div>';
+  }
+
+  if (changes.modified.length > 0) {
+    html += '<div style="margin-bottom:16px;padding:12px;background:#fff3e0;border-radius:8px">';
+    html += '<h3 style="margin:0 0 8px;color:#e65100">⚠️ Materias modificadas (' + changes.modified.length + ')</h3><ul style="margin:0">';
+    changes.modified.forEach(m => {
+      html += '<li><strong>' + escapeHtml(m.name) + '</strong><br>';
+      html += '<span style="color:#c62828;text-decoration:line-through">Antes: ' + m.old.map(d => d.label).join(', ') + '</span><br>';
+      html += '<span style="color:#2e7d32">Ahora: ' + m.new.map(d => d.label).join(', ') + '</span></li>';
+    });
+    html += '</ul></div>';
+  }
+
+  if (changes.removed.length > 0) {
+    html += '<div style="margin-bottom:16px;padding:12px;background:#fce4ec;border-radius:8px">';
+    html += '<h3 style="margin:0 0 8px;color:#c62828">❌ Materias eliminadas (' + changes.removed.length + ')</h3><ul style="margin:0">';
+    changes.removed.forEach(m => {
+      html += '<li><strong>' + escapeHtml(m.name) + '</strong>: ' + m.dates.map(d => d.label).join(', ') + '</li>';
+    });
+    html += '</ul></div>';
+  }
+
+  html += '<p><a href="' + escapeHtml(FINALES_URL) + '" style="color:#0066cc">Ver tabla oficial de finales</a></p>';
+  html += '<hr><p style="color:#888;font-size:12px">Finales Monitor — Correlatividades UNLP</p>';
+  return html;
+}
+
+async function checkFinales(env) {
+  try {
+    const html = await fetchFinalesTable();
+    const newData = parseFinalesHtml(html);
+    const newHash = computeFinalesHash(newData);
+
+    const snapshotRaw = await env.CARTELERA_SUBS.get('finale-snapshot');
+    const snapshot = snapshotRaw ? JSON.parse(snapshotRaw) : { hash: null, data: {} };
+
+    if (snapshot.hash === newHash) {
+      console.log('Finales check: no changes detected');
+      return { changed: false };
+    }
+
+    console.log('Finales check: changes detected! Old hash=' + snapshot.hash + ' New hash=' + newHash);
+    const changes = diffFinales(snapshot.data || {}, newData);
+
+    // Only send email if there are meaningful changes
+    if (changes.added.length > 0 || changes.modified.length > 0 || changes.removed.length > 0) {
+      const subject = '📋 Fechas de Finales - Actualización detectada';
+      const emailHtml = buildFinalesEmailHtml(changes);
+      await sendEmail(FINALES_ADMIN_EMAIL, subject, emailHtml, env);
+      console.log('Finales update email sent to ' + FINALES_ADMIN_EMAIL);
+    }
+
+    // Save new snapshot
+    await env.CARTELERA_SUBS.put('finale-snapshot', JSON.stringify({ hash: newHash, data: newData }));
+    return { changed: true, changes };
+  } catch (e) {
+    console.error('Finales check error: ' + e.message);
+    return { changed: false, error: e.message };
+  }
 }
 
 function buildWelcomeHtml(catedraPubs, names, homePubs) {
