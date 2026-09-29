@@ -355,23 +355,35 @@ export default {
             status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
           });
         }
-        // Store session with 60s TTL (auto-expires if no heartbeat)
+// Store session with 60s TTL (auto-expires if no heartbeat)
         await env.CARTELERA_SUBS.put('online:' + sessionId, '1', { expirationTtl: 60 });
-        // Count unique visitors: only increment if this session hasn't been counted today
+        // Count unique visitors per DEVICE (IP), not per browser session.
+        // Cross-browser dedup: same IP any browser = 1 count/day.
         const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-        const visitedKey = 'visited:' + sessionId + ':' + today;
-        const alreadyVisited = await env.CARTELERA_SUBS.get(visitedKey);
-        const ADMIN_IPS = ['192.168.0.27'];
         const clientIp = request.headers.get('cf-connecting-ip') || '';
+        const ip = clientIp || ('sess-' + sessionId);
+        const ADMIN_IPS = ['192.168.0.27', '190.17.188.134'];
         const isAdmin = ADMIN_IPS.includes(clientIp);
-        if (!alreadyVisited && !isAdmin) {
-          // First heartbeat today from this session — increment daily counter
-          const visitKey = 'visits:' + today;
-          const current = await env.CARTELERA_SUBS.get(visitKey);
-          const count = current ? parseInt(current, 10) + 1 : 1;
-          await env.CARTELERA_SUBS.put(visitKey, String(count), { expirationTtl: 172800 }); // 48h TTL
-          // Mark this session as counted for today (48h TTL)
-          await env.CARTELERA_SUBS.put(visitedKey, '1', { expirationTtl: 172800 });
+        if (!isAdmin) {
+          // Serialize the first-increment per ip+date via Cache API lock (5s TTL)
+          // KV read-then-write is not atomic; two concurrent heartbeats would double-count.
+          const lockKey = new Request('https://visit-lock/' + ip + '/' + today);
+          const cache = caches.default;
+          const haveLock = await cache.match(lockKey);
+          if (!haveLock) {
+            await cache.put(lockKey, new Response('locked', { headers: { 'Cache-Control': 'max-age=5' } }));
+            const visitedKey = 'visited:' + ip + ':' + today;
+            const alreadyVisited = await env.CARTELERA_SUBS.get(visitedKey);
+            if (!alreadyVisited) {
+              // First device access today — increment daily counter
+              const visitKey = 'visits:' + today;
+              const current = await env.CARTELERA_SUBS.get(visitKey);
+              const count = current ? parseInt(current, 10) + 1 : 1;
+              await env.CARTELERA_SUBS.put(visitKey, String(count), { expirationTtl: 172800 }); // 48h TTL
+              // Mark this device as counted for today (48h TTL)
+              await env.CARTELERA_SUBS.put(visitedKey, '1', { expirationTtl: 172800 });
+            }
+          }
         }
         return new Response(JSON.stringify({ ok: true }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }

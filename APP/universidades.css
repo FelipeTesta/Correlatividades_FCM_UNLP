@@ -1,0 +1,1009 @@
+/* ═══════════════════════════════════════════════════ */
+/* UNIVERSIDADES.CSS — Otras Universidades page         */
+/* Isolated module (.uni-* prefix). Zero shared state.  */
+/* Removal: delete this file + universidades.html +     */
+/* APP/universidades.js + APP/universidades_data.js    */
+/* ═══════════════════════════════════════════════════ */
+
+/* ---- Page-level (arbol scroll pattern: base.css overflow-x:clip double-scrollbar fix) ---- */
+html { overflow-x: visible; }
+body {
+    /* base.css gives the MAIN app pages 12% side margins — a data-table page
+    needs the full width (sectors center themselves via max-width + auto). */
+    margin: 12px 0;
+    padding-top: 47px; /* fixed navbar */
+    overflow-x: hidden;
+    /* user requirement: text selection disabled on these pages */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* ===================== */
+/* NAVBAR (app-navbar visual clone) */
+/* ===================== */
+
+.uni-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* above ALL Leaflet panes (controls=800, popups=700, markers=600) — the map scrolled over the navbar at z100; modal stays above at 2000 */
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 0 0 6px 6px;
+    padding: 4px 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.uni-navbar-slot {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+.uni-navbar-left { justify-content: flex-start; }
+.uni-navbar-right { justify-content: flex-end; }
+
+.uni-navbar-title {
+    flex: 0 1 auto;
+    max-width: 56%;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.uni-navbar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    min-height: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+.uni-navbar-link:hover {
+    background-color: var(--bg-hover);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+/* ---- Online visitor badge (same worker as nav.js) ---- */
+.uni-navbar-online-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    line-height: 1.2;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    white-space: nowrap;
+    min-height: 24px;
+    font-variant-numeric: tabular-nums;
+    flex: 0 0 auto;
+}
+
+/* ---- Navbar dropdown (university list) ---- */
+
+.uni-navbar-menu {
+    position: absolute;
+    top: 100%;
+    right: 10px;
+    min-width: 290px;
+    max-width: 92vw;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+}
+
+.uni-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    min-height: 38px;
+    font-family: inherit;
+    transition: background-color 0.15s, color 0.15s;
+    touch-action: manipulation;
+}
+.uni-menu-item:hover { background-color: var(--bg-hover); color: var(--text); }
+.uni-menu-item-strong { color: var(--text); font-weight: 600; }
+.uni-menu-item.active { background-color: var(--bg-hover); }
+.uni-menu-item.active .uni-menu-nombre { color: var(--text); font-weight: 600; }
+
+.uni-menu-sigla {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+.uni-menu-item.has-plan .uni-menu-sigla { color: var(--cursando); border-color: var(--cursando); }
+.uni-menu-item.is-unlp .uni-menu-sigla { color: var(--optativa); border-color: var(--optativa); }
+
+.uni-menu-nombre {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.uni-menu-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 4px 0;
+}
+
+/* ===================== */
+/* HOME — SECTOR 1: TABLE */
+/* ===================== */
+
+.uni-table-sector {
+    max-width: 1200px;
+    margin: 0 auto 14px;
+    padding: 0 4px;
+    background-color: var(--bg-card);
+    border: 1px solid #222;
+    border-radius: 12px;
+    overflow-x: auto; /* horizontal only — vertical extends with the page */
+}
+
+.uni-table {
+    width: 100%;
+    min-width: 1080px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.uni-table th {
+    background-color: var(--bg-card);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #222;
+    white-space: nowrap;
+}
+
+.uni-th-sortable { cursor: pointer; }
+.uni-th-sortable:hover { color: var(--text); }
+.uni-table th.uni-th-sorted { color: var(--cursando); }
+
+/* Wide screens (no horizontal scroll needed): header row sticks to the page
+   below the fixed navbar. Narrow screens keep the horizontal scroll container,
+   where a page-sticky header is impossible — header scrolls with the table. */
+@media (min-width: 1250px) {
+    /* Table natural width is ~1166px with real data — below 1250px the table
+    would spill past the sector box (overflow:visible), so the page-sticky
+    header only engages where the table truly fits. */
+    .uni-table-sector { overflow: visible; }
+    .uni-table th {
+        position: sticky;
+        top: 47px;
+        z-index: 1;
+    }
+}
+
+.uni-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+.uni-table tbody tr:last-child td { border-bottom: none; }
+
+/* Wide screens (≥1250px): tighter cell padding — the real-data table is
+   ~1190px wide and needs slack inside the 1200px sector so it never spills
+   past the rounded box in overflow:visible mode. Placed AFTER the base
+   th/td rules on purpose: same specificity, later rule wins. */
+@media (min-width: 1250px) {
+    .uni-table th,
+    .uni-table td { padding-left: 10px; padding-right: 10px; }
+}
+
+/* Sticky first column (horizontal scroll keeps university visible) */
+.uni-table th:first-child,
+.uni-table td.uni-table-uni {
+    position: sticky;
+    left: 0;
+    background-color: var(--bg-card);
+    z-index: 2;
+}
+.uni-table th:first-child { z-index: 3; }
+.uni-table-row:hover .uni-table-uni,
+.uni-table-row:focus-visible .uni-table-uni { background-color: var(--bg-hover); }
+
+.uni-table-row { cursor: pointer; transition: background-color 0.15s ease; }
+.uni-table-row:hover { background-color: var(--bg-hover); }
+.uni-table-row:focus-visible { outline: 2px solid var(--cursando); outline-offset: -2px; }
+
+.uni-table-sigla {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 3px 8px;
+    margin-right: 10px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.uni-table-row.has-plan .uni-table-sigla { color: var(--cursando); border-color: var(--cursando); }
+.uni-table-row.is-unlp .uni-table-sigla { color: var(--optativa); border-color: var(--optativa); }
+
+.uni-table-ciudad {
+    color: var(--text-muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.uni-table-plan, .uni-table-sitio { text-align: center; width: 60px; }
+
+.uni-table-mapa { text-align: center; width: 50px; }
+
+.uni-table-metric {
+    text-align: center;
+    white-space: nowrap;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.uni-table-pending { color: var(--text-faint); }
+
+.uni-table-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    touch-action: manipulation;
+}
+@media (hover: hover) {
+    .uni-table-btn:hover {
+        border-color: var(--cursando);
+        background-color: rgba(34, 211, 238, 0.08);
+    }
+}
+
+/* ===================== */
+/* HOME — FILTER TOOLBAR */
+/* ===================== */
+
+.uni-filter-bar {
+    max-width: 1200px;
+    margin: 0 auto 10px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.uni-filter-btn {
+    background-color: var(--bg-card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.uni-filter-btn:hover,
+.uni-filter-btn.uni-filter-open { border-color: var(--cursando); color: var(--cursando); }
+.uni-filter-btn.uni-filter-active::after { content: ' •'; color: var(--cursando); }
+
+.uni-filter-status {
+    font-size: 12px;
+    color: var(--text-dim);
+}
+
+.uni-filter-clear {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px;
+}
+.uni-filter-clear:hover { color: var(--cursando); }
+
+.uni-filter-panel {
+    max-width: 1200px;
+    margin: 0 auto 14px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px 16px;
+    background-color: var(--bg-card);
+    border: 1px solid #222;
+    border-radius: 12px;
+}
+.uni-filter-panel[hidden] { display: none; }
+
+.uni-filter-group {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px 10px;
+    margin: 0;
+    min-width: 0;
+}
+.uni-filter-group legend {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    padding: 0 4px;
+}
+
+.uni-filter-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 3px 10px 3px 0;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+}
+.uni-filter-check input { accent-color: var(--cursando); cursor: pointer; }
+
+/* Dual-handle slider (CodePen pattern: two overlapping range inputs,
+   pointer-events only on the thumbs) */
+.uni-slider-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+.uni-slider-head > span:first-child {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+}
+.uni-slider-val { font-size: 12px; color: var(--cursando); white-space: nowrap; }
+
+.uni-slider-track {
+    position: relative;
+    height: 26px;
+    margin-top: 4px;
+}
+.uni-slider-bar,
+.uni-slider-fill {
+    position: absolute;
+    top: 11px;
+    height: 4px;
+    border-radius: 2px;
+}
+.uni-slider-bar { left: 0; right: 0; background-color: var(--border); }
+.uni-slider-fill { background-color: var(--cursando); }
+
+.uni-slider-track input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 26px;
+    margin: 0;
+    background: none;
+    pointer-events: none;
+    outline: none;
+}
+.uni-slider-track input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    pointer-events: auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--bg-card);
+    border: 2px solid var(--cursando);
+    cursor: grab;
+}
+.uni-slider-track input[type="range"]::-webkit-slider-thumb:hover { background-color: var(--bg-hover); }
+.uni-slider-track input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--bg-card);
+    border: 2px solid var(--cursando);
+    cursor: grab;
+}
+.uni-slider-track input[type="range"]::-moz-range-track { background: none; }
+
+/* ===================== */
+/* HOME — SECTOR 2: MAP  */
+/* ===================== */
+
+.uni-map-sector {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 4px 14px;
+}
+.uni-map {
+    height: 60vh;
+    min-height: 400px;
+    background-color: var(--bg-elevated);
+    border: 1px solid #222;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Leaflet dark overrides */
+.leaflet-control-zoom a {
+    background-color: var(--bg-card) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+}
+.leaflet-control-zoom a:hover {
+    background-color: var(--bg-hover) !important;
+    color: var(--cursando) !important;
+}
+
+/* ⤢ Fit-all control — styled like the +/- zoom buttons */
+.uni-fit-all-control {
+    margin-top: 4px;
+}
+.uni-fit-all-control button {
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    background-color: var(--bg-card) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.uni-fit-all-control button:hover {
+    background-color: var(--bg-hover) !important;
+    color: var(--cursando) !important;
+}
+.leaflet-control-attribution {
+    background: rgba(0, 0, 0, 0.6) !important;
+    color: var(--text-dim) !important;
+    font-size: 10px !important;
+}
+.leaflet-control-attribution a { color: var(--text-muted) !important; }
+
+.leaflet-div-icon { background: transparent; border: none; }
+
+/* University pins (no transform hover — Leaflet positions via transform) */
+.uni-pin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 17px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+}
+.uni-pin span {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    user-select: none;
+}
+.uni-pin.has-plan { border-color: var(--cursando); }
+.uni-pin.no-plan { border-color: var(--text-dim); opacity: 0.85; }
+.uni-pin:hover {
+    border-color: #fff;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.5);
+}
+.uni-pin-pulse { animation: uniPinPulse 1.6s ease-out; }
+/* Filtered-out universities: faded pins on the map.
+   Both selectors at 0-2-0, placed AFTER .uni-pin.no-plan so they win the tie
+   (no-plan's 0.85 must not override the filter fade). */
+.uni-pin.uni-pin-filtered { opacity: 0.25; }
+.uni-pin.uni-pin-filtered:hover { opacity: 0.6; }
+@keyframes uniPinPulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); }
+    70% { box-shadow: 0 0 0 18px rgba(34, 211, 238, 0); }
+    100% { box-shadow: 0 0 0 18px rgba(34, 211, 238, 0); }
+}
+
+.uni-footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-dim);
+    padding: 6px 16px 14px;
+}
+
+/* ===================== */
+/* TREE VIEW             */
+/* ===================== */
+
+.uni-ingreso-note {
+    max-width: 1200px;
+    margin: 12px auto 10px;
+    padding: 10px 14px;
+    background-color: var(--bg-card);
+    border: 1px solid #222;
+    border-left: 3px solid var(--cursando);
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-muted);
+}
+
+.uni-info-line {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 12px;
+    color: var(--text-faint);
+    padding: 10px 16px 14px;
+}
+.uni-info-line .uni-fuente-link,
+.uni-wiki-link {
+    color: var(--cursando);
+    text-decoration: none;
+}
+.uni-info-line .uni-fuente-link:hover,
+.uni-wiki-link:hover { text-decoration: underline; }
+
+.uni-tree-container { position: relative; }
+
+#uniSvg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+/* Tree view = visual replica of Modo Árbol → keeps the main-app body margins
+   (12% sides on desktop). The HOME view (map + table) overrides body to full
+   width; this container restores the framed look for the plans. */
+#uniTreeView { margin: 0 12px; }
+@media (min-width: 769px) {
+    #uniTreeView { margin: 0 12%; }
+}
+
+#uniTreeContent {
+    position: relative;
+    z-index: 1;
+    padding: 16px;
+}
+
+.uni-year-section {
+    margin-bottom: 14px;
+}
+
+.uni-year-header {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cursando);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 2px 4px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--bg-hover);
+}
+
+.uni-subjects-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 6px;
+    justify-content: center;
+}
+
+.uni-node {
+    position: relative;
+    display: flex;
+    background-color: #141414;
+    border: 1px solid var(--bg-hover);
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    min-height: 40px;
+    min-width: 100px;
+    max-width: 200px;
+    flex: 0 0 calc(14.285% - 4px);
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    transition: border-color 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+.uni-node::before {
+    content: '';
+    width: 3px;
+    flex-shrink: 0;
+    background-color: var(--border);
+    transition: background-color 0.2s ease;
+}
+.uni-node-content {
+    padding: 3px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+}
+.uni-node-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+.uni-node-duracion {
+    font-size: 7.5px;
+    color: var(--text-faint);
+    line-height: 1;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+.uni-node:hover {
+    border-color: #555;
+    background-color: #151515;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+}
+.uni-node.selected {
+    border-color: var(--cursando);
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.4);
+}
+.uni-node.selected::before,
+.uni-node.highlighted::before { background-color: var(--cursando); }
+.uni-node.highlighted { border-color: var(--cursando); }
+.uni-node.dimmed { opacity: 0.35; }
+
+/* Simplified plans (no correlativas): nodes are static list items —
+   no pointer cursor, no hover affordance, no selection. */
+.is-simplified .uni-node { cursor: default; }
+.is-simplified .uni-node:hover {
+    border-color: var(--bg-hover);
+    background-color: #141414;
+    box-shadow: none;
+}
+
+/* Subject status button — bottom-right corner.
+   Inactive 🔘 slightly transparent; marked 🟢 smaller, full opacity. */
+.uni-node-status {
+    position: absolute;
+    right: 4px;
+    bottom: 3px;
+    z-index: 2;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.45;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.uni-node-status:hover { opacity: 1; transform: scale(1.2); }
+.uni-node-status:focus-visible { outline: 2px solid var(--cursando); border-radius: 2px; }
+.uni-node.is-marked .uni-node-status { opacity: 1; font-size: 9px; }
+
+/* "Puede cursar" — every correlativa marked 🟢. Blue outline only. */
+.uni-node.can-cursar { outline: 2px solid var(--cursando); outline-offset: -2px; }
+
+/* Touch devices: status toggles via 1s hold on the card (button hidden) */
+@media (pointer: coarse) {
+    .uni-node-status { display: none; }
+}
+
+/* SVG connection lines — arbol config: hidden by default,
+   visible only for selected node's direct relations */
+svg path.uni-connection-line {
+    stroke: #666;
+    opacity: 0;
+}
+svg path.uni-connection-line.dimmed { opacity: 0; }
+svg path.uni-connection-line.highlighted {
+    opacity: 0.7;
+    stroke: var(--cursando);
+    stroke-width: 2.5;
+    filter: brightness(1.3);
+}
+svg path.uni-connection-line.highlighted.is-prereq {
+    stroke: #c0c0c0;
+}
+
+/* ===================== */
+/* INFO MODAL            */
+/* ===================== */
+
+.uni-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 2000;
+}
+
+.uni-modal-card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2001;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 92vw;
+    max-width: 420px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.uni-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+    touch-action: manipulation;
+}
+.uni-modal-close:hover { color: var(--text); }
+
+.uni-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--cursando);
+    border: 1px solid var(--cursando);
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.uni-modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 12px;
+    padding-right: 24px;
+}
+
+.uni-modal-body p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 8px;
+    line-height: 1.45;
+}
+.uni-modal-body strong { color: var(--text); }
+
+.uni-modal-stats {
+    display: flex;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--text-faint);
+    margin: 10px 0;
+}
+
+/* Ficha — modal data sheet mirroring the table columns */
+.uni-modal-ficha {
+    margin: 12px 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+.uni-ficha-head {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+.uni-ficha-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px 12px;
+}
+.uni-ficha-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.uni-ficha-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+}
+.uni-ficha-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}
+.uni-ficha-value.is-pending {
+    color: var(--text-faint);
+    font-weight: 400;
+}
+
+/* 📋 Row highlight when arriving from the map modal */
+.uni-row-pulse { animation: uniRowPulse 1.6s ease-out; }
+@keyframes uniRowPulse {
+    0% { background-color: rgba(34, 211, 238, 0.22); }
+    70% { background-color: rgba(34, 211, 238, 0.06); }
+    100% { background-color: transparent; }
+}
+
+.uni-btn-plan {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--cursando);
+    border-radius: 8px;
+    color: var(--cursando);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    touch-action: manipulation;
+}
+.uni-btn-plan:hover:not(.uni-btn-disabled) {
+    background: rgba(34, 211, 238, 0.1);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.25);
+}
+.uni-btn-plan.uni-btn-disabled,
+.uni-btn-plan:disabled {
+    border-color: var(--border);
+    color: var(--text-dim);
+    cursor: not-allowed;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* ===================== */
+/* FOCUS VISIBILITY      */
+/* ===================== */
+
+.uni-navbar-link:focus-visible,
+.uni-menu-item:focus-visible,
+.uni-table-btn:focus-visible,
+.uni-btn-plan:focus-visible,
+.uni-modal-close:focus-visible {
+    outline: 2px solid var(--cursando);
+    outline-offset: 2px;
+}
+
+/* ===================== */
+/* MOBILE ≤768px         */
+/* ===================== */
+
+@media (max-width: 768px) {
+    body { padding-top: 45px; }
+
+    .uni-navbar { padding: 3px 6px; gap: 6px; }
+    .uni-navbar-title { font-size: 13px; max-width: 44%; }
+    .uni-navbar-link { padding: 6px 8px; min-height: 38px; }
+
+    .uni-table-sector { margin-bottom: 10px; border-radius: 8px; }
+    .uni-table th, .uni-table td { padding: 8px; }
+    .uni-table-sigla { margin-right: 0; padding: 3px 7px; font-size: 11px; }
+    .uni-table-btn { width: 40px; height: 40px; font-size: 16px; }
+    .uni-table-plan, .uni-table-sitio { width: 50px; }
+
+    .uni-filter-bar { flex-wrap: wrap; gap: 8px; }
+    .uni-filter-btn { min-height: 38px; padding: 8px 14px; }
+    .uni-filter-panel { grid-template-columns: 1fr; padding: 10px; gap: 10px; margin-bottom: 10px; border-radius: 8px; }
+
+    .uni-map { height: 55vh; min-height: 300px; border-radius: 8px; }
+
+    .uni-menu-item { min-height: 40px; }
+
+    #uniTreeContent { padding: 8px; }
+    .uni-subjects-row { gap: 3px; margin-bottom: 3px; }
+    .uni-node { flex: 0 0 auto; min-width: 75px; max-width: 130px; min-height: 40px; margin: 0 2px 8px 2px; }
+    .uni-node-content { padding: 5px 6px; gap: 2px; }
+    .uni-node-name { font-size: 8px; line-height: 1.2; }
+    .uni-node-duracion { font-size: 7px; }
+    .uni-info-line { font-size: 11px; padding: 8px 10px 12px; }
+    .uni-ingreso-note { font-size: 11px; margin: 8px 10px 8px; }
+}
+
+/* ===================== */
+/* REDUCED MOTION        */
+/* ===================== */
+
+/* Bigger slider thumbs on touch screens (dual-handle sliders need
+   grabbable handles on coarse pointers) */
+@media (pointer: coarse) {
+    .uni-slider-track input[type="range"]::-webkit-slider-thumb { width: 20px; height: 20px; }
+    .uni-slider-track input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .uni-pin,
+    .uni-node,
+    .uni-navbar-link,
+    .uni-menu-item,
+    .uni-table-row,
+    .uni-table-btn,
+    .uni-btn-plan,
+    .uni-node-status,
+    svg path.uni-connection-line {
+        transition: none;
+    }
+    .uni-pin-pulse { animation: none; }
+    .uni-row-pulse { animation: none; }
+}

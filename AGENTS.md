@@ -9,8 +9,7 @@ Guide for AI agents to understand the project's structure, conventions, and arch
 3. **Update this file:** After completing changes, update this file and the changelog in README.md.
 4. **IMPLEMENT section:** At the bottom of this file — mark completed items with ✅ and add new entries as needed.
 5. **Keep this file lean:** This file is for agent guidance, not feature documentation. Technical details go in README.md.
-
----
+6. **License (must preserve):** Open source for PERSONAL use — sharing/copying allowed WITH credits, commercialization FORBIDDEN. Section "Licencia y Uso" in README.md — never remove or weaken it in any derivative.
 
 ## Project Overview
 
@@ -27,6 +26,8 @@ Root (HTML entry points + config):
   cartelera.html      — Cartelera (bulletin board)
   vacunas.html        — Vaccination tracker
   extension.html      — Extension projects
+  universidades.html  — Otras Universidades (interactive map, read-only tree)
+  TODO.md             — Otras Universidades evolution plan (research phases)
   version.json        — Deploy version (git hash + timestamp)
   worker.js           — Cloudflare Worker (proxy + email cron)
   wrangler.toml       — Worker config
@@ -51,12 +52,13 @@ APP/ (all logic + styles):
   cartelera_ids.js     — Catedra→cartelera ID mapping (67 entries)
   extension_data.js    — Extension project data (20 projects)
   extension.js         — Extension page logic
+  universidades_data.js — University data (PLACEHOLDER)
+  universidades.js     — University page logic (Leaflet, read-only tree, modal)
+  universidades.css    — University styles ( .uni-* prefix)
 
 REF/ (reference data, not used by app):
   correlativas optativas/optativas.csv
 ```
-
----
 
 ## Data Structure — `APP/materias.js`
 
@@ -79,8 +81,6 @@ The `materias` array contains objects with this schema:
 
 **Key difference:** `paraCursar` = can I enroll. `paraAprobar` = can I take the final.
 
----
-
 ## Core Logic — `APP/app.js`
 
 | Function | Purpose |
@@ -90,8 +90,6 @@ The `materias` array contains objects with this schema:
 | `cumpleRequisitos` | Validates if a course is "Puede Cursar" or "No Puede Cursar" |
 | `render()` | Single-pass: clears all lists, repopulates based on current state + data |
 | `guardarLocalYRender()` | **Must be called after any state change** — saves to localStorage and re-renders |
-
----
 
 ## State Management — localStorage Keys
 
@@ -113,8 +111,6 @@ The `materias` array contains objects with this schema:
 | `carteleraNotifyEmail` | `string` | Email for notifications |
 | `carteleraSubscribedSubjects` | `string[]` | Additional tracked subjects |
 
----
-
 ## UI Conventions
 
 - **Icons:** ✅ aprobada, 🟧 regularizada, 🔄 reset, ⚠ warning/missing prerequisites
@@ -122,8 +118,6 @@ The `materias` array contains objects with this schema:
 - **CSS variables:** Use `var(--aprobada)`, `var(--regularizada)`, `var(--cursando)`, `var(--optativa)`, etc. (see `APP/variables.css`)
 - **Modals:** Custom modal system via `mostrarPopupFaltantes` (dynamic DOM creation)
 - **Grid:** Use `.item-row` for complex list item layouts
-
----
 
 ## Development Rules
 
@@ -133,8 +127,6 @@ The `materias` array contains objects with this schema:
 4. **Data separation:** `materias.js` = pure data only. Logic goes in `app.js` / `arbol.js`.
 5. **CSS:** Use CSS variables from `variables.css`. Never hardcode hex colors for the core palette.
 6. **Modularity:** Shared logic lives in `APP/state-cache.js`, `APP/utils.js`, `APP/requisitos.js`, `APP/abbreviation.js`. Page-specific logic stays in the page file.
-
----
 
 ## Page Architecture
 
@@ -150,8 +142,6 @@ Standalone page. Reads `cursando` + `estados` (regularizada) to find active subj
 ### Extension (extension.html + extension.js)
 Static data from `APP/extension_data.js`. Filters + search. No backend.
 
----
-
 ## IMPLEMENT
 
 _(New features and pending tasks — mark ✅ when done)_
@@ -159,6 +149,7 @@ _(New features and pending tasks — mark ✅ when done)_
 - [x] Extension data cleanup: removido campo `evidencia` (dato muerto, nunca referenciado por extension.js). Agregado Instagram de Parto respetado (partorespetado.unlp).
 - [x] Visitor counter fix: admin detection now IP-based (`ADMIN_IPS` in `worker.js`), session IDs no longer use `admin-` prefix.
 - [x] Visitor counter dedup: `visitorSessionId` now stored in `localStorage` (was `sessionStorage`) so same device counts once per day, not per page load.
+- [x] Visitor counter: daily dedup changed to per-device (IP) via `visited:<ip>:<date>` + Cache API lock (race fix). Admin IPs `['192.168.0.27','190.17.188.134']` never count.
 - [x] iOS Safari CSS fixes: `max-height: 9999px` for box collapse, `100dvh` fallback for video overlay, `overflow-x: hidden` fallback, removed global `user-select: none`, scoped `touch-action: manipulation`.
 - [x] Finales data cleanup: merged 10 split/duplicate entries in `finales.json` (GE001, IM001, IMD01, NEUAT, LCM01, H0001, F9002, IAA01, T0100, BC002). Regular/Libre pairs now correctly structured.
 - [x] Finales inline display: optativas show "Libre:" or "Regular:" label based on `catedrasSeleccionadas`. Click label to toggle modalidad (no visual change). 3-day registration filter. Date dedup for shared Regular/Libre dates.
@@ -166,9 +157,12 @@ _(New features and pending tasks — mark ✅ when done)_
 - [ ] Añadir exportar/importar estado (REMOVIDO: feature nunca implementada — menção falsa removida do app/README)
 - [ ] REVERTIDO: Mover el scroll de toda la página en el Modo Árbol — regresó al sistema original (scroll en .tree-wrapper, barra superior fija)
 - [ ] Corregir el scroll en retrato móvil: espacio vacío debajo del contenido visual (transform:scale no afecta el diseño) — pendiente
+- [x] Otras Universidades: página completa (navbar + tabla + mapa + planes reales UBA/UNC) — detalles en README + TODO.md
+- [x] Universidades Fase 2 (pase 2026-09-28/29): stats batch + webUrl → página de Medicina + alta unrn/baja unmoreno+unfv — detalles en TODO.md + LOG.md
+- [x] Universidades: ficha de datos en el modal del mapa + enlace "📋 Mostrar en la tabla" (cierre + scroll + pulso de la fila); columna "% Intern." → "Extranjeros"
+- [ ] Otras Universidades Fase 2: investigación de datos restantes — plan completo en TODO.md
 
 ---
-
 ## LOG
 
 Changelog moved to **LOG.md** (single source of truth). Do not add log entries here.

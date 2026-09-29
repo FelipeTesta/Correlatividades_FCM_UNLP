@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Otras Universidades - Correlatividades Medicina</title>
+    <link rel="stylesheet" href="APP/variables.css">
+    <link rel="stylesheet" href="APP/base.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="APP/universidades.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body data-page="universidades" data-page-title="Otras Universidades">
+
+<!-- NAVBAR (visual clone of app-navbar; content switches per view) -->
+<nav class="uni-navbar" aria-label="Navegación Otras Universidades">
+    <div class="uni-navbar-slot uni-navbar-left">
+        <a href="arbol.html" class="uni-navbar-link" id="uniNavBackHome">← Modo Árbol</a>
+        <button type="button" class="uni-navbar-link" id="uniNavBackPlan" onclick="switchToMap()" style="display:none;">← Volver</button>
+    </div>
+    <span class="uni-navbar-title" id="uniNavTitle">🇦🇷 Otras Universidades</span>
+    <div class="uni-navbar-slot uni-navbar-right">
+        <button type="button" class="uni-navbar-link" id="uniNavMenuBtn" onclick="toggleUniMenu(event)" style="display:none;" aria-haspopup="true" aria-expanded="false" aria-controls="uniNavMenu">Otras Universidades ▾</button>
+        <span class="uni-navbar-online-badge" id="uniOnlineBadge" title="Visitors online / today" aria-label="Online visitors">🟢 …</span>
+    </div>
+    <div class="uni-navbar-menu" id="uniNavMenu" style="display:none;"></div>
+</nav>
+
+<!-- MAP VIEW (default) -->
+<div id="uniMapView">
+    <!-- Sector 1: map -->
+    <section class="uni-map-sector" aria-label="Mapa de universidades">
+        <div id="uniMap" class="uni-map"></div>
+    </section>
+
+    <!-- Sector 2: filter toolbar (session-only) -->
+    <div class="uni-filter-bar" aria-label="Filtros de la tabla">
+        <button id="uniFilterBtn" class="uni-filter-btn" type="button" aria-expanded="false" aria-controls="uniFilterPanel">Filtrar</button>
+        <span id="uniFilterStatus" class="uni-filter-status" hidden></span>
+        <button id="uniFilterClear" class="uni-filter-clear" type="button" hidden>Limpiar filtros</button>
+    </div>
+    <div id="uniFilterPanel" class="uni-filter-panel" hidden></div>
+
+    <!-- Sector 3: university table (page scroll only, no inner scroll) -->
+    <section class="uni-table-sector" aria-label="Lista de universidades">
+        <table class="uni-table" id="uniTable"></table>
+    </section>
+
+    <footer class="uni-footer-note">
+        Datos referenciales, sin conexión con tu progreso. Fuentes: planes oficiales + Wikipedia.
+    </footer>
+</div>
+
+<!-- TREE VIEW (hidden initially) -->
+<div id="uniTreeView" style="display:none;">
+    <div id="uniIngresoNote" class="uni-ingreso-note"></div>
+    <div class="uni-tree-container" id="uniTreeContainer">
+        <div id="uniTreeContent" class="uni-tree-content"></div>
+        <svg id="uniSvg" class="uni-svg"></svg>
+    </div>
+    <div id="uniInfoLine" class="uni-info-line"></div>
+</div>
+
+<!-- University info modal -->
+<div id="uniModalOverlay" class="uni-modal-overlay" style="display:none;"></div>
+<div id="uniModalCard" class="uni-modal-card" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="uniModalTitle">
+    <button id="uniModalClose" class="uni-modal-close" onclick="closeUniversityModal()" aria-label="Cerrar">✕</button>
+    <span id="uniModalBadge" class="uni-badge"></span>
+    <h2 id="uniModalTitle" class="uni-modal-title"></h2>
+    <div id="uniModalBody" class="uni-modal-body"></div>
+    <button id="uniBtnPlan" class="uni-btn-plan" onclick="switchToTreeFromModal()"></button>
+</div>
+
+<!-- Scripts -->
+<script src="APP/universidades_data.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="APP/universidades.js"></script>
+
+</body>
+</html>

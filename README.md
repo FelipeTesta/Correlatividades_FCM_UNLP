@@ -4,6 +4,15 @@ Plan de Estudios de la Facultad de Ciencias Médicas — Universidad Nacional de
 
 Visualiza las correlatividades de la carrera, marca las materias que ya aprobaste o regularizaste, y descubre qué puedes cursar y cuándo puedes rendir cada final.
 
+## Licencia y Uso
+
+**Este proyecto es de código abierto para uso PERSONAL.**
+
+- ✅ **Permitido**: usar, copiar, compartir y adaptar el código **para uso personal y sin fines de lucro**, siempre dando los **créditos correspondientes** al proyecto (Correlatividades Medicina UNLP) y manteniendo esta nota de licencia.
+- ❌ **Prohibido**: cualquier forma de **comercialización** — vender, alquilar, cobrar por acceso, o monetizar este proyecto o derivados, total o parcialmente.
+
+Si compartís o forkeás este proyecto, **debés citar la fuente con los créditos**. Las fuentes de datos citadas en cada sección (universidades, SPU, QS, EduRank, Numbeo, Hornero) pertenecen a sus respectivos autores y conservan sus condiciones de uso.
+
 ## Funcionalidades
 
 - **Seguimiento de materias**: Marca materias como aprobadas (✅) o regularizadas (🟧)
@@ -18,6 +27,7 @@ Visualiza las correlatividades de la carrera, marca las materias que ya aprobast
 - **Responsive**: Funciona en desktop y mobile
 - **Modo oscuro**: Tema "Deep Black" (#000000)
 - **Contador de visitantes**: Badge en tiempo real (🟢 online/hoy) en el navbar, sesiones únicas por día, exclusiones admin
+- **Otras Universidades**: mapa interactivo con planes de estudio de Medicina de otras universidades públicas argentinas (referencia visual, sin almacenar datos)
 
 ## Cómo usar
 
@@ -35,7 +45,7 @@ Muestra las publicaciones de las cátedras correspondientes a tus materias con e
 
 ## Versión
 
-v0.08 — Agosto 2026
+v0.09 — Septiembre 2026
 
 ## Registro de cambios
 
@@ -50,21 +60,21 @@ v0.08 — Agosto 2026
 - **03/08/2026 (2):** Sincronización materias↔cátedras: fallbacks añadidos (HG001, C2001, BG008, BG013, EDS13, PINV) y mensaje de error restaurado a "No hay datos de cátedras para este código" (PFOFO/TASPO sin cátedra).
 - **03/08/2026 (3):** Filtros cartelera: intervalo por defecto 365→90 días, campo personalizado con sufijo "dias" y resaltado cian cuando se usa un intervalo personalizado (syncFilterUI).
 - **03/08/2026 (4):** Cartelera cutoff+3 (intervalo real = mostrado+3 días, invisible) y diseño de cards en grilla CSS (auto-fill, mejor uso de espacio en desktop)
-- **03/08/2026 (5):** Sistema de auto-reload: version.json con hash de versión + script inline en las 3 páginas que recarga silenciosamente cuando detecta nueva versión
+- **03/08/2026 (5):** Sistema de auto-reload: version.json con hash de versão + script inline en las 3 páginas que recarga silenciosamente quando detecta nova versão
 - **04/08/2026:** Corregido PG001 (Psicología Médica, año 2): paraCursar vacío → requiere Anatomía regularizada. Añadido aviso de privacidad (banner fijo) en las 3 páginas HTML + CSS.
 - **04/08/2026 (6):** Fix: PG001 (Psicología Médica) ahora requiere Anatomía regularizada para cursar + Aviso de privacidad en todas las páginas
-- **04/08/2026 (8):** FAB mobile: posicionamiento horizontal simplificado (CSS left/right en vez de JS pixel math). Help modal: reescrito a single-page, removida paginación y "Últimas Actualizaciones".
+- **04/08/2026 (8):** FAB mobile: posicionamiento horizontal simplificado (CSS left/right em vez de JS pixel math). Help modal: reescrito a single-page, removida paginación e "Últimas Actualizaciones".
 - **04/08/2026 (8):** Fix privacy banner flash no PC: banner escondido inicialmente (display:none) + anti-loop no version auto-reload (3s cooldown).
-- **07/08/2026 (2):** Modal "Recibir novedades" rediseñado con tabs Obligatorias/Optativas y divisores por año ("1° año", "2° año", etc.).
-- **07/08/2026 (3):** Cartelera: renombrado "Suscripción" → "Otras" (3 labels en JS). Cards: título más grande (15px, blanco, bold 600, line-height 1.3), nombre de materia siempre visible incluso en cards leídos (11px→13px, dimmed #666 cuando leído), fuente "Otras" cambiado de purple #a855f7 a amber #f59e0b.
-- **07/08/2026 (4):** Rediseño completo de cards en Cartelera: tag type movido a pills, fecha única (modificada si existe, sino original), botón "lido" bottom-right, estado leído oculta todas las tags. Compactado (gaps/paddings/fonts reducidos). Auditoría WIG aplicada: transition:all→específico, :focus→:focus-visible, min-width:0 en flex children, touch-action+tap-highlight+overscroll+color-scheme:dark en body, text-wrap:balance en títulos. CSS limpo: eliminados .pub-tag standalone, .pub-details-row, .pub-modificada-pill; nuevos .pub-tags-row, .pub-date-modified.
-- **14/07/2026:** Corrección de bug: FAB mobile (touch-and-hold) aparecía fuera de la pantalla en Modo Árbol — medición de dimensión durante animación causaba overflow; corregido con offsetWidth/offsetHeight + clamp + container flex-wrap
-- **07/07/2026:** Botón "¿Cómo usar?" en Modo Árbol + leyenda actualizada con 🟡 + optimizaciones mobile UI/UX (touch-action, color-scheme, reduced-motion, modal responsive)
-- **05/07/2026:** Corrección plan estudios UNLP (RM 578/25) — DL001, TX001, P9002 movidas a 5° año
-- **30/06/2026:** Notificaciones por email + botón ⚙ Alterar cátedras
-- **29/06/2026:** Cartelera de cátedras (publicaciones, filtros, modos)
+- **07/08/2026 (2):** Modal "Recibir novedades" rediseñado com tabs Obligatorias/Optativas e divisores por ano ("1° ano", "2° ano", etc.).
+- **07/08/2026 (3):** Cartelera: renombrado "Suscripción" → "Otras" (3 labels en JS). Cards: título mais grande (15px, branco, bold 600, line-height 1.3), nome de materia sempre visível mesmo em cards lidos (11px→13px, dimmed #666 quando leido), fonte "Otras" alterado de purple #a855f7 a amber #f59e0b.
+- **07/08/2026 (4):** Rediseño completo de cards em Cartelera: tag type movido a pills, data única (modificada se existir, senão original), botão "lido" bottom-right, estado leído oculta todas as tags. Compactado (gaps/paddings/fonts reduzidos). Auditoría WIG aplicada: transition:all→específico, :focus→:focus-visible, min-width:0 em flex children, touch-action+tap-highlight+overscroll+color-scheme:dark em body, text-wrap:balance em títulos. CSS limpo: eliminados .pub-tag standalone, .pub-details-row, .pub-modificada-pill; novos .pub-tags-row, .pub-date-modified.
+- **14/07/2026:** Correção de bug: FAB mobile (touch-and-hold) aparecia fora da tela em Modo Árbol — medição de dimensão durante animação causava overflow; corregido com offsetWidth/offsetHeight + clamp + container flex-wrap
+- **07/07/2026:** Botão "Como usar?" em Modo Árbol + legenda atualizada com 🟡 + optimizaçoes mobile UI/UX (touch-action, color-scheme, reduced-motion, modal responsive)
+- **05/07/2026:** Correção plan estudos UNLP (RM 578/25) — DL001, TX001, P9002 movidas a 5° ano
+- **30/06/2026:** Notificações por email + botão ⚙ Alterar cátedras
+- **29/06/2026:** Cartelera de cátedras (publicações, filtros, modos)
 - 
-Ver [LOG.md](LOG.md) para el historial completo de modificaciones.
+Ver [LOG.md](LOG.md) para o historial completo de modificações.
 
 ---
 
@@ -99,8 +109,8 @@ Detalles técnicos de implementación para referencia. Ver también [AGENTS.md](
 - **Cache:** `sessionStorage` key `carteleraCache` con 30min expiración por URL de cátedra.
 - **Parse:** `DOMParser` en HTML → `.ribbon-wrapper.card` → extraer título, fecha, descripción, profesor, imagen, tipo (Avisos/Exámenes/Notas/Otros) por keyword matching.
 - **Modos de renderizado:**
-  - **Por materia** (default): Agrupado por materia. Headers coloreados: Cursando = cyan, Regularizada = naranja. Colapsable por materia y por sección.
-  - **Cronológico:** Timeline plana ordenada por fecha. Badge de materia + badge de origen.
+   - **Por materia** (default): Agrupado por materia. Headers coloreados: Cursando = cyan, Regularizada = naranja. Colapsable por materia y por sección.
+   - **Cronológico:** Timeline plana ordenada por fecha. Badge de materia + badge de origen.
 - **Filtros:** Fecha con cutoff `currentDays + 3` (margen invisible). Input personalizado `#daysInput` (default 90d) + presets 60/30/7d. Persistido en `carteleraFilterDays`.
 - **Lectura:** Botón "👁 lido" por publicación → marca leída, colapsa card. "👁 todas lidas" en top-bar alterna: 1er clic marca todas, 2do clic desmarca.
 - **Modificación:** Detección de publicaciones editadas (fecha de modificación en `text-muted`). Badge "🔄 Actualizada" en cards. Read state reset si modificado.
@@ -114,3 +124,29 @@ Detalles técnicos de implementación para referencia. Ver también [AGENTS.md](
 ### Aviso de Privacidad
 
 - Barra fija (position:fixed; top:0) en las 3 páginas. Comienza oculta, se muestra tras confirmar no-reload. Botón ✕ oculta (sin sessionStorage). Anti-bucle: 3s cooldown.
+
+### Otras Universidades — Detalles
+
+- **Página independiente:** `universidades.html` en el raíz. Zero localStorage, sin módulos compartidos, prefijo CSS `.uni-*`, dependencias externas: Leaflet CDN (unpkg.com/leaflet@1.9.4/) + tiles CARTO (API key en `APP/universidades.js`). Selección de texto deshabilitada.
+- **Navbar (clon visual del app-navbar):** HOME → "← Modo Árbol" + título centrado; PLAN → | "← Volver" | título de la universidad | "Otras Universidades ▾" (dropdown con las 24 para saltar entre planes).
+- **Home = 3 sectores:** mapa Leaflet con tiles CARTO dark (24 pins con sigla; clic en pin → modal; control ⤢ = fitBounds a todas) + barra **Filtrar** (5 sliders de doble puño: costo vida, alumnos, % intern., ranking, dist. capital + checkboxes español/método con opción "—"; solo sesión, contador "X de 24" + limpiar; el mapa refleja el filtro — pins fuera del requisito se atenúan) + tabla de universidades (sigla — nombre completo al hover, región abreviada CABA/GBA/PBA/CBA…, 📍 mapa, 🌲 plan, 🌎 sitio + 10 columnas de métricas con "—" hasta Fase 2; clic en fila → modal; scroll horizontal con primera columna sticky, cabecera sticky ≥1250px, columnas ordenables por clic).
+- **📍 Focus:** scroll al mapa + centrado + pulso en el pin. Zoom adaptativo por KM a capital: ≤100km (cluster CABA/GBA/La Plata) → z9; aisladas → z8 — pins vecinos visibles sin zoom-out.
+- **UNLP especial:** 🌲 → redirige al Modo Árbol (el plan de la UNLP vive ahí).
+- **Árbol de solo lectura:** réplica visual del Modo Árbol — franja lateral, headers de año cian, conexiones SVG bezier ocultas por defecto (base #666); al seleccionar una materia: flechas SILVER (#c0c0c0) hacia sus prerrequisitos (retrógradas) y CIAN hacia las materias que dependen de ella (anterógradas). Materias con correlativa del MISMO año nunca comparten línea (sub-filas automáticas via `computeYearRows`). Etiqueta de duración (Anual/Cuatrimestral) solo si verificada, si no "—". Sin zoom. Routing por hash: `universidades.html#uba`, `#unc`.
+- **Nota de ingreso:** arriba de cada árbol, 2-4 líneas explicando el ingreso y el primer año (`plan.ingresoNota`); la línea con nombre del plan + fuente quedó debajo del árbol.
+- **Estados de materias (solo sesión, sin localStorage):** botón 🔘 (semitransparente, esquina inferior derecha) → 🟢 marcada. PC: clic en el botón; móvil: mantener la tarjeta 1s (repetir para reset). Contorno azul = "puede cursar" (todas las correlativas marcadas); materias iniciales (sin correlativas) nunca se resaltan — se consideran cursables desde el inicio. Al recargar o cambiar de universidad se pierde.
+- **Datos reales:** UBA Plan de Estudios 09 (42 materias, 7 años CBC→PFO; fmed.uba.ar) y UNC (43 materias, 503 correlativas; fcm.unc.edu.ar) — correlativas curadas por Hornero (horneroapp.ar). Resto `plan: null` hasta investigación. Métricas verificadas: UNLP 6 años/40 materias, UBA 6,5/42, UNC 6/43. Plan de evolución en `TODO.md` (Fase 2: otros planes + métricas + notas de ingreso; Fase 3: columnas ordenables).
+- **Eliminación:** borrar `universidades.html`, `APP/universidades_*`, `TODO.md`, el bloque del footer en `arbol.html`, el bloque CSS en `arbol.css`, `FLOW/universidades.dot` y las secciones en README/LOG/AGENTS.
+
+### Otras Universidades — Fuentes de investigación
+
+Registros de verificación 2026-09-29. Para futuras pasadas de datos, consultar en este orden:
+
+- **Rankings:** QS World University Rankings by Subject — Medicine 2026 (Excel local en `REF/`; fuente primaria: UBA #133, UNC #351-400, UNLP #501-550) → fallback EduRank Medicine, lista completa de Argentina: <https://edurank.org/medicine/ar/> (42 escuelas, actualizada 2026-03; provee rank nacional/mundial para universidades fuera de QS: UNR 5/1364, UNT 6/1859, UNMdP 7/1915, UNL 8/1918, UNS 9/2002, UNCuyo 10/2072, UNComahue 14/2387, UNNE 17/3040, UNSa 21/3269, UNER 30/4341, UNLaM 36/5360).
+- **Alumnos por carrera:** SPU Anuario Estadístico 2024, Cuadro 2.1.16 (alumnos de Medicina por universidad; copia local en `REF/adelanto_anuario_24_14-08/`). Base nivel-carrera del studentCount de todas las universidades (2024).
+- **Existencia de carreras (verificaciones 2026-09-29):** UNM Moreno <https://www.unm.edu.ar/?oferta-academica=carreras-de-pregrado-y-grado> — sin Medicina → **REMOVIDA**. UNSAdA <https://www.unsada.edu.ar/academico/oferta-academica> — sin Medicina (solo Fonoaudiología/Enfermería/Podología/Gerontología) → **NO agregada**. UNFV Florencio Varela — universidad fantasma (proyecto absorbido por la UNAJ en 2009; su artículo de Wikipedia no existe) → **REMOVIDA**. UNRN Medicina — **CONFIRMADA** (Sede Andina, Bariloche; Plan 2021, Res. ME 350/22; inscripción 2027 abierta).
+- **Planes oficiales:** UBA <https://www.fmed.uba.ar/carreras/medicina/informacion-general> · UNC <https://fcm.unc.edu.ar/medicina-asignaturas-del-plan-de-estudio-por-ano/> · UNT <https://www.fm.unt.edu.ar/index.php/medicina> (duración oficial: 7 años) · UNRN <https://www.unrn.edu.ar/carreras/Medicina-81> (duración oficial: 6 años, ingreso CPU + curso disciplinar + MEM).
+- **Correlatividades:** Hornero <https://horneroapp.ar> — tablas curadas por universidad (`/carreras/{uba,unc,uncuyo,unt,unr,mdp,unse,unlp}-medicina/`); cruzar SIEMPRE con la fuente oficial antes de marcar verificado; su columna "Cuatri" es poco confiable.
+- **Costo de vida:** Numbeo por ciudad (sin margen: alquiler + gastos). Cobertura baja en ciudades chicas → sin widget resumido, se deriva del canasto y se marca LOW reliability.
+- **Requisito de español:** UNLP B2 (med.unlp.edu.ar) · UBA C1 (academica.rec.uba.ar, desde dic 2023).
+- **Fuentes bloqueadas para agentes (usar navegador Edge del usuario vía edge-devtools MCP):** transparencia.unlp.edu.ar (login SAML — PDF de egresados requiere descarga manual del usuario), fmed.uba.ar y fcm.unc.edu.ar (anti-bot), topuniversities.com (403), Google (CAPTCHA para agentes).
