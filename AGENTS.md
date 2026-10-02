@@ -105,6 +105,7 @@ The `materias` array contains objects with this schema:
 | `arbolAbbreviateNames` | `boolean` | Abbreviation toggle (tree) |
 | `mainAbbreviateNames` | `boolean` | Abbreviation toggle (main page) |
 | `carteleraFilterDays` | `number` | Cartelera date filter (days) |
+| `carteleraViewMode` | `"subject" \| "chrono"` | Cartelera grouping mode (Por materia / Cronológico) |
 | `carteleraCollapsed` | `{ key: boolean }` | Cartelera section collapse state |
 | `carteleraCollapsedSubjects` | `{ key: boolean }` | Cartelera per-subject collapse |
 | `carteleraLeidas` | `{ key: boolean }` | Read publications |

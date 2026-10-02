@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
++ Cartelera: persistencia del modo de agrupación (Por materia / Cronológico) en localStorage — clave `carteleraViewMode` (`"subject" | "chrono"`); botones `.group-btn` restauran el modo al cargar.
+
 ## [0.09] — 2026-09-29
 
 ### Added

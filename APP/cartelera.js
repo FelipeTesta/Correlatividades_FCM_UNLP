@@ -26,6 +26,7 @@ const COLLAPSED_KEY = "carteleraCollapsed";
 const FILTER_DAYS_KEY = "carteleraFilterDays";
 const COLLAPSED_SUBJECTS_KEY = "carteleraCollapsedSubjects";
 const SUBSCRIBED_KEY = "carteleraSubscribedSubjects";
+const VIEW_MODE_KEY = "carteleraViewMode";
 
 const HOME_KEY = "__HOME__";
 const HOME_ID = "home";
@@ -36,6 +37,8 @@ let currentDays = 90;
 var savedDays = getLocalStorageJSON(FILTER_DAYS_KEY, 90);
 if (typeof savedDays === "number" && savedDays > 0) currentDays = savedDays;
 let currentMode = "subject"; // "subject" or "chrono"
+var savedMode = getLocalStorageJSON(VIEW_MODE_KEY, "subject");
+if (savedMode === "subject" || savedMode === "chrono") currentMode = savedMode;
 let fetchedData = null; // { codigo: { catedraName, id, pubs: [...], error: null|string } }
 let catedrasData = {}; // loaded from finales.json { CODE: { "CatedraName": [...] } }
 var catedrasLoaded = false;
@@ -128,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
       btn.classList.add("active");
       btn.setAttribute("aria-pressed", "true");
       currentMode = btn.getAttribute("data-mode");
+      saveState(VIEW_MODE_KEY, currentMode);
       if (fetchedData) {
         render();
       }
