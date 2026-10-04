@@ -1,4 +1,4 @@
-﻿/* ============================= */
+/* ============================= */
 /* VIDEO MODAL & THUMBNAILS      */
 /* ============================= */
 .video-thumbnails-container {
@@ -316,7 +316,7 @@ h2 {
 }
 
 
-/* texto de proyectos de extensi�n */
+/* texto de proyectos de extensión */
 .extension-nombre {
     color: #86efac;
 }
@@ -530,17 +530,17 @@ li.item-row {
     justify-content: space-between;
 }
 
-/* Progress fica �"oǭ esquerda */
+/* Progress fica à esquerda */
 .info-row .progress {
     margin-right: auto;
 }
 
-/* Nome da mat�"o��ria */
+/* Nome da matéria */
 li span:first-child {
     flex: 1;
 }
 
-/* tag de a�"o�-'o */
+/* tag de año */
 .anio-tag {
     font-size: 12px;
     color: var(--text-muted);
@@ -552,7 +552,7 @@ li span:first-child {
 }
 
 /* ============================= */
-/* BOT�"o��ES DE ESTADO */
+/* BOTÕES DE ESTADO */
 /* ============================= */
 
 .btn-warning-faltantes {
@@ -563,7 +563,7 @@ li span:first-child {
     font-size: 16px;
     padding: 0 4px !important;
     margin-left: 4px;
-    display: inline-block !important; /* For��ar exibi��ǜo */
+    display: inline-block !important; /* Forçar exibição */
 }
 
 .btn-warning-faltantes:hover {
@@ -710,19 +710,19 @@ li button:hover {
     border-radius: 4px;
 }
 
-/* Cada se�"o���"oǧo interna */
+/* Cada seção interna */
 .sub-section {
     margin-top: 4px;
 }
 
-/* T�"o��tulo interno menor */
+/* Título interno menor */
 .sub-section h4 {
     margin-bottom: 8px;
     font-size: 15px;
     opacity: 0.8;
 }
 
-/* Header colaps�"o��vel para subsections de optativas */
+/* Header colapsável para subsections de optativas */
 .collapsible-header {
     cursor: pointer;
     user-select: none;
@@ -737,7 +737,7 @@ li button:hover {
     opacity: 0.9;
 }
 
-/* Conte�"o�'do colaps�"o��vel dentro de sub-sections */
+/* Conteúdo colapsável dentro de sub-sections */
 .sub-content {
     overflow: hidden;
     max-height: 9999px;
@@ -747,7 +747,7 @@ li button:hover {
         opacity 0.2s ease;
 }
 
-/* Quando sub-content est�"o�� colapsado */
+/* Quando sub-content está colapsado */
 .sub-content.collapsed {
     max-height: 0;
     opacity: 0;
@@ -758,7 +758,7 @@ li button:hover {
     display: none;
 }
 
-/* Remove espa�"o��o se estiver vazio */
+/* Remove espaço se estiver vazio */
 .sub-section ul:empty + * {
     margin-top: 0;
 }
@@ -869,7 +869,7 @@ li button:hover {
 }
 
 /* ============================= */
-/* BOX COLAPS�"oǬVEL AJUSTADO */
+/* BOX COLAPSÁVEL AJUSTADO */
 /* ============================= */
 
 .box {
@@ -940,7 +940,7 @@ li button:hover {
     margin-left: 4px;
 }
 
-/* Conte�"o�'do interno */
+/* Conteúdo interno */
 .box-content {
     overflow: hidden;
     max-height: 9999px;
@@ -981,7 +981,7 @@ li button:hover {
     li:not(.item-row):hover { background: rgba(255,255,255,0.06); }
 }
 
-/* Cursando active background �?" subtle, no animation */
+/* Cursando active background is subtle, no animation */
 li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid rgba(34,211,238,0.4); }
 
 /* Cursando toggle on main page */
@@ -1114,14 +1114,14 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     .extension-form input,
     .extension-form button {
         width: 100%;
-        min-height: 44px; /* Tamanho m�"o��nimo para toque */
+        min-height: 44px; /* Tamanho mínimo para toque */
         font-size: 16px;
     }
 
     /* Inputs e buttons */
     select, input, button {
         max-width: 100%;
-        min-height: 44px; /* Tamanho m�"o��nimo para toque */
+        min-height: 44px; /* Tamanho mínimo para toque */
         font-size: 16px;
     }
 
@@ -1129,7 +1129,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     li {
         display: flex;
         flex-wrap: wrap;
-        padding: 12px; /* Mais espa�"o��amento para toque */
+        padding: 12px; /* Mais espaçamento para toque */
         margin-bottom: 10px;
     }
 
@@ -1182,7 +1182,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
         font-size: 14px;
     }
 
-    /* Right group com bot�"o�?es alinhado �"oǭ direita */
+    /* Right group com botões alinhado à direita */
     .right-group {
         display: flex;
         margin-left: auto;
@@ -1197,11 +1197,11 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 
     li button {
         width: auto;
-        min-height: 40px; /* Tamanho m�"o��nimo para toque */
+        min-height: 40px; /* Tamanho mínimo para toque */
         font-size: 16px;
     }
 
-    /* Bot�"o�?es de a�"o���"oǧo espec�"o��ficos */
+    /* Botões de ação específicos */
     .btn-warning-faltantes {
         min-width: 40px;
         min-height: 40px;
@@ -1237,7 +1237,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     }
 
     h1 {
-        font-size: 22px; /* T�"o��tulo maior para mobile */
+        font-size: 22px; /* Título maior para mobile */
         text-align: center;
     }
     

@@ -1114,7 +1114,7 @@
          margin-bottom: 0;
      }
  
- /* Row 1: ? Volver | ?? Modo �rbol | Zoom */
+ /* Row 1: ← Volver | 🌳 Modo Árbol | Zoom */
      .btn-back { order: 0; }
      .tree-top-bar h1 {
          order: 0;
@@ -1129,7 +1129,7 @@
      .toggle-switch { order: 0; margin-right: auto; }
      .btn-cartelera { order: 0; }
  
-     /* Row 3: C�mo usar | Leyenda */
+     /* Row 3: Cómo usar | Leyenda */
      .btn-help { order: 0; }
      .btn-legend { order: 0; }
  

@@ -247,7 +247,7 @@ const materias = [
     {materia:"SEM91",condicion:"regularizada"}
   ]
 },
-{ codigo:"MI191", nombre:"Medicina Interna I", nombreCorto: "Med Interna I", anio:4, categoria:"anual", horas:200,
+{ codigo:"MI191", nombre:"Medicina Interna I", nombreCorto: "Med Interna I", anio:4, categoria:"cuatrimestral", horas:200,
   paraCursar:[
     {materia:"F9001",condicion:"regularizada"},
     {materia:"M0001",condicion:"regularizada"},
@@ -356,7 +356,7 @@ const materias = [
     {materia:"SEM91",condicion:"aprobada"}
   ]
 },
-{ codigo:"MI291", nombre:"Medicina Interna II", nombreCorto: "Med Interna II", anio:5, categoria:"anual", horas:200,
+{ codigo:"MI291", nombre:"Medicina Interna II", nombreCorto: "Med Interna II", anio:5, categoria:"cuatrimestral", horas:200,
   paraCursar:[
     {materia:"MI191",condicion:"aprobada"},
     {materia:"F9001",condicion:"regularizada"},
