@@ -15,10 +15,10 @@ if ($status) {
 # 3. Get current short commit hash
 $hash = git rev-parse --short HEAD
 
-# 4. Update version.json with hash + current UTC timestamp
+# 4. Update version.json with hash + current UTC timestamp (UTF-8 WITHOUT BOM)
 $ts = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 $json = '{"version":"' + $hash + '","timestamp":"' + $ts + '"}'
-Set-Content -Path "version.json" -Value $json -NoNewline -Encoding UTF8
+[IO.File]::WriteAllText((Join-Path $PSScriptRoot "version.json"), $json, (New-Object System.Text.UTF8Encoding($false)))
 
 # 5. Commit version.json bump
 git add version.json
