@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 + Charset: escaneo general UTF-8 del repo — 4 archivos corruptos. `APP/extension_data.js` (visible: descripciones de proyectos) y `REF/correlativas optativas/optativas.csv` re-codificados Latin-1→UTF-8 (81 y 155 acentos recuperados). 23 comentarios de `APP/style.css` + 2 de `APP/arbol.css` con U+FFFD reconstruidos (extensión, matéria, seção, colapsável, botões, mínimo, título, Cómo usar / Modo Árbol). BOM removido de `style.css` y `version.json`. Verificación final: 0 UTF-8 inválido, 0 U+FFFD, 0 BOM, 0 NUL; `node --check` OK en los 18 JS.
++ `deploy.ps1`: bump de `version.json` ahora escribe UTF-8 **sin BOM** (`[IO.File]::WriteAllText` + `UTF8Encoding($false)`) — el `Set-Content -Encoding UTF8` de PowerShell 5.1 reintroducía el BOM en cada bump, deshaciendo el fix de charset.
 
 ## [0.09] — 2026-09-29
 
