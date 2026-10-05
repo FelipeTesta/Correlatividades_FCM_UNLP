@@ -484,6 +484,54 @@ export default {
       }
     }
 
+    // GET /test-inscripciones — diagnostic for inscripciones pages monitoring (no email)
+    if (url.pathname === '/test-inscripciones') {
+      try {
+        const results = [];
+        for (const page of INSCRIPCIONES_PAGES) {
+          const info = { id: page.id, label: page.label, url: page.url };
+          try {
+            const html = await fetchPage(page.url);
+            const lines = extractPageTextLines(html);
+            const hash = computeSimpleHash(lines.join('\n'));
+            const snapRaw = await env.CARTELERA_SUBS.get('inscripciones-snapshot');
+            const snap = snapRaw ? JSON.parse(snapRaw) : {};
+            const oldLines = (snap[page.id] && snap[page.id].lines) || [];
+            info.lineCount = lines.length;
+            info.currentHash = hash;
+            info.storedHash = (snap[page.id] && snap[page.id].hash) || null;
+            info.hasChanges = info.storedHash !== hash;
+            info.added = lines.filter(l => !oldLines.includes(l)).slice(0, 10);
+            info.removed = oldLines.filter(l => !lines.includes(l)).slice(0, 10);
+          } catch (e) {
+            info.error = e.message;
+          }
+          results.push(info);
+        }
+        return new Response(JSON.stringify({ ok: true, resendConfigured: !!env.RESEND_API_KEY, results }, null, 2), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // POST /test-inscripciones-send — force send inscripciones email (diagnostic)
+    if (url.pathname === '/test-inscripciones-send' && request.method === 'POST') {
+      try {
+        const result = await checkInscripciones(env);
+        return new Response(JSON.stringify({ ok: true, ...result }), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
     // Default: proxy behavior (existing)
     const id = url.searchParams.get('id');
     const tag = url.searchParams.get('tag');
@@ -696,6 +744,15 @@ export default {
         await checkFinales(env);
       } catch (e) {
         console.error('Finales cron check error: ' + e.message);
+      }
+    }
+
+    // 8. Inscripciones pages check — 1st of each month only
+    if (checkDay === 1) {
+      try {
+        await checkInscripciones(env);
+      } catch (e) {
+        console.error('Inscripciones cron check error: ' + e.message);
       }
     }
   }
@@ -1034,6 +1091,133 @@ async function checkFinales(env) {
     console.error('Finales check error: ' + e.message);
     return { changed: false, error: e.message };
   }
+}
+
+// ─── Inscripciones Pages Monitoring (mini calendario) ────────────────
+
+const INSCRIPCIONES_PAGES = [
+  { id: 'inscripciones', url: 'https://www.med.unlp.edu.ar/index.php/inscripciones', label: 'Inscripciones' },
+  { id: 'ingresantes', url: 'https://www.med.unlp.edu.ar/index.php/ingresantes', label: 'Ingresantes' }
+];
+const INSCRIPCIONES_ADMIN_EMAIL = 'felipetesta@gmail.com';
+
+async function fetchPage(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('HTTP ' + res.status + ' fetching ' + url);
+  return await res.text();
+}
+
+function decodeHtmlEntities(str) {
+  return str
+    .replace(/&aacute;/g, 'á').replace(/&eacute;/g, 'é').replace(/&iacute;/g, 'í')
+    .replace(/&oacute;/g, 'ó').replace(/&uacute;/g, 'ú').replace(/&ntilde;/g, 'ñ')
+    .replace(/&Aacute;/g, 'Á').replace(/&Eacute;/g, 'É').replace(/&Iacute;/g, 'Í')
+    .replace(/&Oacute;/g, 'Ó').replace(/&Uacute;/g, 'Ú').replace(/&Ntilde;/g, 'Ñ')
+    .replace(/&(amp|quot|#39);/g, function (_, e) { return e === 'amp' ? '&' : (e === 'quot' ? '"' : "'"); })
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#(\d+);/g, function (_, c) { return String.fromCharCode(parseInt(c, 10)); });
+}
+
+function extractPageTextLines(html) {
+  const text = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<[^>]+>/g, '\n');
+  const seen = new Set();
+  const lines = [];
+  for (const raw of text.split(/\n+/)) {
+    const line = decodeHtmlEntities(raw).replace(/\s+/g, ' ').trim();
+    if (line.length < 4) continue;
+    if (seen.has(line)) continue;
+    seen.add(line);
+    lines.push(line);
+  }
+  return lines.sort();
+}
+
+function computeSimpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0;
+  }
+  return hash.toString(36);
+}
+
+function buildInscripcionesEmailHtml(pageResults) {
+  let html = '<h2>📅 Inscripciones FCM - Actualización detectada</h2>';
+  html += '<p>Se detectaron cambios en las páginas de inscripciones de la Facultad de Ciencias Médicas (UNLP).';
+  html += ' Revisar <code>APP/calendar_data.js</code> y actualizar el mini calendario.</p>';
+  for (const pr of pageResults) {
+    if (pr.added.length === 0 && pr.removed.length === 0) continue;
+    html += '<div style="margin-bottom:16px;padding:12px;background:#f5f5f5;border-radius:8px">';
+    html += '<h3 style="margin:0 0 8px">' + escapeHtml(pr.label) + ' — <a href="' + escapeHtml(pr.url) + '" style="color:#0066cc">' + escapeHtml(pr.url) + '</a></h3>';
+    if (pr.added.length > 0) {
+      html += '<p style="margin:4px 0;color:#2e7d32"><strong>Nuevo (' + pr.added.length + '):</strong></p><ul style="margin:0">';
+      pr.added.forEach(l => { html += '<li>' + escapeHtml(l) + '</li>'; });
+      html += '</ul>';
+    }
+    if (pr.removed.length > 0) {
+      html += '<p style="margin:4px 0;color:#c62828"><strong>Quitado (' + pr.removed.length + '):</strong></p><ul style="margin:0">';
+      pr.removed.forEach(l => { html += '<li>' + escapeHtml(l) + '</li>'; });
+      html += '</ul>';
+    }
+    html += '</div>';
+  }
+  html += '<hr><p style="color:#888;font-size:12px">Inscripciones Monitor — Correlatividades UNLP (chequeo mensual, día 1º)</p>';
+  return html;
+}
+
+async function checkInscripciones(env) {
+  const snapRaw = await env.CARTELERA_SUBS.get('inscripciones-snapshot');
+  const snapshots = snapRaw ? JSON.parse(snapRaw) : {};
+  const pageResults = [];
+  let anyChange = false;
+
+  for (const page of INSCRIPCIONES_PAGES) {
+    const pr = { id: page.id, label: page.label, url: page.url, added: [], removed: [], ok: true };
+    try {
+      const html = await fetchPage(page.url);
+      const lines = extractPageTextLines(html);
+      const hash = computeSimpleHash(lines.join('\n'));
+      const old = snapshots[page.id] || { hash: null, lines: [] };
+      if (old.hash !== hash) {
+        pr.added = lines.filter(l => !old.lines.includes(l));
+        pr.removed = old.lines.filter(l => !lines.includes(l));
+        if (pr.added.length > 0 || pr.removed.length > 0) anyChange = true;
+        snapshots[page.id] = { hash, lines };
+      }
+    } catch (e) {
+      pr.ok = false;
+      pr.error = e.message;
+      console.error('Inscripciones check error for ' + page.id + ': ' + e.message);
+    }
+    pageResults.push(pr);
+  }
+
+  if (anyChange) {
+    try {
+      const subject = '📅 Inscripciones FCM - Actualización detectada';
+      const emailHtml = buildInscripcionesEmailHtml(pageResults);
+      await sendEmail(INSCRIPCIONES_ADMIN_EMAIL, subject, emailHtml, env);
+      console.log('Inscripciones update email sent to ' + INSCRIPCIONES_ADMIN_EMAIL);
+    } catch (e) {
+      console.error('Inscripciones email send failed: ' + e.message);
+    }
+  }
+
+  // Persist snapshots only for pages that changed and fetched OK
+  let snapshotsDirty = false;
+  for (const pr of pageResults) {
+    if (pr.ok && snapshots[pr.id] && (pr.added.length > 0 || pr.removed.length > 0)) snapshotsDirty = true;
+  }
+  if (snapshotsDirty || !snapRaw) {
+    await env.CARTELERA_SUBS.put('inscripciones-snapshot', JSON.stringify(snapshots));
+  }
+
+  return { changed: anyChange, pages: pageResults.map(pr => ({ id: pr.id, ok: pr.ok, added: pr.added.length, removed: pr.removed.length, error: pr.error })) };
 }
 
 function buildWelcomeHtml(catedraPubs, names, homePubs) {

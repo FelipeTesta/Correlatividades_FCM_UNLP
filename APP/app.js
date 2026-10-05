@@ -826,6 +826,21 @@ infoText += materia.anio + "° Año";
     
     li.appendChild(span);
 
+    // Mini calendario: tag "Inscripción" tras el nombre (solo listas puede cursar)
+    if (codigo && (id === "puedeCursar-obligatorias" || id === "puedeCursar-optativas" || id === "optativasFavoritas") && typeof getUpcomingEnrollment === "function") {
+        const materiaIns = materias.find(m => m.codigo === codigo);
+        if (materiaIns) {
+            const enroll = getUpcomingEnrollment(materiaIns);
+            if (enroll) {
+                const tagIns = document.createElement("span");
+                tagIns.className = "tag-inscripcion";
+                tagIns.innerText = "Inscripción";
+                tagIns.title = "Inscripciones próximas: " + enroll.label + " (" + enroll.rangeLabel + ")";
+                li.appendChild(tagIns);
+            }
+        }
+    }
+
     // Preparar infoSpan
     let infoSpan = null;
     if (codigo) {

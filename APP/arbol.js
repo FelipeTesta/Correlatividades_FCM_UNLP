@@ -327,6 +327,18 @@ function createSubjectNode(m) {
 
     node.appendChild(content);
 
+    // Mini calendario: sticker "Inscripción" en puede cursar / optativa puede cursar
+    var enrollmentInfo = null;
+    if ((status === 'puede-cursar' || status === 'optativa-puede-cursar') && typeof getUpcomingEnrollment === 'function') {
+        enrollmentInfo = getUpcomingEnrollment(m);
+        if (enrollmentInfo) {
+            var sticker = document.createElement('span');
+            sticker.className = 'node-inscripcion';
+            sticker.textContent = 'Inscripción';
+            node.appendChild(sticker);
+        }
+    }
+
     // Click handler - select/highlight correlatives
     node.addEventListener('click', function () {
         selectNode(m.codigo);
@@ -343,6 +355,9 @@ function createSubjectNode(m) {
         tooltipText += ' (' + m.codigo + ')';
     }
     tooltipText += '\n' + getStatusLabel(status);
+    if (enrollmentInfo) {
+        tooltipText += '\nInscripciones próximas: ' + enrollmentInfo.label + ' (' + enrollmentInfo.rangeLabel + ')';
+    }
     node.title = tooltipText;
 
     return node;

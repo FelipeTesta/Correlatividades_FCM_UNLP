@@ -18,6 +18,7 @@ Si compartís o forkeás este proyecto, **debés citar la fuente con los crédit
 - **Seguimiento de materias**: Marca materias como aprobadas (✅) o regularizadas (🟧)
 - **Progreso visual**: Barra de progreso con sistema de puntos por categoría (anual, cuatrimestral, bimestral, optativas)
 - **Modo Árbol**: Vista visual de árbol de correlatividades con líneas de conexión SVG, zoom, y selección interactiva
+- **Mini calendario** (Modo Árbol + página principal): Strip de 53 semanas del año con emojis por evento (⚫ verano, 🔘 período letivo, 🔵 invierno, 🟡 inscripciones obligatorias, 🟣 optativas, 🟠 ingresantes, 🟢 semana actual). Tooltip con fechas y horarios escalonados por año. Sticker "Inscripción" en las materias que podés cursar cuando su ventana de inscripción está a ≤14 días o abierta (árbol: esquina del nodo; principal: tag amarilla tras el nombre). En la página principal vive debajo de la barra de progreso, centrada. Arrastrá el strip horizontalmente (móvil: centrado en la semana actual). Fechas 2026 verificadas contra la cartelera oficial + calendario FCM; worker chequea mensualmente la página de inscripciones y avisa por email si cambia.
 - **Cursando**: Marca materias que estás cursando actualmente (toggle con animación cyan)
 - **Abreviar nombres**: Toggle "Abreviar nombres" muestra abreviaturas/siglas médicas (`nombreCorto` de cada materia) en vez del nombre completo. Disponible en modo Árbol (panel de Leyenda) y en la página principal (en la barra superior, junto a "¿CÓMO USAR?"). Persistido en localStorage (`arbolAbbreviateNames` / `mainAbbreviateNames`, default activado). Cuando activo, la fuente del nombre aumenta ~30%.
 - **Fechas de finales**: Consulta las fechas de exámenes finales disponibles (actualizado Feb-Dic 2026, 61 materias)
@@ -38,6 +39,8 @@ Marca tus materias como aprobadas (✅) o regularizadas (🟧). Las listas se ac
 ### Modo Árbol (arbol.html)
 
 Vista visual de todas las correlatividades organizadas por año. Hacé click en una materia para destacar sus correlativas (prerrequisitos y dependientes). Usá los botones ✅🟧🔄 en cada nodo para cambiar el estado. Activá el toggle "Cursando" en las materias disponibles. El toggle "Abreviar nombres" está disponible en el panel de Leyenda del modo Árbol. Ajustá el zoom (30%–300%) y ocultá las optativas con el toggle correspondiente.
+
+Arriba del árbol está el **mini calendario**: una línea con las 53 semanas del año. Pasá el mouse (o tocá en móvil) una bolilla para ver las fechas y los eventos de esa semana. La semana actual es 🟢 (intercala con el color del evento). Cuando una materia que podés cursar abre inscripción pronto (≤14 días) o ya está abierta, aparece el sticker amarillo **"Inscripción"** en su esquina inferior derecha, con el detalle en el tooltip del nodo. En móvil, arrastrá el calendario con el dedo — arranca centrado en la semana actual.
 
 ### Cartelera (cartelera.html)
 

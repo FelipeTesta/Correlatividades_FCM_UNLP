@@ -23,8 +23,10 @@
             <span class="toggle-slider"></span>
             <span class="toggle-label">Ver optativas</span>
         </label>
+        <!-- Mini calendario (semanas del año + períodos de inscripción) -->
+        <div id="minicalContainer"></div>
         <button class="btn-help" onclick="showTreeHelpModal()" title="¿Cómo usar el modo árbol?">❓ Cómo usar</button>
-        <button class="btn-legend" onclick="toggleLegend()">📋 Leyenda</button>
+        <button class="btn-legend" onclick="toggleLegend()" title="Leyenda de colores y símbolos">📋 Leyenda</button>
     </div>
 
     <!-- Tree Content (scrolls with body) -->
@@ -72,6 +74,8 @@
 <script src="APP/state-cache.js"></script>
 <script src="APP/utils.js"></script>
 <script src="APP/requisitos.js"></script>
+<script src="APP/calendar_data.js"></script>
+<script src="APP/minical.js"></script>
 <script>var ABBREVIATION_CONFIG = { storageKey: 'arbolAbbreviateNames', targetSelector: '.tree-content', extraClasses: ['abbreviated-names'] };</script>
 <script src="APP/abbreviation.js"></script>
 <script src="APP/arbol.js"></script>

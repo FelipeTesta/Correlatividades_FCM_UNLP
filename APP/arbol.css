@@ -221,13 +221,13 @@
      flex-shrink: 0;
  }
  
- .tree-top-bar h1 {
-     font-size: 18px;
-     font-weight: 600;
-     color: var(--text);
-     margin: 0;
-     flex: 1;
- }
+  .tree-top-bar h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+      flex: 0 0 auto;
+  }
  
  .btn-back {
      background-color: transparent;
@@ -259,9 +259,49 @@
      align-items: center;
  }
  
- .tree-top-bar .toggle-switch {
-     margin-right: auto !important;
- }
+  .tree-top-bar .toggle-switch {
+      margin-right: auto !important;
+  }
+
+  /* ============================= */
+  /* MINI CALENDARIO — estilos compartidos en base.css (componente usado en
+     arbol.html + index.html). Aquí solo queda lo específico del árbol. */
+  /* ============================= */
+
+  /* Árbol: inline transparente dentro del tree-top-bar */
+  .tree-minical {
+      background-color: transparent;
+      border: none;
+      border-radius: 4px;
+      padding: 0 4px;
+      margin: 0;
+  }
+
+  /* Sticker "Inscripción" en nodos puede cursar */
+  .node-inscripcion {
+      position: absolute;
+      right: 3px;
+      bottom: 3px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #000;
+      background: #facc15;
+      border-radius: 3px;
+      padding: 0 3px;
+      line-height: 12px;
+      pointer-events: none;
+      z-index: 2;
+  }
+
+  /* PC: al hacer hover/seleccionar el card crecen los botones (max-height 30px)
+     → margen inferior extra para que el sticker no los cubra */
+  @media (hover: hover) and (pointer: fine) {
+      .subject-node:has(.node-inscripcion):hover,
+      .subject-node:has(.node-inscripcion).selected {
+          padding-bottom: 20px;
+      }
+  }
+
  
  /* ============================= */
  /* YEAR SECTION - HORIZONTAL      */
@@ -1104,15 +1144,25 @@
          padding: 4px;
      }
  
-     .tree-top-bar {
-         display: flex;
-         flex-wrap: nowrap;
-         justify-content: space-between;
-         align-items: center;
-         gap: 6px;
-         padding: 4px 8px;
-         margin-bottom: 0;
-     }
+      .tree-top-bar {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: center;
+          gap: 6px;
+          padding: 4px 8px;
+          margin-bottom: 0;
+      }
+
+      /* Mini calendario: fila completa debajo de los botones en móvil */
+      .tree-minical {
+          flex: 1 1 100%;
+          order: 99;
+          background-color: var(--bg-elevated);
+          border: 1px solid var(--bg-hover);
+          padding: 3px 6px 4px;
+          margin: 4px 0 2px;
+      }
  
  /* Row 1: ← Volver | 🌳 Modo Árbol | Zoom */
      .btn-back { order: 0; }

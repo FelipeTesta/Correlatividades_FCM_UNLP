@@ -108,3 +108,101 @@ Table rows, navbar menu, map pins, modal and tree are ALL generated from the dat
 - Update this file together with `LOG.md` after each session
 - Informativos: README.md (usage), AGENTS.md (IMPLEMENT), FLOW/universidades.dot (flow)
 - CARTO API key lives in `APP/universidades.js` (tile URL) — rotate in the CARTO dashboard if abused
+
+## Mini calendario ✅ (implementado 2026-10-04)
+Implementado en `arbol.html` + `index.html` (página principal, debajo de la barra de progreso, tag "Inscripción" tras el nombre en Puede Cursar) + `APP/calendar_data.js` + `APP/minical.js` (strip 53 semanas, tooltips, drag móvil, stickers "Inscripción", worker mensual día 1). Componente CSS compartido en `base.css` (skins: arbol transparente / principal caja centrada). Proceso: `FLOW/minical.dot`. Abajo queda la especificación original + los datos de referencia usados.
+Em modo árbol, dentro do `tree-top-bar`, vamos criar uma espécie de mini calendário; a ideia é usar esse calendário visualmente e indicar períodos próximos de inscrições.
+
+O formato será por emojis, onde vamos representar cada semana do ano, e com hover vamos dizer as informações dos dias e meses e eventos importantes que acontecem naquela semana geralmente, podemos criar um trigger para conferir e atualizar a cada mês ou periodo >3m;
+
+No calendário da UNLP/Argentina:
+
+⚫ Vacaciones de verano: dezembro → fevereiro/início de março
+🔘 Período letivo: aproximadamente março → dezembro
+🔵 Vacaciones de invierno: aproximadamente duas semanas em julho
+🟡 Inscrições (Materias Obrigatórias): nos períodos específicos de cada ano/bimestre
+🟣 Inscrições (Materias Optativas) - se sobrepor, deixar amarelo como preferencia
+🟠 Ingresso/inscrição de ingressantes: principalmente no fim do ano anterior ao ingresso
+🟢 SEMANA ATUAL (mudar dinamicamente, quando sobrepor, pode criar uma animação e intercalar entre verde e a cor que ficou de fundo)
+
+```
+JAN         FEV         MAR      ABR         MAI          JUN       JUL              AGO         SET     OUT    NOV     DEZ
+⚫⚫⚫⚫ ⚫⚫⚫⚫ ⚫🔘🔘🔘 🟡🔘🔘🔘 🔘🔘🔘🔘 🟡🔘🔘🔘 🔵🔵🔘🔘 🟡🔘🔘🔘 🔘🔘🔘🔘 🟡🔘🔘🔘 🟣🟣🟣🔘 🔘🔘🔘⚫
+```
+
+A lógica fica:
+⚫ verão → 🔘 início das aulas → 🟡 inscrição 1º bimestre → 🔘 → 🟡 inscrição 2º → 🔵 inverno → 🟡 inscrição 3º → 🔘 → 🟡 inscrição 4º → 🔘 → 🟣 processo de ingressantes → ⚫ verão.
+
+Hover na bolinha, exemplo:
+05/02-04/05 | Inscripciones 1er Bim
+
+No celular temos que deixar isso o mais compacto possivel horizontalmente (não queremos isso em duas linhas). Talvez deixar saindo da tela centralizado na semana atual, mas com possibilidade de arrastar (sem scrollbar);
+
+### Objetivo
+A ideia é, além de ser uma referencia visual resumida do que vai acontecer durante o ano, também incluir uma marcação nas matérias pode cursar, quando estiverem chegando os períodos de inscrição (2 semanas antes); precisamos criar um sistema para saber quando abre cada matéria, matérias anuais só nas inscrições de abril, as bimestrais a cada inscrição, as quatrimestrais só na 1ra e 3ra inscrição. Salud Publica 1 só abre no segundo quad e sp2 só abre no primeiro, pesquisar de cada matéria;
+matérias do primeiro ano abrem as inscrições em março (pesquisar) e as matérias do 2do em diante (anuais) abrem em abril, pesquisar.
+
+A marcação deve entrar só nas matérias PODE CURSAR ou OPTATIVAS (PODE CURSAR), e deve sumir assim que passar o período de inscrições; podemos armazenar só a semana, o usuário tem que procurar saber o dia e horário correto de se inscrever por conta própria;
+
+marcação: incluir uma tag/sticker `Inscripción` no canto inferior direito do card da matéria, com um hover "Inscripciones Proximas" ou similar;
+
+### Inscrições de 2026 — Medicina UNLP
+Período	Inscrição das obrigatórias
+1º bimestre	14/04 às 09:00 → 15/04 às 23:59
+2º bimestre	08/06, escalonada por ano
+3º bimestre	04/08 a 14/08, escalonada por ano
+4º bimestre	06/10 às 09:00 → 09/10 às 23:59
+
+1º bimestre:
+
+5º: 14/04 às 09h
+4º: 14/04 às 11h
+3º: 14/04 às 13h
+2º: 14/04 às 15h
+fechamento: 15/04 às 23:59
+
+2º bimestre:
+
+5º: 08/06 às 09h
+4º: 08/06 às 11h
+3º: 08/06 às 13h
+1º/2º: 08/06 às 15h
+
+3º bimestre:
+
+1º: 04/08 às 09h
+5º: 06/08 às 09h
+4º: 06/08 às 13h
+3º: 07/08 às 09h
+2º: 10/08 às 16h
+fechamento: 14/08 às 23:59
+E o 4º bimestre já foi publicado
+
+Aqui está a correção mais importante: a inscrição do 4º bimestre já foi anunciada em 25/09/2026.
+
+Obrigatórias — 4º bimestre:
+
+5º ano: 06/10 às 09h
+4º ano: 06/10 às 11h
+3º ano: 06/10 às 14h
+2º e 1º ano: 06/10 às 17h
+encerramento: 09/10 às 23:59
+
+Optativas:
+
+≥30 finais aprovados: 08/10 às 09h
+≥17 finais: 08/10 às 11h
+sem filtro: 08/10 às 14h
+encerramento: 09/10 às 23:59
+
+### Pesquisa pendente (datos `research:true` en calendar_data.js)
+Confirmar com fontes oficiais e remover o flag:
+- [x] Início/fim do período letivo 2026 — OFICIAL PNG FCM (`calendario_academico_2026.png`, leído por Gemini 2026-10-04): letivo 23/03→18/07 + 03/08→05/12; anuales 23/03 (1º) / 20/04 (2º+)→21/11; cuatrimestrales 2º ciclo →14/11
+- [x] Férias de inverno exatas — OFICIAL: receso 20/07→02/08 (PNG FCM + ic.info.unlp)
+- [x] Férias de verão fim exato — OFICIAL: aulas 1º año 23/03 → verano hasta 22/03; bim 4º termina 05/12 (PNG FCM)
+- [x] W0: data real da inscrição de março 1º año — OFICIAL: 11/03 11:00→13/03 23:59 SIU (cartelera noticia 241)
+- [ ] W2: fechamento da inscrição do 2º bimestre (placeholder: 09/06 23:59 — cartelera 255 publica solo apertura 08/06)
+- [x] Optativas: janelas dos bimestres 1–3 — OFICIAL: WO1 31/03→01/04 SAE (249); WO2 09–10/06 (255); WO3 11–13/08 (260 + 264 asueto 12/08)
+- [ ] Oferta por bimestre de cada matéria bimestral (pesquisa por matéria — regras genéricas aplicadas por enquanto)
+- [x] Confirmar anuais de 1º ano → março e demais anuais → abril — CONFIRMADO (PNG FCM)
+Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa por email no dia 1 de cada mês quando muda)

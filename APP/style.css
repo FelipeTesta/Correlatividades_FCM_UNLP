@@ -551,6 +551,34 @@ li span:first-child {
     min-width: 50px;
 }
 
+/* tag "Inscripción" — mini calendario (tras el nombre en puede cursar) */
+.tag-inscripcion {
+    background: #facc15;
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 0 4px;
+    margin-left: 6px;
+    white-space: nowrap;
+    cursor: default;
+}
+
+/* Mini calendario (componente base en base.css) — skin página principal:
+   caja con borde debajo de la barra de progreso, strip centrada */
+.tree-minical {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--bg-hover);
+    border-radius: 4px;
+    padding: 3px 6px 4px;
+    margin: 0 0 12px;
+    flex: 0 0 auto;
+}
+
+.tree-minical .minical-inner {
+    margin: 0 auto;
+}
+
 /* ============================= */
 /* BOTÕES DE ESTADO */
 /* ============================= */
