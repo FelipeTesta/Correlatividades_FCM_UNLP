@@ -82,17 +82,14 @@
             sessionId = 'fallback-' + Math.random().toString(36).slice(2);
         }
 
-        // Heartbeat + badge update function
+        // Heartbeat + badge update function (single request: the response carries the counts)
         async function updateOnlineStatus() {
             try {
-                // Send heartbeat
-                await fetch(WORKER_BASE + '/heartbeat', {
+                const res = await fetch(WORKER_BASE + '/heartbeat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ sessionId })
                 });
-                // Get counts
-                const res = await fetch(WORKER_BASE + '/online');
                 const data = await res.json();
                 badge.textContent = '🟢 ' + (data.online || 0) + '/' + (data.visits || 0);
             } catch (e) {
@@ -100,10 +97,30 @@
             }
         }
 
-        // Initial fetch + heartbeat (after 2s delay to avoid startup race)
-        setTimeout(updateOnlineStatus, 2000);
-        // Poll every 30 seconds
-        setInterval(updateOnlineStatus, 30000);
+        // Poll every 60 seconds (Cloudflare free-tier budget), paused while the tab is hidden
+        let heartbeatTimer = null;
+        function startPolling() {
+            if (heartbeatTimer === null) heartbeatTimer = setInterval(updateOnlineStatus, 60000);
+        }
+        function stopPolling() {
+            if (heartbeatTimer !== null) {
+                clearInterval(heartbeatTimer);
+                heartbeatTimer = null;
+            }
+        }
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                stopPolling();
+            } else {
+                updateOnlineStatus(); // immediate beat on return
+                startPolling();
+            }
+        });
+        if (!document.hidden) {
+            // Initial fetch + heartbeat (after 2s delay to avoid startup race)
+            setTimeout(updateOnlineStatus, 2000);
+            startPolling();
+        }
 
         // Wire up toggle
         const toggle = document.getElementById('appNavbarToggle');

@@ -55,12 +55,12 @@ function initOnlineBadge() {
 
     async function updateOnlineStatus() {
         try {
-            await fetch(WORKER_BASE + '/heartbeat', {
+            // Single request: the heartbeat response carries the counts
+            const res = await fetch(WORKER_BASE + '/heartbeat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ sessionId })
             });
-            const res = await fetch(WORKER_BASE + '/online');
             const data = await res.json();
             badge.textContent = '🟢 ' + (data.online || 0) + '/' + (data.visits || 0);
         } catch (e) {
@@ -68,8 +68,29 @@ function initOnlineBadge() {
         }
     }
 
-    setTimeout(updateOnlineStatus, 2000);
-    setInterval(updateOnlineStatus, 30000);
+    // Poll every 60 seconds (Cloudflare free-tier budget), paused while the tab is hidden
+    let heartbeatTimer = null;
+    function startPolling() {
+        if (heartbeatTimer === null) heartbeatTimer = setInterval(updateOnlineStatus, 60000);
+    }
+    function stopPolling() {
+        if (heartbeatTimer !== null) {
+            clearInterval(heartbeatTimer);
+            heartbeatTimer = null;
+        }
+    }
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            stopPolling();
+        } else {
+            updateOnlineStatus(); // immediate beat on return
+            startPolling();
+        }
+    });
+    if (!document.hidden) {
+        setTimeout(updateOnlineStatus, 2000);
+        startPolling();
+    }
 }
 
 function setupEventListeners() {

@@ -27,7 +27,7 @@ Si compartís o forkeás este proyecto, **debés citar la fuente con los crédit
 - **Notificaciones por email**: Recibe emails (9h/13h/19h ART) cuando haya nuevas publicaciones en tus cátedras
 - **Responsive**: Funciona en desktop y mobile
 - **Modo oscuro**: Tema "Deep Black" (#000000)
-- **Contador de visitantes**: Badge en tiempo real (🟢 online/hoy) en el navbar, sesiones únicas por día, exclusiones admin
+- **Contador de visitantes**: Badge (🟢 online/hoy) en el navbar — heartbeat único cada 60s (pausado en pestaña oculta), presencia en D1 (KV reservado a suscripciones/snapshots), conteo diario por dispositivo, exclusiones admin
 - **Otras Universidades**: mapa interactivo con planes de estudio de Medicina de otras universidades públicas argentinas (referencia visual, sin almacenar datos)
 
 ## Cómo usar

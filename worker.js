@@ -347,6 +347,7 @@ export default {
     }
 
     // POST /heartbeat — track online session + daily visit count
+    // Single request: the response already carries {online, visits} for the badge.
     if (url.pathname === '/heartbeat' && request.method === 'POST') {
       try {
         const { sessionId } = await request.json();
@@ -355,8 +356,17 @@ export default {
             status: 400, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
           });
         }
-// Store session with 60s TTL (auto-expires if no heartbeat)
-        await env.CARTELERA_SUBS.put('online:' + sessionId, '1', { expirationTtl: 60 });
+        // Presence lives in D1 (KV free tier allows only 1k writes/day — a 30s/tab
+        // heartbeat exhausted it). Row expires 3 min after the last beat (poll: 60s + grace).
+        try {
+          const expiresAt = Date.now() + 180000;
+          await env.DB.prepare('INSERT INTO presence(session_id, expires_at) VALUES(?, ?) ON CONFLICT(session_id) DO UPDATE SET expires_at = excluded.expires_at')
+            .bind(sessionId, expiresAt).run();
+        } catch (dbe) {
+          console.error('D1 presence upsert error: ' + dbe.message);
+          // Fallback: legacy KV presence (60s TTL) so the badge keeps working
+          await env.CARTELERA_SUBS.put('online:' + sessionId, '1', { expirationTtl: 60 });
+        }
         // Count unique visitors per DEVICE (IP), not per browser session.
         // Cross-browser dedup: same IP any browser = 1 count/day.
         const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
@@ -365,13 +375,14 @@ export default {
         const ADMIN_IPS = ['192.168.0.27', '190.17.188.134'];
         const isAdmin = ADMIN_IPS.includes(clientIp);
         if (!isAdmin) {
-          // Serialize the first-increment per ip+date via Cache API lock (5s TTL)
+          // Serialize the first-increment per ip+date via Cache API lock (1h TTL).
           // KV read-then-write is not atomic; two concurrent heartbeats would double-count.
+          // The 1h TTL also means `visited:` is re-read ~once/hour/device, not on every beat.
           const lockKey = new Request('https://visit-lock/' + ip + '/' + today);
           const cache = caches.default;
           const haveLock = await cache.match(lockKey);
           if (!haveLock) {
-            await cache.put(lockKey, new Response('locked', { headers: { 'Cache-Control': 'max-age=5' } }));
+            await cache.put(lockKey, new Response('locked', { headers: { 'Cache-Control': 'max-age=3600' } }));
             const visitedKey = 'visited:' + ip + ':' + today;
             const alreadyVisited = await env.CARTELERA_SUBS.get(visitedKey);
             if (!alreadyVisited) {
@@ -385,7 +396,9 @@ export default {
             }
           }
         }
-        return new Response(JSON.stringify({ ok: true }), {
+        // Counts come from the shared 60s memo — no per-tab KV list/read
+        const counts = await getCounts(env);
+        return new Response(JSON.stringify({ ok: true, online: counts.online, visits: counts.visits }), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
       } catch (e) {
@@ -395,18 +408,11 @@ export default {
       }
     }
 
-    // GET /online — return online count + daily visits
+    // GET /online — return online count + daily visits (kept for cached pages; memoized)
     if (url.pathname === '/online') {
       try {
-        // Count active sessions (keys starting with "online:")
-        const onlineList = await env.CARTELERA_SUBS.list({ prefix: 'online:' });
-        const onlineCount = onlineList.keys.length;
-        // Get today's visit count
-        const today = new Date().toISOString().slice(0, 10);
-        const visitKey = 'visits:' + today;
-        const visitRaw = await env.CARTELERA_SUBS.get(visitKey);
-        const visitCount = visitRaw ? parseInt(visitRaw, 10) : 0;
-        return new Response(JSON.stringify({ online: onlineCount, visits: visitCount }), {
+        const counts = await getCounts(env);
+        return new Response(JSON.stringify(counts), {
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
         });
       } catch (e) {
@@ -568,12 +574,15 @@ export default {
 
   async scheduled(event, env, ctx) {
     // 1. List all subscriptions → build email→{codes,names,home} map
-    let subsList;
-    try { subsList = await env.CARTELERA_SUBS.list(); } catch (e) { console.error('KV list error: ' + e.message); return; }
+    //    listAllKeys() follows KV pagination (a single list() truncates at 1000 keys);
+    //    internal keys (online:/visited:/visits:) are skipped — KV list returns everything.
+    let allKeys;
+    try { allKeys = await listAllKeys(env); } catch (e) { console.error('KV list error: ' + e.message); return; }
 
     const emailMap = {}; // email → {codes: [], names: {}, home: false}
-    for (const key of subsList.keys) {
+    for (const key of allKeys) {
       const email = key.name;
+      if (email.includes(':')) continue; // internal (non-subscription) key
       try {
         const raw = await env.CARTELERA_SUBS.get(email);
         if (!raw) continue;
@@ -722,9 +731,12 @@ export default {
     if (env.DB) {
       try {
         const today = new Date().toISOString().slice(0, 10);
-        // Count current online sessions
-        const onlineList = await env.CARTELERA_SUBS.list({ prefix: 'online:' });
-        const maxOnline = onlineList.keys.length;
+        // Current online sessions = live presence rows (D1)
+        let maxOnline = 0;
+        try {
+          const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM presence WHERE expires_at > ?').bind(Date.now()).first();
+          if (r && typeof r.n === 'number') maxOnline = r.n;
+        } catch (e) { console.error('D1 presence count error: ' + e.message); }
         // Get today's visit count
         const visitRaw = await env.CARTELERA_SUBS.get('visits:' + today);
         const totalVisits = visitRaw ? parseInt(visitRaw, 10) : 0;
@@ -734,6 +746,12 @@ export default {
         ).bind(today, totalVisits, maxOnline).run();
       } catch (e) {
         console.error('D1 stats error: ' + e.message);
+      }
+      // Cleanup: purge expired presence rows (cron runs 3x/day)
+      try {
+        await env.DB.prepare('DELETE FROM presence WHERE expires_at < ?').bind(Date.now()).run();
+      } catch (e) {
+        console.error('D1 presence cleanup error: ' + e.message);
       }
     }
 
@@ -761,6 +779,58 @@ export default {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// Shared counts for the online badge, memoized 60s in the Cache API (per colo).
+// Counts change slowly — this collapses reads across ALL open tabs into ~1/min globally.
+async function getCounts(env) {
+  const memoReq = new Request('https://counts-memo/online');
+  const cache = caches.default;
+  try {
+    const memo = await cache.match(memoReq);
+    if (memo) {
+      const data = await memo.json();
+      if (data && typeof data.online === 'number') return data;
+    }
+  } catch (e) { /* memo miss — recompute */ }
+  let online = 0;
+  try {
+    const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM presence WHERE expires_at > ?').bind(Date.now()).first();
+    if (r && typeof r.n === 'number') online = r.n;
+  } catch (e) {
+    console.error('D1 presence count error: ' + e.message);
+    // Fallback: legacy KV presence keys (only written when the D1 upsert fails)
+    try {
+      const onlineList = await env.CARTELERA_SUBS.list({ prefix: 'online:' });
+      online = onlineList.keys.length;
+    } catch (e2) { console.error('KV online fallback error: ' + e2.message); }
+  }
+  let visits = 0;
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const visitRaw = await env.CARTELERA_SUBS.get('visits:' + today);
+    visits = visitRaw ? parseInt(visitRaw, 10) : 0;
+  } catch (e) { console.error('KV visits read error: ' + e.message); }
+  const data = { online, visits };
+  try {
+    await cache.put(memoReq, new Response(JSON.stringify(data), { headers: { 'Cache-Control': 'max-age=60' } }));
+  } catch (e) { /* cache write failure is non-fatal */ }
+  return data;
+}
+
+// List ALL keys in CARTELERA_SUBS, following KV pagination
+// (a single list() call silently truncates at 1000 keys).
+async function listAllKeys(env) {
+  const keys = [];
+  let cursor;
+  while (true) {
+    const opts = cursor ? { cursor } : {};
+    const page = await env.CARTELERA_SUBS.list(opts);
+    keys.push(...page.keys);
+    if (page.list_complete || !page.cursor) break;
+    cursor = page.cursor;
+  }
+  return keys;
 }
 
 function parseCatedraHtml(html) {
