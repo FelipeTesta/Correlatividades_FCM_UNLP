@@ -48,7 +48,9 @@ APP/ (all logic + styles):
   utils.js             — Shared utilities
   abbreviation.js      — Name abbreviation logic
   finales/finales.json — Exam dates (61 subjects, Feb–Dec 2026)
-  vacunas_data.js      — Vaccine data
+  vacunas_data.js      — Vaccine data (required + optional, dTpa conditional on Pediatría)
+  vacunas_fichas.js    — Educational vaccine fact sheets + pathogen map data (national calendar)
+  vacunas.js           — Vaccination page logic (tracker + Mapa de Vacunas y Cepas + fichas)
   cartelera.js         — Cartelera page logic
   cartelera.css        — Cartelera page styles
   cartelera_ids.js     — Catedra→cartelera ID mapping (67 entries)
@@ -149,6 +151,7 @@ Static data from `APP/extension_data.js`. Filters + search. No backend.
 
 _(New features and pending tasks — mark ✅ when done)_
 
+- [x] Vacunas (2026-10-05): dTpa exigida solo al poder cursar Pediatría (PD001; `requiereDtpa()`; antes solo dT, mostrada atenuada sin ⚠). Opcionales del Calendario Nacional 2026 atenuadas sin ⚠. **Mapa de Vacunas y Cepas**: capa de círculos por patógeno (bacterianas/virales) + contornos por vacuna (anidados dT ⊂ dTpa ⊂ Quíntuple), filtros por patología (checkbox), clic → ficha (tipos/marcas como tags + enlaces MSAL/OMS). Faltantes colapsable (`toggleFaltantes()`). Footer fuentes oficiales. Datos: `vacunas_fichas.js` (19 vacunas, 23 patógenos).
 - [x] Mini calendario (Modo Árbol + página principal): strip de 53 semanas con emojis por evento (verano/letivo/invierno/inscripciones oblig+optativas/ingresantes/semana actual animada), tooltip con fechas + escalonamiento por año, drag móvil centrado en la semana actual. Árbol: strip inline en tree-top-bar, sticker "Inscripción" en nodos puede cursar (≤14 días antes o ventana abierta; en PC no cubre los botones: padding-bottom extra en hover/selected vía `:has()`). Principal: strip centrada debajo de la barra de progreso + tag "Inscripción" tras el nombre en listas puede cursar (`app.js agregar()`). Componente CSS en `base.css` (skins: arbol.css transparente / style.css caja). Tooltip con clamp horizontal + modo "below". Worker: chequeo mensual (día 1) de páginas de inscripciones + email admin; endpoints `/test-inscripciones(-send)`. Fechas 2026 oficiales (cartelera noticias 241–270 + PNG FCM leído por Gemini); único `research:true` restante: cierre W2. Proceso: `FLOW/minical.dot`.
 - [x] Extension data cleanup: removido campo `evidencia` (dato muerto, nunca referenciado por extension.js). Agregado Instagram de Parto respetado (partorespetado.unlp).
 - [x] Visitor counter fix: admin detection now IP-based (`ADMIN_IPS` in `worker.js`), session IDs no longer use `admin-` prefix.

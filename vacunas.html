@@ -28,6 +28,14 @@
   </div>
 </div>
 
+<!-- Modal ficha de vacuna (mapa de vacunas) -->
+<div id="modalFicha" class="modal-overlay" style="display: none;">
+  <div class="modal-content modal-ficha">
+    <button class="modal-close-x" onclick="cerrarFicha()">×</button>
+    <div id="fichaBody"></div>
+  </div>
+</div>
+
 <hr>
 
 <!-- REMOVED: <div class="box">
@@ -43,7 +51,7 @@
 
 <div class="box" id="faltantesBox">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-    <h3 onclick="toggleBox(this)" style="margin: 0; cursor: pointer;" tabindex="0" role="button">Vacunas Necesarias / Faltantes ⬇️</h3>
+    <h3 onclick="toggleFaltantes()" style="margin: 0; cursor: pointer;" tabindex="0" role="button">Vacunas Necesarias / Faltantes ⬇️</h3>
     <div style="display: flex; gap: 5px; align-items: center;">
         <input type="text" id="globalVacunaFecha" placeholder="03/2026" style="background-color: #1a1a1a; border: 1px solid #333; color: white; padding: 4px; border-radius: 4px;">
     </div>
@@ -60,7 +68,31 @@
   </div>
 </div>
 
+<!-- Mapa de vacunas y cepas (Venn/Euler interactivo) -->
+<div class="box" id="vennBox" style="display:none;">
+  <h3 onclick="toggleBox(this)" tabindex="0" role="button">Mapa de Vacunas y Cepas ⬇️</h3>
+  <div class="box-content">
+    <div class="venn-hint">Círculos = vacunas del Calendario Nacional (tamaño ∝ patógenos cubiertos). Clic en un círculo → ficha con tipos, marcas y enlaces oficiales.</div>
+    <div id="vennFilters"></div>
+    <div class="venn-scroll">
+      <svg id="vennSvg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+  </div>
+</div>
+
+<!-- Fuentes oficiales -->
+<footer class="vacunas-footer">
+  <h4>Fuentes oficiales</h4>
+  <a href="https://www.argentina.gob.ar/salud/vacunas" target="_blank" rel="noopener">Calendario Nacional de Vacunación — MSAL (actualizado anualmente)</a>
+  <a href="https://www.sadi.org.ar/" target="_blank" rel="noopener">SADI — Sociedad Argentina de Infectología</a>
+  <a href="https://anlis.gob.ar/" target="_blank" rel="noopener">ANLIS "Dr. Carlos G. Malbrán"</a>
+</footer>
+
+<script src="APP/materias.js"></script>
+<script src="APP/state-cache.js"></script>
+<script src="APP/requisitos.js"></script>
 <script src="APP/vacunas_data.js"></script>
+<script src="APP/vacunas_fichas.js"></script>
 <script src="APP/vacunas.js"></script>
 <div class="privacy-notice" id="privacyBanner" style="display:none">🔒 Este sitio no comparte tus datos, tus datos se almacenan solo en tu navegador. <button class="privacy-close" onclick="document.getElementById('privacyBanner').style.display='none'">✕</button></div>
 <script src="APP/nav.js"></script>

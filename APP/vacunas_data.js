@@ -19,7 +19,8 @@ const VACUNAS_CONFIG = {
     nome: 'Triple Bacteriana Acelular (dTpa)',
     patologias: ['Difteria', 'Tétanos', 'Tos Convulsa'],
     dosesSeries: 1,
-    intervaloRefuerzoMeses: 120 // 10 años
+    intervaloRefuerzoMeses: 120, // 10 años
+    // Exigida solo al poder cursar Pediatría (PD001, 5º año) — regla requiereDtpa() en vacunas.js
   },
   'dt': {
     nome: 'Doble Bacteriana (dT)',
@@ -38,5 +39,48 @@ const VACUNAS_CONFIG = {
     patologias: ['COVID-19'],
     dosesSeries: 3,
     intervaloRefuerzoMeses: 6 // 6 meses recomendado
+  },
+  'fiebreAmarilla': {
+    nome: 'Fiebre Amarilla',
+    patologias: ['Fiebre Amarilla'],
+    dosesSeries: 1,
+    intervaloRefuerzoMeses: null, // dosis única, inmunidad de por vida (OMS, nota descriptiva 2025)
+    // No obligatoria: recomendada para viajeros a zonas de riesgo (NEA/NOA, Iguazú)
+  },
+  'hepatitisA': {
+    nome: 'Hepatitis A',
+    patologias: ['Hepatitis A'],
+    dosesSeries: 2,
+    intervaloRefuerzoMeses: null, // esquema 0 y 6 meses
+    // No obligatoria en adultos (universal a los 12 meses); útil para viajeros/brotes
+  },
+  'varicela': {
+    nome: 'Varicela',
+    patologias: ['Varicela'],
+    dosesSeries: 2,
+    intervaloRefuerzoMeses: null, // esquema 0 y 1 mes (4-8 semanas)
+    // No obligatoria en adultos; indicada en susceptibles (sin antecedente ni vacuna)
+  },
+  'neumococica': {
+    nome: 'Neumocócica',
+    patologias: ['Neumococo'],
+    dosesSeries: 1,
+    intervaloRefuerzoMeses: null, // VNC20 dosis única en adultos sin esquema previo
+    // No obligatoria 15-64 años; indicada en factores de riesgo (universal a los 65)
+  },
+  'meningococica': {
+    nome: 'Meningocócica',
+    patologias: ['Meningococo'],
+    dosesSeries: 1,
+    intervaloRefuerzoMeses: null,
+    // No obligatoria en adultos; indicada en grupos de riesgo (asplenia, complemento, VIH)
+  },
+  'fiebreHemorragica': {
+    nome: 'Fiebre Hemorrágica Argentina',
+    patologias: ['Fiebre Hemorrágica Argentina (Junín)'],
+    dosesSeries: 1,
+    intervaloRefuerzoMeses: null, // Candid 1, dosis única
+    // No obligatoria en La Plata; indicada a partir de los 15 años en zona endémica
+    // (ciertas jurisdicciones rurales de Buenos Aires, Córdoba, Santa Fe y La Pampa)
   }
 };

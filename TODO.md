@@ -109,6 +109,23 @@ Table rows, navbar menu, map pins, modal and tree are ALL generated from the dat
 - Informativos: README.md (usage), AGENTS.md (IMPLEMENT), FLOW/universidades.dot (flow)
 - CARTO API key lives in `APP/universidades.js` (tile URL) — rotate in the CARTO dashboard if abused
 
+## Vacunas — dTpa condicional + vacunas opcionales ✅ (2026-10-05)
+- dTpa exigida solo al poder cursar **Pediatría (PD001, 5º año)** — `requiereDtpa()` en `APP/vacunas.js` (materias.js + state-cache.js + requisitos.js ahora cargan en vacunas.html). Antes de eso: solo dT.
+- Opcionales del Calendario Nacional 2026 (fiebreAmarilla 1 dosis de por vida —OMS, hepatitisA, varicela, neumococica VNC20, meningococica, fiebreHemorragica Candid#1): listadas **atenuadas (opacity 0.5) y sin ⚠**, con botón Agregar. La dTpa no exigida se muestra igual (atenuada, sin ⚠).
+
+## Vacunas — Mapa de Vacunas y Cepas (interactivo) ✅ (2026-10-05)
+Página: `vacunas.html` · Datos: `APP/vacunas_fichas.js` · Lógica: `APP/vacunas.js` (layout calculado a mano — **venn.js/d3 descartados** en la iteración m0413: el diseño de 2 capas no necesita la librería).
+
+Diseño final (según feedback m0376-m0418):
+1. **Dos capas**: capa base = círculos maciços semitransparentes **por PATÓGENO** (bacterianas #f59e0b / virales #22d3ee, nombre dentro en 1-2 líneas, campo `short` para nombres largos); capa superior = **contornos por VACUNA** (círculo mínimo que engloba sus patógenos +16px, nombre sobre el borde en `labelAngle` anti-solape, halo negro). `pointer-events: all` en el contorno → todo el disco clickeable (fix "fichas no abren": `fill:none` solo recibe clics en el trazo).
+2. **Anidamiento real**: dT ⊂ dTpa ⊂ Quíntuple forzado por `vennEnsureSubsets()`; vacuna Hep B solapa Quíntuple (patógeno compartido). En zonas compartidas clickea el círculo interior (intuitivo).
+3. **Filtros por patología** (22 checkboxes): vacina oculta si ALGUNO de sus patógenos está desmarcado (despeja el gráfico). Default todo marcado.
+4. **Ficha por vacuna** (UNA por tipo de vacuna del calendario, no por marca): Tipo(s) —tags si hay varios—, Marcas —tags "marca — empresa" con detalle en tooltip—, Esquema, Indicación, Patógenos, Nota FCM (dTpa), En desarrollo/estado del arte, Enlaces oficiales MSAL/OMS.
+5. **"Vacunas Necesarias/Faltantes" colapsable** (`toggleFaltantes()` — solo la lista, input de fecha siempre visible).
+6. **Rodapé**: Calendario Nacional MSAL + SADI + ANLIS Malbrán.
+7. Cobertura: calendario NACIONAL completo (19 vacunas / 23 patógenos: BCG, Quíntuple, dTpa/DTP, dT, Hep B, Polio, Rotavirus, Neumococo, Meningococo, Gripe, Triple Viral, Hep A, Varicela, VPH, Fiebre Amarilla, FHA, VSR, COVID-19, Rabia).
+8. Verificado live (localhost:5500): 19 contornos clickeables (16 directos + 3 del cluster anidado → anillo interior), 0 colisiones de texto, 0 fuera de canvas, filtro Difteria oculta Quíntuple/dTpa/dT, fichas con tags, subconjuntos anidados ✓.
+
 ## Mini calendario ✅ (implementado 2026-10-04)
 Implementado en `arbol.html` + `index.html` (página principal, debajo de la barra de progreso, tag "Inscripción" tras el nombre en Puede Cursar) + `APP/calendar_data.js` + `APP/minical.js` (strip 53 semanas, tooltips, drag móvil, stickers "Inscripción", worker mensual día 1). Componente CSS compartido en `base.css` (skins: arbol transparente / principal caja centrada). Proceso: `FLOW/minical.dot`. Abajo queda la especificación original + los datos de referencia usados.
 Em modo árbol, dentro do `tree-top-bar`, vamos criar uma espécie de mini calendário; a ideia é usar esse calendário visualmente e indicar períodos próximos de inscrições.

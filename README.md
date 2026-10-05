@@ -22,7 +22,7 @@ Si compartís o forkeás este proyecto, **debés citar la fuente con los crédit
 - **Cursando**: Marca materias que estás cursando actualmente (toggle con animación cyan)
 - **Abreviar nombres**: Toggle "Abreviar nombres" muestra abreviaturas/siglas médicas (`nombreCorto` de cada materia) en vez del nombre completo. Disponible en modo Árbol (panel de Leyenda) y en la página principal (en la barra superior, junto a "¿CÓMO USAR?"). Persistido en localStorage (`arbolAbbreviateNames` / `mainAbbreviateNames`, default activado). Cuando activo, la fuente del nombre aumenta ~30%.
 - **Fechas de finales**: Consulta las fechas de exámenes finales disponibles (actualizado Feb-Dic 2026, 61 materias)
-- **Vacunas**: Seguimiento de vacunación requerida para la carrera
+- **Vacunas**: Seguimiento del esquema de vacunación del personal de salud. dTpa exigida solo al poder cursar Pediatría (antes, dT). Incluye vacunas opcionales del Calendario Nacional 2026 (atenuadas, sin alerta) y el **Mapa de Vacunas y Cepas**: círculos por patógeno + contornos por vacuna (filtros por patología; clic → ficha educativa con tipos, marcas, esquemas y enlaces oficiales MSAL/OMS). Footer con fuentes oficiales (MSAL, SADI, ANLIS).
 - **Cartelera**: Verifica publicaciones de cátedras (avisos, exámenes, notas) con filtros por fecha y modos de visualización (por materia / cronológico)
 - **Notificaciones por email**: Recibe emails (9h/13h/19h ART) cuando haya nuevas publicaciones en tus cátedras
 - **Responsive**: Funciona en desktop y mobile

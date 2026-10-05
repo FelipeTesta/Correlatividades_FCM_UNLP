@@ -1297,3 +1297,158 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 /* PRIVACY NOTICE */
 /* ============================= */
 
+/* ============================= */
+/* VACUNAS — Mapa de vacunas y cepas (Venn) + fichas + footer */
+/* ============================= */
+
+.venn-hint {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+}
+
+#vennFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    margin-bottom: 10px;
+}
+
+.venn-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    user-select: none;
+}
+
+.venn-filter input {
+    accent-color: #22d3ee;
+    cursor: pointer;
+}
+
+.venn-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--bg-hover);
+    border-radius: 6px;
+    background-color: var(--bg);
+}
+
+.venn-scroll svg {
+    display: block;
+    min-width: 640px;
+    width: 100%;
+    height: auto;
+}
+
+.venn-node {
+    cursor: pointer;
+    outline: none;
+}
+
+.venn-node:hover circle,
+.venn-node:focus circle {
+    stroke-width: 2.5;
+}
+
+.venn-vacuna-name {
+    font-size: 10px;
+    font-weight: 700;
+    paint-order: stroke;
+    stroke: #000;
+    stroke-width: 3px;
+    stroke-linejoin: round;
+}
+
+.venn-pato-name {
+    font-size: 8.5px;
+    fill: var(--text);
+    paint-order: stroke;
+    stroke: #000;
+    stroke-width: 2.5px;
+    stroke-linejoin: round;
+}
+
+.modal-ficha {
+    max-width: 560px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.ficha-section {
+    margin-bottom: 12px;
+}
+
+.ficha-section h4 {
+    margin: 0 0 4px 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+}
+
+.ficha-section p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.ficha-section ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+}
+
+.ficha-section a {
+    color: #22d3ee;
+    text-decoration: none;
+}
+
+.ficha-section a:hover {
+    text-decoration: underline;
+}
+
+.ficha-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.ficha-tag {
+    background-color: rgba(34, 211, 238, 0.12);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 1px 8px;
+    font-size: 11px;
+    cursor: default;
+}
+
+.vacunas-footer {
+    margin-top: 28px;
+    padding: 16px 0 36px;
+    border-top: 1px solid var(--bg-hover);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vacunas-footer h4 {
+    margin: 0 0 4px 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+}
+
+.vacunas-footer a {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+}
+
+.vacunas-footer a:hover {
+    color: var(--text);
+}
+
