@@ -291,7 +291,7 @@ const materias = [
     {materia:"SEM91",condicion:"aprobada"}
   ]
 },
-{ codigo:"PD001", nombre:"Pediatría", nombreCorto: "Pediatría", anio:5, categoria:"anual", horas:190,
+{ codigo:"PD001", nombre:"Pediatría", nombreCorto: "Pediatría", anio:5, categoria:"cuatrimestral", horas:190,
   paraCursar:[
     {materia:"F9001",condicion:"regularizada"},
     {materia:"I0001",condicion:"regularizada"}
