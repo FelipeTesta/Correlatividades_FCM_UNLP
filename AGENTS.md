@@ -6,8 +6,8 @@ Guide for AI agents to understand the project's structure, conventions, and arch
 
 1. **Planning mode first:** If you can't modify files, assume planning mode. Read files, plan changes, wait for user to switch to Build mode.
 2. **Mobile first:** Always check and ensure responsiveness on mobile.
-3. **Update this file:** After completing changes, update this file and the changelog in README.md.
-4. **IMPLEMENT section:** At the bottom of this file — mark completed items with ✅ and add new entries as needed.
+3. **Documentation:** After completing changes, update the changelog in **LOG.md** (and README.md for feature details).
+4. **Task tracking:** Pending tasks live in `TODO.md` (section "Backlog general"); completed work goes to the `LOG.md` changelog. Do not keep feature logs in this file.
 5. **Keep this file lean:** This file is for agent guidance, not feature documentation. Technical details go in README.md.
 6. **License (must preserve):** Open source for PERSONAL use — sharing/copying allowed WITH credits, commercialization FORBIDDEN. Section "Licencia y Uso" in README.md — never remove or weaken it in any derivative.
 
@@ -20,48 +20,44 @@ Guide for AI agents to understand the project's structure, conventions, and arch
 ### Folder Layout
 
 ```
-Root (HTML entry points + config):
-  index.html          — Main page (subject tracking)
-  arbol.html          — Tree mode (visual dependency graph)
-  cartelera.html      — Cartelera (bulletin board)
-  vacunas.html        — Vaccination tracker
-  extension.html      — Extension projects
-  universidades.html  — Otras Universidades (interactive map, read-only tree)
-  TODO.md             — Otras Universidades evolution plan (research phases)
-  version.json        — Deploy version (git hash + timestamp)
-  worker.js           — Cloudflare Worker (proxy + email cron)
+Root (HTML entry points + infra):
+  *.html              — index, arbol, cartelera, vacunas, extension, universidades
+  version.json        — Deploy version (git hash + timestamp; bumped by deploy.ps1)
+  worker.js (1082L)   — Cloudflare Worker: cartelera proxy + email + cron reminders
   wrangler.toml       — Worker config
+  deploy.ps1          — Deploy helper
+  README.md / LOG.md / TODO.md / AGENTS.md — docs, changelog, tasks, this guide
 
-APP/ (all logic + styles):
-  materias.js          — Subject data (pure data, no logic)
-  app.js               — Main page logic
-  style.css            — Main page styles
-  arbol.js             — Tree mode logic
-  arbol.css            — Tree mode styles
-  calendar_data.js     — Mini calendario data (year events + inscripción windows + offerings)
-  minical.js           — Mini calendario logic (strip render, tooltip, drag, stickers API)
-  variables.css        — CSS custom properties (centralized palette)
-  base.css             — Global resets + shared styles
-  nav.css              — Navbar styles
-  state-cache.js       — localStorage read/write layer
-  requisitos.js        — Prerequisite evaluation functions
-  utils.js             — Shared utilities
-  abbreviation.js      — Name abbreviation logic
-  finales/finales.json — Exam dates (61 subjects, Feb–Dec 2026)
-  vacunas_data.js      — Vaccine data (required + optional, dTpa conditional on Pediatría)
-  vacunas_fichas.js    — Educational vaccine fact sheets + pathogen map data (national calendar)
-  vacunas.js           — Vaccination page logic (tracker + Mapa de Vacunas y Cepas + fichas)
-  cartelera.js         — Cartelera page logic
-  cartelera.css        — Cartelera page styles
-  cartelera_ids.js     — Catedra→cartelera ID mapping (67 entries)
-  extension_data.js    — Extension project data (20 projects)
-  extension.js         — Extension page logic
-  universidades_data.js — University data (PLACEHOLDER)
-  universidades.js     — University page logic (Leaflet, read-only tree, modal)
-  universidades.css    — University styles ( .uni-* prefix)
+APP/ (all logic + styles — vanilla ES6+, no build step):
+  Shared modules (load before page logic — order matters):
+    materias.js (655L, pure data) — subjects array
+    state-cache.js (19L)          — localStorage read/write layer
+    utils.js (35L)                — shared helpers
+    requisitos.js (61L)           — prerequisite evaluation (year gate for optativas)
+    calendar_data.js (148L)       — mini calendario data (2026 events + windows)
+    minical.js (288L)             — mini calendario strip render/tooltip/drag/stickers
+    abbreviation.js (48L)          — name abbreviation toggle
+    nav.js (158L)                 — shared navbar + presence badge (POST /heartbeat)
+    version-check.js (24L)        — auto-reload prompt on new deploy
+  Page logic:
+    app.js (1522L)                — main page
+    arbol.js (1377L)              — tree mode
+    cartelera.js (1821L)          — cartelera
+    universidades.js (1317L)      — otras universidades (Leaflet via CDN)
+    vacunas.js (460L)             — vaccination tracker + pathogen map
+    extension.js (158L)           — extension projects
+  Page data (pure data, zero functions):
+    universidades_data.js (2047L) · extension_data.js (302L) · vacunas_data.js ·
+    vacunas_fichas.js (418L, pathogen map) · cartelera_ids.js (48L, cátedra→ID, 67 entries) ·
+    finales/finales.json (62 codes — real SIU Guaraní data, past dates kept as libre evidence)
+  Styles (cascade): variables.css (palette) → base.css (global) → nav.css → <page>.css
 
-REF/ (reference data, not used by app):
-  correlativas optativas/optativas.csv
+tools/ (agent scripts, NOT deployed):
+  fetch-finales.js (242L)          — parse Guaraní public calendar → finals.json (dry-run/--write)
+  validate-universidades.js (125L) — universidades data sanity checks
+
+FLOW/ (process maps *.dot, gitignored) — finals-cycle, minical, universidades, agents…
+REF/ (reference data, gitignored) — PDFs, xlsx, csv, cloudflare-usage.md
 ```
 
 ## Data Structure — `APP/materias.js`
@@ -133,43 +129,25 @@ The `materias` array contains objects with this schema:
 5. **CSS:** Use CSS variables from `variables.css`. Never hardcode hex colors for the core palette.
 6. **Modularity:** Shared logic lives in `APP/state-cache.js`, `APP/utils.js`, `APP/requisitos.js`, `APP/abbreviation.js`. Page-specific logic stays in the page file.
 
-## Page Architecture
+## Page Architecture — Script Load Map
 
-### Main Page (index.html + app.js)
-Single-pass render. Six list boxes + progress bar. Subject tracking with prerequisite evaluation.
+Script order in each HTML matters (shared modules first, page logic last):
 
-### Tree Mode (arbol.html + arbol.js)
-Separate page, shares localStorage. Horizontal rows per year. SVG connectors between nodes. Node states mirror main page. Selection system for highlighting dependencies. Zoom controls. Mini calendario (`calendar_data.js` + `minical.js`): strip de semanas del año con eventos/inscripciones + stickers "Inscripción" en nodos puede cursar (ventana ≤14 días o abierta, reglas por categoría en `MINICAL_OFFERINGS`).
+| Page | Scripts (load order) |
+|---|---|
+| index | materias → state-cache → utils → requisitos → calendar_data → minical → abbreviation → **app** → version-check → nav |
+| arbol | materias → state-cache → utils → requisitos → calendar_data → minical → abbreviation → **arbol** → version-check → nav |
+| cartelera | materias → utils → cartelera_ids → **cartelera** → version-check → nav |
+| vacunas | materias → state-cache → requisitos → vacunas_data → vacunas_fichas → **vacunas** → nav |
+| extension | extension_data → **extension** → version-check → nav |
+| universidades | universidades_data → leaflet (CDN) → **universidades** |
 
-### Cartelera (cartelera.html + cartelera.js)
-Standalone page. Reads `cursando` + `estados` (regularizada) to find active subjects. Fetches publications via Cloudflare Worker proxy. Two rendering modes: "Por materia" (grouped) / "Cronológico" (timeline). Email notifications via Worker cron.
-
-### Extension (extension.html + extension.js)
-Static data from `APP/extension_data.js`. Filters + search. No backend.
-
-## IMPLEMENT
-
-_(New features and pending tasks — mark ✅ when done)_
-
-- [x] Árbol: tag "Libre" + markers con hover (2026-10-09): tag "Libre" en optativas (inferior izquierda, alineada al texto del nombre, left: 9px = node-border + content padding) — verde = fechas "Libre" en `finals.json` (dinámico, `cargarLibreFinales()` en arbol.js), naranja = `OPTATIVAS_LIBRE_HISTORICO` (vacía — ninguna optativa perdió el libre según PDFs oficiales 2024/2025). 🟡/⭕ ahora spans con `title` ("Te falta 1 materia para cursarla" / "Puede cursar pero no rendir final"); tooltips de cards sin nombre de materia. Fix border: padding del hover-sticker card→`.node-content` (flex-stretch no cubre padding del container). IMPORTANTE: el calendario oficial de finales 2026 migró a SIU Guaraní (`autogestion.guarani.unlp.edu.ar/fecha_examen`, SPA+POST con filtros hashed); las tablas HTML del sitio FCM son legado (id=1018 = 2º sem 2023; id=286 = PDF 2024; id=132 = PDF Feb–Mar; 2025 = PDF Abr–Dic) — el worker monitorea id=1018 (legado) y `finale-snapshot` no existe en KV (`storedHash: null` → monitoring ciego).
-- [x] Cloudflare Free Tier optimization (2026-10-05): presence moved KV→D1 (`presence` table, 3-min expiry, cron cleanup + `max_online` via D1 COUNT); `/heartbeat` single request returns `{online, visits}` with counts memoized 60s in Cache API (`getCounts()`); visit lock TTL 5s→1h; client poll 30s→60s paused in hidden tabs (`visibilitychange`; nav.js + universidades.js); cron `list()` pagination fixed (`listAllKeys()`, latent >1000-keys bug) + skips internal keys (`:`). KV free (1k writes/lists/day) now only subscriptions/snapshots/daily counters. Worker live (v c3997396). Diagnosis + math: `REF/cloudflare-usage.md` (gitignored).
-- [x] Vacunas (2026-10-05): dTpa exigida solo al poder cursar Pediatría (PD001; `requiereDtpa()`; antes solo dT, mostrada atenuada sin ⚠). Opcionales del Calendario Nacional 2026 atenuadas sin ⚠. **Mapa de Vacunas y Cepas**: capa de círculos por patógeno (bacterianas/virales) + contornos por vacuna (anidados dT ⊂ dTpa ⊂ Quíntuple), filtros por patología (checkbox), clic → ficha (tipos/marcas como tags + enlaces MSAL/OMS). Faltantes colapsable (`toggleFaltantes()`). Footer fuentes oficiales. Datos: `vacunas_fichas.js` (19 vacunas, 23 patógenos).
-- [x] Mini calendario (Modo Árbol + página principal): strip de 53 semanas con emojis por evento (verano/letivo/invierno/inscripciones oblig+optativas/ingresantes/semana actual animada), tooltip con fechas + escalonamiento por año, drag móvil centrado en la semana actual. Árbol: strip inline en tree-top-bar, sticker "Inscripción" en nodos puede cursar (≤14 días antes o ventana abierta; en PC no cubre los botones: padding-bottom extra en hover/selected vía `:has()`). Principal: strip centrada debajo de la barra de progreso + tag "Inscripción" tras el nombre en listas puede cursar (`app.js agregar()`). Componente CSS en `base.css` (skins: arbol.css transparente / style.css caja). Tooltip con clamp horizontal + modo "below". Worker: chequeo mensual (día 1) de páginas de inscripciones + email admin; endpoints `/test-inscripciones(-send)`. Fechas 2026 oficiales (cartelera noticias 241–270 + PNG FCM leído por Gemini); único `research:true` restante: cierre W2. Proceso: `FLOW/minical.dot`.
-- [x] Extension data cleanup: removido campo `evidencia` (dato muerto, nunca referenciado por extension.js). Agregado Instagram de Parto respetado (partorespetado.unlp).
-- [x] Visitor counter fix: admin detection now IP-based (`ADMIN_IPS` in `worker.js`), session IDs no longer use `admin-` prefix.
-- [x] Visitor counter dedup: `visitorSessionId` now stored in `localStorage` (was `sessionStorage`) so same device counts once per day, not per page load.
-- [x] Visitor counter: daily dedup changed to per-device (IP) via `visited:<ip>:<date>` + Cache API lock (race fix). Admin IPs `['192.168.0.27','190.17.188.134']` never count.
-- [x] iOS Safari CSS fixes: `max-height: 9999px` for box collapse, `100dvh` fallback for video overlay, `overflow-x: hidden` fallback, removed global `user-select: none`, scoped `touch-action: manipulation`.
-- [x] Finales data cleanup: merged 10 split/duplicate entries in `finales.json` (GE001, IM001, IMD01, NEUAT, LCM01, H0001, F9002, IAA01, T0100, BC002). Regular/Libre pairs now correctly structured.
-- [x] Finales inline display: optativas show "Libre:" or "Regular:" label based on `catedrasSeleccionadas`. Click label to toggle modalidad (no visual change). 3-day registration filter. Date dedup for shared Regular/Libre dates.
-- [x] Finales monitoring (`worker.js`): automated detection of exam date changes from UNLP HTML table. Cron: 1st/15th of month. Email admin on changes. Endpoints: `/test-finales` (diagnostic), `/test-finales-send` (force). Process map: `FLOW/finals-cycle.dot`.
-- [ ] Añadir exportar/importar estado (REMOVIDO: feature nunca implementada — menção falsa removida do app/README)
-- [ ] REVERTIDO: Mover el scroll de toda la página en el Modo Árbol — regresó al sistema original (scroll en .tree-wrapper, barra superior fija)
-- [ ] Corregir el scroll en retrato móvil: espacio vacío debajo del contenido visual (transform:scale no afecta el diseño) — pendiente
-- [x] Otras Universidades: página completa (navbar + tabla + mapa + planes reales UBA/UNC) — detalles en README + TODO.md
-- [x] Universidades Fase 2 (pase 2026-09-28/29): stats batch + webUrl → página de Medicina + alta unrn/baja unmoreno+unfv — detalles en TODO.md + LOG.md
-- [x] Universidades: ficha de datos en el modal del mapa + enlace "📋 Mostrar en la tabla" (cierre + scroll + pulso de la fila); columna "% Intern." → "Extranjeros"
-- [ ] Otras Universidades Fase 2: investigación de datos restantes — plan completo en TODO.md
+- **Main Page (app.js):** single-pass `render()`, six list boxes + progress bar. Finals display: 5-day enrollment rule (`FINALES_INSCRIPCION_DIAS`), dates PER CÁTEDRA never unified; the popup "Ver Fechas" cátedra selector persists in `catedrasSeleccionadas` and filters the card dates.
+- **Tree Mode (arbol.js):** separate page, shares localStorage. Year rows + SVG connectors. Mini calendario strip + "Inscripción" stickers; "Libre" tags on optativas built dynamically from finals.json.
+- **Cartelera:** standalone; reads `cursando` + `estados`; publications via Worker proxy; "Por materia"/"Cronológico" modes; email notifications via Worker cron.
+- **Extension:** static data, filters + search, no backend.
+- **Universidades:** Leaflet map + read-only tree + stats table (research state in TODO.md).
+- **Worker (worker.js):** cartelera proxy (`?id=` → cartelera.med.unlp.edu.ar, zero KV); `POST /heartbeat` (D1 presence + visits, counts memoized 60s); Resend email; cron 12/16/22 UTC = daily stats + presence cleanup + inscripciones pages check (day 1 monthly) + finales reminder (1st business day of Feb + 1st business day post-winter-break, flag KV per semester); `/test-*` diagnostic endpoints.
 
 ---
 ## LOG

@@ -1,4 +1,20 @@
 /* ============================= */
+/* PÁGINA PRINCIPAL              */
+/* ============================= */
+
+/* Deshabilitar selección de texto en la página principal
+   (inputs siguen seleccionables — mismo patrón que universidades.css) */
+body {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+input, textarea {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* ============================= */
 /* VIDEO MODAL & THUMBNAILS      */
 /* ============================= */
 .video-thumbnails-container {

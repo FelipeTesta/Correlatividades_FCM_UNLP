@@ -47,19 +47,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ],
     "Anatomía B": [
@@ -109,19 +109,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-13",
+        "label": "13/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ],
     "Anatomía C": [
@@ -171,19 +171,19 @@
       },
       {
         "fecha": "2026-10-23",
-        "label": "Octubre"
+        "label": "23/10"
       },
       {
-        "fecha": "2026-11-18",
-        "label": "Noviembre"
+        "fecha": "2026-11-11",
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
-        "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "fecha": "2026-12-18",
+        "label": "18/12"
       }
     ]
   },
@@ -215,19 +215,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
-        "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -279,19 +279,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -343,19 +343,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -407,19 +407,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-16",
+        "label": "16/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -471,19 +471,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -535,19 +535,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -599,19 +599,19 @@
       },
       {
         "fecha": "2026-10-23",
-        "label": "Octubre"
+        "label": "23/10"
       },
       {
-        "fecha": "2026-11-20",
-        "label": "Noviembre"
+        "fecha": "2026-11-13",
+        "label": "13/11"
       },
       {
         "fecha": "2026-12-04",
-        "label": "1° Dic"
+        "label": "04/12"
       },
       {
         "fecha": "2026-12-18",
-        "label": "2° Dic"
+        "label": "18/12"
       }
     ],
     "Ciencias Exactas - Libre": [
@@ -625,7 +625,7 @@
       },
       {
         "fecha": "2026-12-04",
-        "label": "1° Dic"
+        "label": "04/12"
       }
     ]
   },
@@ -677,19 +677,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -741,19 +741,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
-        "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "fecha": "2026-11-13",
+        "label": "13/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ],
     "Cirugía B": [
@@ -803,19 +803,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ],
     "Cirugía C": [
@@ -865,19 +865,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ],
     "Cirugía D": [
@@ -927,19 +927,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ],
     "Cirugía E": [
@@ -989,19 +989,19 @@
       },
       {
         "fecha": "2026-10-23",
-        "label": "Octubre"
+        "label": "23/10"
       },
       {
         "fecha": "2026-11-13",
-        "label": "Noviembre"
+        "label": "13/11"
       },
       {
         "fecha": "2026-12-04",
-        "label": "1° Dic"
+        "label": "04/12"
       },
       {
         "fecha": "2026-12-18",
-        "label": "2° Dic"
+        "label": "18/12"
       }
     ]
   },
@@ -1053,19 +1053,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -1117,19 +1117,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-16",
+        "label": "16/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -1181,19 +1181,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -1245,24 +1245,41 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
   "R9002": {
-    "Diagnóstico y Terapéutica por imágenes II y Radiologia": []
+    "Diagnóstico y Terapéutica por imágenes II y Radiologia": [
+      {
+        "fecha": "2026-10-21",
+        "label": "21/10"
+      },
+      {
+        "fecha": "2026-11-11",
+        "label": "11/11"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "02/12"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "16/12"
+      }
+    ]
   },
   "DISIN": {
     "Discapacidad Intelectual": [
@@ -1312,19 +1329,19 @@
       },
       {
         "fecha": "2026-10-24",
-        "label": "Octubre"
+        "label": "24/10"
       },
       {
         "fecha": "2026-11-14",
-        "label": "Noviembre"
+        "label": "14/11"
       },
       {
         "fecha": "2026-12-05",
-        "label": "1° Dic"
+        "label": "05/12"
       },
       {
         "fecha": "2026-12-19",
-        "label": "2° Dic"
+        "label": "19/12"
       }
     ]
   },
@@ -1376,19 +1393,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -1440,19 +1457,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -1507,19 +1524,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -1571,19 +1588,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -1635,19 +1652,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -1699,19 +1716,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -1763,19 +1780,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -1827,19 +1844,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -1891,19 +1908,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ],
     "Genética-Libre": [
@@ -1953,19 +1970,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -2017,19 +2034,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ],
     "Ginecología B": [
@@ -2079,19 +2096,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -2143,19 +2160,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
-        "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "fecha": "2026-11-12",
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ],
     "Historia de la Medicina-Libre": [
@@ -2205,19 +2222,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -2269,19 +2286,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -2333,19 +2350,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -2397,19 +2414,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -2460,20 +2477,20 @@
         "label": "Septiembre"
       },
       {
-        "fecha": "2026-10-22",
-        "label": "Octubre"
+        "fecha": "2026-10-23",
+        "label": "23/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -2525,19 +2542,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-16",
+        "label": "16/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ],
     "Ingles Médico-Libre": [
@@ -2587,19 +2604,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-16",
+        "label": "16/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -2651,19 +2668,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-16",
+        "label": "16/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ],
     "Inmunología-Libre": [
@@ -2713,19 +2730,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-16",
+        "label": "16/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -2777,19 +2794,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -2841,19 +2858,19 @@
       },
       {
         "fecha": "2026-10-23",
-        "label": "Octubre"
+        "label": "23/10"
       },
       {
         "fecha": "2026-11-13",
-        "label": "Noviembre"
+        "label": "13/11"
       },
       {
         "fecha": "2026-12-04",
-        "label": "1° Dic"
+        "label": "04/12"
       },
       {
         "fecha": "2026-12-18",
-        "label": "2° Dic"
+        "label": "18/12"
       }
     ]
   },
@@ -2969,19 +2986,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-12",
+        "label": "12/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ],
     "Medicina Interna B": [
@@ -3031,19 +3048,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ],
     "Medicina Interna C": [
@@ -3093,19 +3110,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ],
     "Medicina Interna D": [
@@ -3135,19 +3152,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
-        "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "fecha": "2026-11-12",
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ],
     "Medicina Interna E": [
@@ -3177,19 +3194,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ],
     "Medicina Interna F": [
@@ -3219,19 +3236,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-12",
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -3256,6 +3273,22 @@
       {
         "fecha": "2026-04-07",
         "label": "Abril"
+      },
+      {
+        "fecha": "2026-10-21",
+        "label": "21/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "02/12"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "16/12"
       }
     ],
     "Medicina Interna E": [
@@ -3278,6 +3311,22 @@
       {
         "fecha": "2026-04-09",
         "label": "Abril"
+      },
+      {
+        "fecha": "2026-10-22",
+        "label": "22/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "03/12"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "17/12"
       }
     ],
     "Medicina Interna F": [
@@ -3300,6 +3349,76 @@
       {
         "fecha": "2026-04-09",
         "label": "Abril"
+      },
+      {
+        "fecha": "2026-10-19",
+        "label": "19/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "02/12"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "14/12"
+      }
+    ],
+    "Medicina Interna C": [
+      {
+        "fecha": "2026-10-20",
+        "label": "20/10"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "10/11"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "01/12"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "15/12"
+      }
+    ],
+    "Medicina Interna B": [
+      {
+        "fecha": "2026-10-20",
+        "label": "20/10"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "10/11"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "01/12"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "15/12"
+      }
+    ],
+    "Medicina Interna A": [
+      {
+        "fecha": "2026-10-22",
+        "label": "22/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "30/11"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "14/12"
       }
     ]
   },
@@ -3351,19 +3470,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-12",
+        "label": "12/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -3415,19 +3534,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ],
     "Neuroanatomía Semiológica-Libre": [
@@ -3460,16 +3579,16 @@
         "label": "Agosto"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -3521,19 +3640,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -3585,24 +3704,41 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
   "NUTRI": {
-    "Nutrición Clínica": []
+    "Nutrición Clínica": [
+      {
+        "fecha": "2026-10-13",
+        "label": "13/10"
+      },
+      {
+        "fecha": "2026-11-03",
+        "label": "03/11"
+      },
+      {
+        "fecha": "2026-11-24",
+        "label": "24/11"
+      },
+      {
+        "fecha": "2026-12-08",
+        "label": "08/12"
+      }
+    ]
   },
   "OB001": {
     "Obstetricia": [
@@ -3652,19 +3788,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -3716,19 +3852,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -3780,19 +3916,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -3844,19 +3980,19 @@
       },
       {
         "fecha": "2026-10-22",
-        "label": "Octubre"
+        "label": "22/10"
       },
       {
         "fecha": "2026-11-12",
-        "label": "Noviembre"
+        "label": "12/11"
       },
       {
         "fecha": "2026-12-03",
-        "label": "1° Dic"
+        "label": "03/12"
       },
       {
         "fecha": "2026-12-17",
-        "label": "2° Dic"
+        "label": "17/12"
       }
     ]
   },
@@ -3907,20 +4043,20 @@
         "label": "Septiembre"
       },
       {
-        "fecha": "2026-10-19",
-        "label": "Octubre"
+        "fecha": "2026-10-21",
+        "label": "21/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-12",
+        "label": "12/11"
       },
       {
-        "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "fecha": "2026-12-02",
+        "label": "02/12"
       },
       {
-        "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "fecha": "2026-12-17",
+        "label": "17/12"
       }
     ],
     "Patología B": [
@@ -3970,19 +4106,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-16",
+        "label": "16/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -4034,19 +4170,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ],
     "Pediatría B": [
@@ -4092,19 +4228,19 @@
       },
       {
         "fecha": "2026-10-23",
-        "label": "Octubre"
+        "label": "23/10"
       },
       {
         "fecha": "2026-11-13",
-        "label": "Noviembre"
+        "label": "13/11"
       },
       {
-        "fecha": "2026-12-11",
-        "label": "1° Dic"
+        "fecha": "2026-12-04",
+        "label": "04/12"
       },
       {
         "fecha": "2026-12-18",
-        "label": "2° Dic"
+        "label": "18/12"
       }
     ]
   },
@@ -4156,19 +4292,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -4220,19 +4356,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -4284,19 +4420,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -4348,19 +4484,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -4412,19 +4548,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-10",
+        "label": "10/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -4476,19 +4612,19 @@
       },
       {
         "fecha": "2026-10-19",
-        "label": "Octubre"
+        "label": "19/10"
       },
       {
-        "fecha": "2026-11-09",
-        "label": "Noviembre"
+        "fecha": "2026-11-11",
+        "label": "11/11"
       },
       {
         "fecha": "2026-11-30",
-        "label": "1° Dic"
+        "label": "30/11"
       },
       {
         "fecha": "2026-12-14",
-        "label": "2° Dic"
+        "label": "14/12"
       }
     ]
   },
@@ -4540,19 +4676,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ],
     "Terapia Intensiva-Libre": [
@@ -4602,19 +4738,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -4666,19 +4802,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -4726,15 +4862,19 @@
       },
       {
         "fecha": "2026-10-21",
-        "label": "Octubre"
+        "label": "21/10"
       },
       {
         "fecha": "2026-11-11",
-        "label": "Noviembre"
+        "label": "11/11"
       },
       {
         "fecha": "2026-12-02",
-        "label": "1° Dic"
+        "label": "02/12"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "16/12"
       }
     ],
     "Transplante de Órganos - Libre": [
@@ -4744,7 +4884,7 @@
       },
       {
         "fecha": "2026-12-16",
-        "label": "2° Dic"
+        "label": "16/12"
       }
     ]
   },
@@ -4796,19 +4936,19 @@
       },
       {
         "fecha": "2026-10-20",
-        "label": "Octubre"
+        "label": "20/10"
       },
       {
         "fecha": "2026-11-10",
-        "label": "Noviembre"
+        "label": "10/11"
       },
       {
         "fecha": "2026-12-01",
-        "label": "1° Dic"
+        "label": "01/12"
       },
       {
         "fecha": "2026-12-15",
-        "label": "2° Dic"
+        "label": "15/12"
       }
     ]
   },
@@ -4853,6 +4993,116 @@
       {
         "fecha": "2026-12-16",
         "label": "2° Dic"
+      }
+    ]
+  },
+  "SEM91": {
+    "Semiología F": [
+      {
+        "fecha": "2026-10-19",
+        "label": "19/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "02/12"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "14/12"
+      }
+    ],
+    "Semiología B": [
+      {
+        "fecha": "2026-10-20",
+        "label": "20/10"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "10/11"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "01/12"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "15/12"
+      }
+    ],
+    "Semiología C": [
+      {
+        "fecha": "2026-10-20",
+        "label": "20/10"
+      },
+      {
+        "fecha": "2026-11-10",
+        "label": "10/11"
+      },
+      {
+        "fecha": "2026-12-01",
+        "label": "01/12"
+      },
+      {
+        "fecha": "2026-12-15",
+        "label": "15/12"
+      }
+    ],
+    "Semiología D": [
+      {
+        "fecha": "2026-10-21",
+        "label": "21/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-12-02",
+        "label": "02/12"
+      },
+      {
+        "fecha": "2026-12-16",
+        "label": "16/12"
+      }
+    ],
+    "Semiología A": [
+      {
+        "fecha": "2026-10-22",
+        "label": "22/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-11-30",
+        "label": "30/11"
+      },
+      {
+        "fecha": "2026-12-14",
+        "label": "14/12"
+      }
+    ],
+    "Semiología E": [
+      {
+        "fecha": "2026-10-22",
+        "label": "22/10"
+      },
+      {
+        "fecha": "2026-11-12",
+        "label": "12/11"
+      },
+      {
+        "fecha": "2026-12-03",
+        "label": "03/12"
+      },
+      {
+        "fecha": "2026-12-17",
+        "label": "17/12"
       }
     ]
   }

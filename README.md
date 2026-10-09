@@ -105,6 +105,13 @@ Detalles técnicos de implementación para referencia. Ver también [AGENTS.md](
 - **SVG Dimensions:** `updateSvgDimensions()` usa hide-SVG → medir `scrollWidth/scrollHeight` → restore-SVG para evitar loop de feedback.
 - **Scroll Listener:** Registrado una vez en DOMContentLoaded (no dentro de initTree). Solo llama `drawConnections()`, no `updateSvgDimensions()`.
 
+### Fechas de Finales — Detalles
+
+- **Fuente de datos:** SIU Guaraní público (`autogestion.guarani.unlp.edu.ar/fecha_examen`, server-rendered con filtros: RA=FCM, ubicación=Facultad, carrera=Medicina). El calendario oficial de la FCM migró a Guaraní; las tablas HTML del sitio son legado (id=1018 = 2º sem 2023). Actualización local: `node tools/fetch-finales.js` (dry-run) / `--write` (aplica). El worker NO compara contenido — manda un email de recordatorio 2 veces por año (1er día hábil de febrero + 1er día hábil post-receso invernal ~03/08, flag KV por semestre) para pedirle al agente que corra la herramienta. Proceso del agente: `FLOW/finals-cycle.dot`.
+- **Regla de inscripción:** cierra 5 días antes del examen → el card muestra cada fecha mientras todavía es inscriptible (≥5 días); con <5 salta a las próximas 3 ABIERTAS por cátedra (`FINALES_INSCRIPCION_DIAS` en app.js).
+- **⚠ Relación popup "Ver Fechas" ↔ página principal:** el selector de cátedras del popup persiste en `localStorage.catedrasSeleccionadas[CODE]` y **filtra las fechas del card en las listas** (`obtenerProximasFechas` respeta la selección). Sin selección → fechas agrupadas por cátedra ("A: 19/oct · B: 13/nov · C: 11/nov"); con selección → solo esa cátedra. En optativas el selector alterna Libre/Regular (label del card "Libre:"/"Regular:"). Las fechas NUNCA se unifican entre cátedras — cada cátedra mantiene las suyas aunque se repitan.
+- **Etiquetas de cátedra cortas:** `catedraCorta()` — "Anatomía A"→"A", "Genética-Libre"→"Libre", "Toxicología"→sin cambio.
+
 ### Cartelera — Detalles
 
 - **Arquitectura:** Página standalone compartiendo localStorage. Accedida desde "📋 Verificar Cartelera" en arbol.html top-bar.

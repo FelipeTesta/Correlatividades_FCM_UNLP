@@ -106,7 +106,7 @@ Table rows, navbar menu, map pins, modal and tree are ALL generated from the dat
 
 ## Maintenance
 - Update this file together with `LOG.md` after each session
-- Informativos: README.md (usage), AGENTS.md (IMPLEMENT), FLOW/universidades.dot (flow)
+- Informativos: README.md (usage), AGENTS.md (orientación general), FLOW/universidades.dot (flow)
 - CARTO API key lives in `APP/universidades.js` (tile URL) — rotate in the CARTO dashboard if abused
 
 ## Vacunas — dTpa condicional + vacunas opcionales ✅ (2026-10-05)
@@ -223,3 +223,10 @@ Confirmar com fontes oficiais e remover o flag:
 - [ ] Oferta por bimestre de cada matéria bimestral (pesquisa por matéria — regras genéricas aplicadas por enquanto)
 - [x] Confirmar anuais de 1º ano → março e demais anuais → abril — CONFIRMADO (PNG FCM)
 Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa por email no dia 1 de cada mês quando muda)
+
+## Backlog general del proyecto
+(Pendencias fora do escopo "Otras Universidades" — movidas de AGENTS.md, 2026-10-09)
+
+- [ ] Corregir el scroll en retrato móvil (Modo Árbol): espacio vacío debajo del contenido visual — transform: scale no afecta el layout real
+- NOTA: exportar/importar estado NUNCA existió (mención falsa ya removida del app/README) — no reintroducir sin pedido
+- NOTA: mover el scroll de toda la página en el Modo Árbol fue REVERTIDO (scroll queda en .tree-wrapper, barra superior fija) — no reintentar

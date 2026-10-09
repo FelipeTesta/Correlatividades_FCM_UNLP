@@ -125,6 +125,12 @@ function cargarFechasFinales() {
         .catch(err => console.error('Error cargando fechas de finales:', err));
 }
 
+// Inscripción a finales cierra 5 días antes del examen → una fecha se muestra
+// mientras todavía se puede inscribir (>= 5 días); con < 5 se salta a las
+// próximas ABIERTAS. Cada cátedra tiene sus propias fechas — NO se unifican
+// (aunque se repitan entre cátedras). Límite: 3 fechas abiertas por cátedra.
+const FINALES_INSCRIPCION_DIAS = 5;
+
 function obtenerProximasFechas(codigo, soloLibre = false, soloRegular = false) {
     const ahora = new Date();
     ahora.setHours(0, 0, 0, 0);
@@ -155,75 +161,54 @@ function obtenerProximasFechas(codigo, soloLibre = false, soloRegular = false) {
     
     todasFechas.sort((a, b) => a.fecha - b.fecha);
     
-    const seenDates = new Set();
-    const uniqueFechas = todasFechas.filter(f => {
-        const key = f.fecha.getTime() + '|' + f.label;
-        if (seenDates.has(key)) return false;
-        seenDates.add(key);
-        return true;
-    });
-    
+    const porCatedra = {};
     const proximas = [];
-    for (let f of uniqueFechas) {
+    for (let f of todasFechas) {
         const diffTiempo = f.fecha - ahora;
         const diffDias = Math.ceil(diffTiempo / (1000 * 60 * 60 * 24));
-        if (diffDias >= 3 && proximas.length < 3) {
-            proximas.push({ ...f, diffDias });
-        }
+        if (diffDias < FINALES_INSCRIPCION_DIAS) continue; // inscripción ya cerrada
+        if ((porCatedra[f.catedra] || 0) >= 3) continue;   // máx. 3 abiertas por cátedra
+        porCatedra[f.catedra] = (porCatedra[f.catedra] || 0) + 1;
+        proximas.push({ ...f, diffDias });
     }
     
     if (proximas.length === 0) return null;
     return proximas;
 }
 
-function obtenerTodasFechas(codigo) {
-    const entradas = fechasFinales[codigo];
-    if (!entradas || entradas.length === 0) return null;
-    
-    const ahora = new Date();
-    ahora.setHours(0, 0, 0, 0);
-    
-    const catedraSel = catedrasSeleccionadas[codigo];
-    const todasFechas = [];
-    entradas.forEach(entrada => {
-        if (catedraSel && entrada.catedra !== catedraSel) {
-            return;
-        }
-        entrada.fechas.forEach(f => {
-            todasFechas.push({
-                fecha: f.fecha,
-                label: f.label,
-                catedra: entrada.catedra,
-                esLibre: entrada.esLibre,
-                nombreCompleto: entrada.nombreCompleto
-            });
-        });
-    });
-    
-    if (todasFechas.length === 0) return null;
-    
-    todasFechas.sort((a, b) => a.fecha - b.fecha);
-    
-    const seenDates = new Set();
-    const uniqueFechas = todasFechas.filter(f => {
-        const key = f.fecha.getTime() + '|' + f.label;
-        if (seenDates.has(key)) return false;
-        seenDates.add(key);
-        return true;
-    });
-    
-    const proximas = [];
-    const anteriores = [];
-    
-    for (let f of uniqueFechas) {
-        if (f.fecha >= ahora) {
-            proximas.push(f);
-        } else {
-            anteriores.push(f);
+// Etiqueta corta de cátedra: "Anatomía A"→"A", "Medicina Interna D"→"D",
+// "Genética-Libre"→"Libre", "Toxicología"→"Toxicología" (sin cambio).
+function catedraCorta(cat, base) {
+    if (base && cat.startsWith(base)) {
+        const suf = cat.slice(base.length).replace(/^[\s\-–]+/, '').trim();
+        if (suf) return suf;
+    }
+    if (base) {
+        const words = base.split(' ');
+        for (let i = words.length; i > 0; i--) {
+            const pre = words.slice(0, i).join(' ');
+            if (pre && cat.startsWith(pre + ' ')) {
+                return cat.slice(pre.length + 1).replace(/^[\s\-–]+/, '').trim() || cat;
+            }
         }
     }
-    
-    return { proximas, anteriores };
+    return cat;
+}
+
+// Texto de fechas agrupadas por cátedra (sin unificar):
+// una cátedra → "19/oct, 10/nov" · varias → "A: 19/oct · C: 23/oct, 10/nov"
+function fechasPorCatedraTexto(fechas) {
+    const grupos = new Map();
+    fechas.forEach(f => {
+        if (!grupos.has(f.catedra)) grupos.set(f.catedra, []);
+        grupos.get(f.catedra).push(f);
+    });
+    if (grupos.size <= 1) return fechas.map(f => formatearFechaDMA(f.fecha)).join(", ");
+    const partes = [];
+    for (const [cat, fs] of grupos) {
+        partes.push(catedraCorta(cat, fs[0].nombreCompleto) + ": " + fs.map(f => formatearFechaDMA(f.fecha)).join(", "));
+    }
+    return partes.join(" · ");
 }
 
 document.getElementById("anioIngreso").value = anioIngreso;
@@ -1016,6 +1001,10 @@ infoText += materia.anio + "° Año";
         // Para otros: Año/Categoria → botones
         
         // Agregar fechas de finales para puedeFinal, no puedeFinal y puedeCursar-optativas
+        // ⚠ RELACIÓN CON EL POPUP "Ver Fechas": las fechas del card respetan la cátedra
+        // elegida en el selector del popup (persistida en `catedrasSeleccionadas` vía
+        // guardarCatedraSeleccionada). Sin selección → fechas agrupadas por cátedra;
+        // con selección → solo esa cátedra. No unificar fechas entre cátedras.
         let fechasSpan = null;
         let btnCalendario = null;
 const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
@@ -1053,7 +1042,7 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
                         datesSpan.innerText = proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
                         fechasSpan.appendChild(labelSpan);
                         fechasSpan.appendChild(datesSpan);
-                        if (proximas[0].diffDias <= 3) fechasSpan.classList.add("urgente");
+                        if (proximas[0].diffDias <= FINALES_INSCRIPCION_DIAS + 2) fechasSpan.classList.add("urgente");
                     } else if (tieneDatos) {
                         fechasSpan = document.createElement("span");
                         fechasSpan.innerText = "-";
@@ -1063,9 +1052,9 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
                     const proximas = obtenerProximasFechas(codigo, false);
                     if (proximas && proximas.length > 0) {
                         fechasSpan = document.createElement("span");
-                        fechasSpan.innerText = "Finales: " + proximas.map(f => formatearFechaDMA(f.fecha)).join(", ");
+                        fechasSpan.innerText = "Finales: " + fechasPorCatedraTexto(proximas);
                         fechasSpan.className = "fechas-proximas";
-                        if (proximas[0].diffDias <= 3) fechasSpan.classList.add("urgente");
+                        if (proximas[0].diffDias <= FINALES_INSCRIPCION_DIAS + 2) fechasSpan.classList.add("urgente");
                     } else if (tieneDatos) {
                         fechasSpan = document.createElement("span");
                         fechasSpan.innerText = "-";
@@ -1446,18 +1435,11 @@ function mostrarPopupFechas(codigo, nombreMateria) {
     const ahora = new Date();
     ahora.setHours(0, 0, 0, 0);
     todasFechas.sort((a, b) => a.fecha - b.fecha);
-    
-    const seenDates = new Set();
-    const uniqueFechas = todasFechas.filter(f => {
-        const key = f.fecha.getTime() + '|' + f.label;
-        if (seenDates.has(key)) return false;
-        seenDates.add(key);
-        return true;
-    });
+    // Sin dedup: cada cátedra muestra sus propias fechas, aunque se repitan
     
     const proximas = [];
     const anteriores = [];
-    for (let f of uniqueFechas) {
+    for (let f of todasFechas) {
         if (f.fecha >= ahora) {
             proximas.push(f);
         } else {
@@ -1469,6 +1451,7 @@ function mostrarPopupFechas(codigo, nombreMateria) {
     anteriores.sort((a, b) => b.fecha - a.fecha);
     
     const datos = { proximas, anteriores };
+    const multipleCatedras = new Set(entradas.map(e => e.catedra)).size > 1;
     
     const tieneCatedras = catedrasData[codigo] && catedrasData[codigo].tieneCatedras;
     
@@ -1504,8 +1487,7 @@ function mostrarPopupFechas(codigo, nombreMateria) {
         catedrasData[codigo].catedras.forEach(cat => {
             const option = document.createElement("option");
             option.value = cat;
-            const esLibreCat = cat.toLowerCase().includes('libre');
-            option.textContent = esLibreCat ? 'Libre' : 'Regular';
+            option.textContent = catedraCorta(cat, nombreMateria);
             selectCatedra.appendChild(option);
         });
         
@@ -1516,6 +1498,11 @@ function mostrarPopupFechas(codigo, nombreMateria) {
         
         modal.appendChild(selectCatedra);
         
+        // ⚠ RELACIÓN CON LA PÁGINA PRINCIPAL: la cátedra elegida aquí se persiste en
+        // `catedrasSeleccionadas` y FILTRA las fechas del card en las listas fuera
+        // (obtenerProximasFechas respeta catedraSel). Elegir cátedra cambia popup
+        // Y card. La opción "Libre"/"Regular" de las optativas también alterna el
+        // label del card (Libre:/Regular:) — ver render de puedeCursar-optativas.
         selectCatedra.onchange = () => {
             const catedraSeleccionada = selectCatedra.value;
             guardarCatedraSeleccionada(codigo, catedraSeleccionada);
@@ -1577,12 +1564,19 @@ function mostrarPopupFechas(codigo, nombreMateria) {
                 fechaSpan.innerText = formatearFechaDMA(f.fecha);
                 fechaSpan.className = "fecha-item";
                 
+                li.appendChild(fechaSpan);
+                if (multipleCatedras && !catedraSel) {
+                    const catSpan = document.createElement("span");
+                    catSpan.innerText = " [" + catedraCorta(f.catedra, f.nombreCompleto) + "]";
+                    catSpan.style.color = "#999";
+                    catSpan.style.fontSize = "12px";
+                    li.appendChild(catSpan);
+                }
                 const labelSpan = document.createElement("span");
                 labelSpan.innerText = ` (${f.label})`;
                 labelSpan.style.color = "#999";
                 labelSpan.style.fontSize = "12px";
                 
-                li.appendChild(fechaSpan);
                 li.appendChild(labelSpan);
                 ulProx.appendChild(li);
             });
@@ -1607,12 +1601,19 @@ function mostrarPopupFechas(codigo, nombreMateria) {
                 fechaSpan.innerText = formatearFechaDMA(f.fecha);
                 fechaSpan.className = "fecha-item-anterior";
                 
+                li.appendChild(fechaSpan);
+                if (multipleCatedras && !catedraSel) {
+                    const catSpan = document.createElement("span");
+                    catSpan.innerText = " [" + catedraCorta(f.catedra, f.nombreCompleto) + "]";
+                    catSpan.style.color = "#666";
+                    catSpan.style.fontSize = "12px";
+                    li.appendChild(catSpan);
+                }
                 const labelSpan = document.createElement("span");
                 labelSpan.innerText = ` (${f.label})`;
                 labelSpan.style.color = "#555";
                 labelSpan.style.fontSize = "12px";
                 
-                li.appendChild(fechaSpan);
                 li.appendChild(labelSpan);
                 ulAnt.appendChild(li);
             });
