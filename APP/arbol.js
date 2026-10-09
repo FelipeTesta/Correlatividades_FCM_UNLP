@@ -30,11 +30,66 @@ function onAbbreviationToggle() {
     updateTree();
 }
 
+// ─── Final libre en optativas (tag "Libre") ───────────────────
+// Verde: la cátedra ofrece fechas "Libre" en el calendario vigente
+//        (finals.json — se calcula dinámicamente en cargarLibreFinales()).
+// Naranja: pudo rendirse libre en calendarios anteriores (2024/2025) pero ya
+//          no figura en el vigente. Research 2026-10-09 (PDFs oficiales 2024,
+//          2025 Abr-Dic y Feb-Mar + Anexo I Res 465/18): ninguna optativa perdió
+//          el libre → lista naranja vacía por ahora; llenar si cambia.
+var libreFinales = null; // Set de códigos con modalidad libre en finales.json
+var OPTATIVAS_LIBRE_HISTORICO = []; // naranja: libre histórico sin fechas actuales
+
+function getLibreInfo(m) {
+    if (m.categoria !== 'optativa') return null;
+    if (libreFinales && libreFinales.has(m.codigo)) return { historico: false };
+    if (OPTATIVAS_LIBRE_HISTORICO.indexOf(m.codigo) !== -1) return { historico: true };
+    return null;
+}
+
+function libreTooltipText(info) {
+    return info.historico
+        ? 'Pudo rendir el final libre; sin fechas en el calendario vigente'
+        : 'Puede rendir el final libre';
+}
+
+// Carga finales.json y marca las optativas con modalidad libre. Patchea los
+// nodos ya renderizados (el fetch puede llegar después del primer render).
+function cargarLibreFinales() {
+    return fetch('APP/finales/finales.json')
+        .then(function (response) { return response.json(); })
+        .then(function (data) {
+            libreFinales = new Set();
+            for (var codigo in data) {
+                for (var catedra in data[codigo]) {
+                    if (catedra.toLowerCase().indexOf('libre') !== -1) {
+                        libreFinales.add(codigo);
+                        break;
+                    }
+                }
+            }
+            document.querySelectorAll('.subject-node[data-codigo]').forEach(function (nodeEl) {
+                if (nodeEl.querySelector('.node-libre')) return;
+                var mat = materias.find(function (m) { return m.codigo === nodeEl.dataset.codigo; });
+                if (!mat) return;
+                var info = getLibreInfo(mat);
+                if (!info) return;
+                var tag = document.createElement('span');
+                tag.className = info.historico ? 'node-libre node-libre-historico' : 'node-libre';
+                tag.textContent = 'Libre';
+                nodeEl.appendChild(tag);
+                nodeEl.title += '\n' + libreTooltipText(info);
+            });
+        })
+        .catch(function (err) { console.error('Error cargando finales para tag Libre:', err); });
+}
+
 // ===============================
 // INIT
 // ===============================
 
 document.addEventListener('DOMContentLoaded', initTree);
+document.addEventListener('DOMContentLoaded', cargarLibreFinales);
 
 // Re-draw connections on resize / scroll
 let resizeTimeout;
@@ -190,7 +245,10 @@ function createSubjectNode(m) {
     var nameSpan = document.createElement('span');
     nameSpan.className = 'node-name';
 
-    // Add 🟡 emoji if this subject cannot be taken yet and is missing exactly 1 prerequisite
+    // Markers junto al nombre:
+    // 🟡 = bloqueada y le falta exactamente 1 requisito para cursar
+    // ⭕ = puede cursar pero no puede rendir el final
+    // Son spans con title (hover propio) — el nombre NO va en el hover del card (redundante).
     var status = node.dataset.status;
     var isBlocked = (status === 'no-puede-cursar' || status === 'optativa-no-puede-cursar');
     var displayName = m.nombre;
@@ -198,27 +256,29 @@ function createSubjectNode(m) {
         // Use nombreCorto fallback to full name for all cards
         displayName = m.nombreCorto || m.nombre;
     }
+    var markerInfo = null;
     if (isBlocked) {
         var missingCount = countMissingPrerequisites(m.codigo);
         if (missingCount === 1) {
-            nameSpan.textContent = '\uD83D\uDFE1 ' + displayName;
-        } else {
-            nameSpan.textContent = displayName;
+            markerInfo = { emoji: '\uD83D\uDFE1', title: 'Te falta 1 materia para cursarla' };
         }
+    } else {
+        var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar');
+        if (isRegularOrCanCursar && !canTakeFinal(m.codigo)) {
+            markerInfo = { emoji: '\u2B55', title: 'Puede cursar pero no rendir final' };
+        }
+    }
+    if (markerInfo) {
+        var markerSpan = document.createElement('span');
+        markerSpan.className = 'node-marker';
+        markerSpan.textContent = markerInfo.emoji;
+        markerSpan.title = markerInfo.title;
+        nameSpan.appendChild(markerSpan);
+        nameSpan.appendChild(document.createTextNode(' ' + displayName));
     } else {
         nameSpan.textContent = displayName;
     }
     content.appendChild(nameSpan);
-    // Add ? marker for regularizada/puede-cursar that cannot take final
-    var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar');
-    if (isRegularOrCanCursar && !canTakeFinal(m.codigo)) {
-        var displayName = m.nombre;
-        if (isAbbreviatingNames()) {
-            displayName = m.nombreCorto || m.nombre;
-        }
-        displayName = '\u2B55 ' + displayName;
-        nameSpan.textContent = displayName;
-    }
     var metaDiv = document.createElement('div');
     metaDiv.className = 'node-meta';
 
@@ -339,6 +399,15 @@ function createSubjectNode(m) {
         }
     }
 
+    // Final libre: tag "Libre" en optativas (verde = calendario vigente, naranja = histórico)
+    var libreInfo = getLibreInfo(m);
+    if (libreInfo) {
+        var libreTag = document.createElement('span');
+        libreTag.className = libreInfo.historico ? 'node-libre node-libre-historico' : 'node-libre';
+        libreTag.textContent = 'Libre';
+        node.appendChild(libreTag);
+    }
+
     // Click handler - select/highlight correlatives
     node.addEventListener('click', function () {
         selectNode(m.codigo);
@@ -347,16 +416,20 @@ function createSubjectNode(m) {
     // Note: mouseenter redraw removed — causes flash on click (clear+recreate cycle)
 
     // Tooltip
-    var tooltipText = m.nombre;
+    // Tooltip (sin el nombre de la materia — ya está visible en el card)
+    var tooltipText = '';
     var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar');
     if (isRegularOrCanCursar && !canTakeFinal(m.codigo)) {
-        tooltipText += ' (No puede Final)';
+        tooltipText += '(No puede Final)';
     } else {
-        tooltipText += ' (' + m.codigo + ')';
+        tooltipText += '(' + m.codigo + ')';
     }
     tooltipText += '\n' + getStatusLabel(status);
     if (enrollmentInfo) {
         tooltipText += '\nInscripciones próximas: ' + enrollmentInfo.label + ' (' + enrollmentInfo.rangeLabel + ')';
+    }
+    if (libreInfo) {
+        tooltipText += '\n' + libreTooltipText(libreInfo);
     }
     node.title = tooltipText;
 

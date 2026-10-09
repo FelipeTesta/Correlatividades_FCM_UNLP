@@ -95,7 +95,9 @@ Detalles técnicos de implementación para referencia. Ver también [AGENTS.md](
 - **Leyenda:** Fijo abajo-derecha, auto-oculta después de 10s. "📋 Leyenda" alterna visibilidad.
 - **Optativas:** Etiqueta "Optativa" en púrpura antes de cada fila. Toggle "Optativas" oculta/muestra filas + labels.
 - **Zoom:** CSS transform scale con controles +, -, reset (30%–300%).
-- **🟡 Indicator:** Materias bloqueadas por exactamente 1 prerrequisito faltante muestran 🟡 al lado del nombre.
+- **🟡 Indicator:** Materias bloqueadas por exactamente 1 prerrequisito faltante muestran 🟡 al lado del nombre (hover: "Te falta 1 materia para cursarla").
+- **⭕ Marker:** Regularizadas/puede cursar sin final habilitado muestran ⭕ al lado del nombre (hover: "Puede cursar pero no rendir final"). Los tooltips de los cards no repiten el nombre de la materia (redundante — empiezan con el código).
+- **Tag "Libre":** Optativas con fechas de examen libre en el calendario vigente (`finals.json`) muestran tag verde "Libre" en la esquina inferior izquierda, alineada con el texto del nombre (naranja = libre histórico sin fechas actuales, lista vacía tras research 2024/2025). Hover del card: "Puede rendir el final libre".
 - **Glass Effect:** Nodos aprobados (`.status-aprobada`) tienen `::after` pseudo-element con gradiente blanco animado (keyframe glassShine).
 - **Cursando:** Toggle switch en nodos puede-cursar. ON: gradiente cyan + borde rotativo conic-gradient (con glow). Correlativas pendientes: borde rotativo blanco/negro sutil (sin glow). Estado en localStorage `cursando: { "CODE": true }`. Se limpia al resetear materia.
 - **Mobile:** Retrato: layout vertical con cards compactas (min-width 65px, max-width 110px), zoom 65%. Sin truncamiento — texto wrap natural. Landscape: layout normal 100% zoom. FAB de toque y mantenimiento. Touch targets, 100dvh viewport.

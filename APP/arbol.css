@@ -293,11 +293,35 @@
       z-index: 2;
   }
 
+  /* Tag "Libre" en optativas (esquina inferior izquierda)
+     verde = fechas libre en el calendario vigente · naranja = libre histórico sin fechas actuales
+     left = node-border (3px) + padding-left del content (6px) → alineada con el texto del nombre */
+  .node-libre {
+      position: absolute;
+      left: 9px;
+      bottom: 3px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #000;
+      background: var(--aprobada);
+      border-radius: 3px;
+      padding: 0 3px;
+      line-height: 12px;
+      pointer-events: none;
+      z-index: 2;
+  }
+
+  .node-libre.node-libre-historico {
+      background: var(--regularizada);
+  }
+
   /* PC: al hacer hover/seleccionar el card crecen los botones (max-height 30px)
-     → margen inferior extra para que el sticker no los cubra */
+     → margen inferior extra para que los stickers no los cubra.
+     El padding va en .node-content (no en el card) para que el flex-stretch
+     del .node-border crezca junto — padding del card no estira el border. */
   @media (hover: hover) and (pointer: fine) {
-      .subject-node:has(.node-inscripcion):hover,
-      .subject-node:has(.node-inscripcion).selected {
+      .subject-node:has(.node-inscripcion, .node-libre):hover .node-content,
+      .subject-node:has(.node-inscripcion, .node-libre).selected .node-content {
           padding-bottom: 20px;
       }
   }
