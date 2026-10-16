@@ -17,6 +17,8 @@
 
 <h1>Medicina UNLP – Plan 2023</h1>
 
+<main>
+
 <div class="progress-container">
   <div class="progress-info">
     <span id="materiasCount">Materias: 0 (Aprobadas) / 0 (Totales)</span>
@@ -38,7 +40,7 @@
 
 <div class="top-bar">
   <div class="year-input-group">
-    <label>Año de ingreso:</label>
+    <label for="anioIngreso">Año de ingreso:</label>
     <input type="number" id="anioIngreso" value="2023" onblur="guardarAnio()">
   </div>
   <div class="top-bar-right">
@@ -126,8 +128,8 @@
 <h3 onclick="toggleBox(this)" tabindex="0" role="button">Proyectos de Extensión <span class="box-count">[0]</span> ▾</h3>
 <div class="box-content">
 <div class="extension-form">
-<input type="text" id="extensionNombre" placeholder="Nombre del proyecto">
-<input type="number" id="extensionHoras" placeholder="Horas" min="0">
+<input type="text" id="extensionNombre" placeholder="Nombre del proyecto" aria-label="Nombre del proyecto">
+<input type="number" id="extensionHoras" placeholder="Horas" min="0" aria-label="Horas">
 <button onclick="agregarProyectoExtension()">Agregar</button>
 </div>
 <ul id="proyectosExtension"></ul>
@@ -156,6 +158,8 @@
 </div>
 
 </div>
+
+</main>
 
 <script src="APP/materias.js"></script>
 <script src="APP/state-cache.js"></script>

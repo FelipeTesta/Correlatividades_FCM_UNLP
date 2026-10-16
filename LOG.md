@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Optimización visual — etapa 6 (accesibilidad estructural) en rama `design/visual-system` (2026-10-16)
+
++ **`<main>` landmark en las 6 páginas**: antes solo existía `nav`. Ahora cada página (index, arbol, cartelera, universidades, vacunas, extension) tiene **un** `<main>` que envuelve el contenido principal; `nav`, modales, banner de privacidad y scripts quedan **fuera**. En `arbol` el contenedor existente pasó a ser `<main class="tree-page">` (la clase se conserva para no romper CSS/JS).
++ **Regla de `h1` ajustada** (`base.css`): la regla que oculta el `h1` pasó de `body > h1` a `body > h1, main > h1` — así el título sigue oculto aunque el contenido quede envuelto en `<main>`.
++ **Nombres accesibles en los controles**: el `<label>Año de ingreso:</label>` ahora apunta al input con `for="anioIngreso"`; se agregó `aria-label` a `#extensionNombre`, `#extensionHoras` (viven en `index.html`, no en `extension.html`), `#notifyEmail` (cartelera) y `#globalVacunaFecha` (vacunas). Todos los inputs del app tienen nombre accesible.
++ **Tokens en lugar de hex sueltos**: el `#globalVacunaFecha` tenía estilo inline con `#1a1a1a` / `#333` / `white` → `var(--bg-hover)` / `var(--border)` / `var(--text)`.
++ **Verificado con el loop de screenshots** en desktop 1440 y mobile 390 (6 páginas): `mains: 1`, `navs: 1`, `h1` oculto y `hOverflow: 0` en todas; los anchos medidos coinciden con el layout previo (1094px = 1440 − 12% en las páginas con margen, 1440px en universidades). Evidencias: `64`-`69` (1440) y `70`-`75` (390) en `FLOW/design-2026-10-16/`.
+
 ### Optimización visual — etapas 5 y 7 en rama `design/visual-system` (2026-10-16)
 
 + **Etapa 5 — densidad de la tabla de Universidades**: `.uni-table th` pasó de `padding: 10px 12px` a **`12px`** y `.uni-table td` de `9px 12px` a **`12px`** — la altura de fila medida sube de ~31px a **57px** (se mantienen el `padding-left/right: 10px` en ≥1250px y el `8px` en mobile). Los bordes `#222` del sector y de la cabecera pasaron a `var(--bg-input)` (prácticamente el mismo valor: `#222222`). El contraste del texto denso ya venía resuelto por la etapa 3 (`--text-muted` en siglas/ciudad/métricas, `--text-faint` en pendientes).

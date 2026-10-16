@@ -13,6 +13,8 @@
 
 <div id="appNavbar"></div>
 
+<main>
+
     <!-- Top Bar -->
     <div class="top-bar">
         <h1>📋 Cartelera</h1>
@@ -48,6 +50,8 @@
     <!-- Results Container -->
     <div id="results"></div>
 
+</main>
+
 <script src="APP/materias.js"></script>
 <script src="APP/utils.js"></script>
 <script src="APP/cartelera_ids.js"></script>
@@ -58,7 +62,7 @@
       <div class="modal-content">
         <h2>🔔 Recibir notificaciones</h2>
         <p>Recibe un email cuando haya nuevas publicaciones en tus cátedras (chequeos a las 9h, 13h y 19h (ART)).</p>
-        <input type="email" id="notifyEmail" placeholder="tu@email.com" />
+        <input type="email" id="notifyEmail" placeholder="tu@email.com" aria-label="Tu email" />
         <div id="notifySubjects"></div>
         <label class="notify-subject-label notify-home-label">
           <input type="checkbox" id="notifyHomeCheckbox" class="notify-subject-checkbox" checked />

@@ -99,6 +99,9 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
   76% da largura no desktop. `universidades` sobrescreve com `margin: 12px 0` (a tabela precisa
   da largura) e devolve a moldura na tree view.
 - `padding-top: 48px` reserva a navbar fixa. Qualquer âncora/scroll deve descontar isso.
+- **Estrutura de página:** `nav` (navbar) + `main` (conteúdo). O `<main>` é um wrapper de bloco
+  **sem estilo próprio** — o layout segue dirigido pelas classes internas de cada página; não
+  aplicar `display: flex/grid` nele sem reconferir as 6 páginas (etapa 6).
 - **Mobile-first:** toda mudança testada em **390px**; nunca criar `overflow:hidden` sem caminho
   de rolagem. `html,body` usam `overflow-x: hidden` + `overflow-x: clip` (fallback iOS < 15.4).
 - Breakpoints reais em uso: `768` (mobile), `769` (desktop), `1250` (tabela de universidades
@@ -124,7 +127,14 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
 - **Exceção aceita:** as células do minicalendário (`.minical-dot`, 13×14px) ficam abaixo de 24px —
   grid acoplado (`--minical-step` ↔ `MINICAL_STEP_PX`) e o alvo real é a célula do dia. Não
   aumentar sem refazer as duas constantes juntas.
-- `<main>` landmark ausente (só `nav`): envolver o conteúdo principal de cada página.
+- **`<main>` landmark (etapa 6, 2026-10-16):** as 6 páginas agora têm **um** `<main>` envolvendo o
+  conteúdo. Na `arbol` o container existente virou `<main class="tree-page">` (classe preservada);
+  nas outras o `<main>` foi inserido ao redor do bloco de conteúdo, com `nav`, modais, banner de
+  privacidade e scripts **fora** dele. `base.css` esconde `main > h1` junto com `body > h1` (o h1
+  segue oculto por decisão, §3).
+- **Nomes acessíveis em controles (etapa 6):** `#anioIngreso` ganhou `for` no `<label>` visível;
+  `#extensionNombre`, `#extensionHoras`, `#notifyEmail` e `#globalVacunaFecha` ganharam `aria-label`
+  (sem custo de layout). Todo `<input>`/`<select>` do app tem nome acessível — manter assim.
 - Contraste ≥ 4.5:1 para texto (§2); não usar `--text-dim` para conteúdo.
 - `img` sem `alt`: 0 (mantido).
 - **Reduced motion: NÃO usar.** Decisão do usuário (2026-10-16): este app **não** implementa
@@ -170,7 +180,11 @@ substituí-los por ícones vetoriais é regressão.
       **20px/700 em `--text`** (mobile 13px)
 - [x] Auditoria do `--text-dim`: 12 usos informativos → `--text-faint` (5.9:1). Mantido em bordas/
       fundos, estados desativados (`no-puede-cursar`, `:disabled`), ícones e minical 8px
-- [ ] `<main>` nas 6 páginas + `label` nos 3 inputs sem rótulo (`#anioIngreso`, `#extensionNombre`, `#extensionHoras`)
+- [x] `<main>` nas 6 páginas + nome acessível nos inputs — **FEITO (etapa 6)**: um `<main>` por
+      página (`nav`, modais, banner e scripts ficam fora; na `arbol` o container virou
+      `<main class="tree-page">`); `for="anioIngreso"` no label visível e `aria-label` em
+      `#extensionNombre`, `#extensionHoras`, `#notifyEmail`, `#globalVacunaFecha`; hexes inline do
+      `#globalVacunaFecha` trocados por tokens. Verificado em 1440 e 390 (`mains: 1`, `hOverflow: 0`).
 - [x] Consolidação da escala tipográfica — FEITO (etapa 4, rama `design/visual-system`): 16 valores medidos → 8 degraus `9/11/12/13/14/16/18/22` + micro-tier 8px (exceção acoplada) + normalização em `base.css`; Leaflet mantém 10px. Censo no DOM: `badCount: 0` nas 6 páginas (1440) e em index/arbol/cartelera (390).
 - [x] Densidade/padding da tabela de universidades — FEITO (etapa 5): `th`/`td` de `10px 12px`/`9px 12px`
       para **`12px`** (altura de linha 31 → 57px) e `#222` → `var(--bg-input)`; mobile mantém `8px`

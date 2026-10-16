@@ -111,6 +111,7 @@ h3, h4 { font-size: 16px; }
 
 /* ---- Global: hide page h1, keep navbar title ---- */
 body > h1,
+main > h1,
 .tree-top-bar h1,
 .top-bar h1 {
     display: none !important;
