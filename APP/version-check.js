@@ -17,6 +17,11 @@
   } catch (e) { canStore = false; }
   if (!canStore || location.protocol === 'file:') return;
 
+  // Dev servers (VS Code Live Server & co.): never auto-reload locally.
+  // The published site keeps the feature; locally it only causes reload churn
+  // and stale-cache confusion (user report, 2026-10-16).
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+
   fetch('version.json?' + Date.now())
     .then(function(r){ return r.ok ? r.json() : null; })
     .then(function(data){

@@ -148,7 +148,8 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
   padrão** no markup das **6** páginas (sem `display:none` inline) — decisão do usuário (2026-10-16):
   o aviso aparece **sempre** e só é fechado **manualmente** (✕); não pode depender de `localStorage`,
   `fetch` nem de nenhum script. `version-check.js` **nunca toca no banner** — só faz auto-reload de
-  versão. Não reintroduzir `display:none` inline nem condicionar o banner a JS.
+  versão (desativado em `localhost`/`file:`). Não reintroduzir `display:none` inline nem
+  condicionar o banner a JS.
 - **Mobile-first:** toda mudança testada em **390px**; nunca criar `overflow:hidden` sem caminho
   de rolagem. `html,body` usam `overflow-x: hidden` + `overflow-x: clip` (fallback iOS < 15.4).
 - **Grids com conteúdo nowrap:** usar `minmax(0, 1fr)`, nunca `1fr` puro — `1fr` = `minmax(auto, 1fr)`

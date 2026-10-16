@@ -38,8 +38,9 @@ APP/ (all logic + styles — vanilla ES6+, no build step):
     minical.js (288L)             — mini calendario strip render/tooltip/drag/stickers
     abbreviation.js (48L)          — name abbreviation toggle
     nav.js (158L)                 — shared navbar + presence badge (POST /heartbeat)
-    version-check.js (40L)        — auto-reload on new deploy (privacy banner is
-                                    markup-visible by default; script never touches it)
+    version-check.js (43L)        — auto-reload on new deploy (privacy banner is
+                                    markup-visible by default; script never touches
+                                    it; skipped on localhost/file)
   Page logic:
     app.js (1522L)                — main page
     arbol.js (1377L)              — tree mode
