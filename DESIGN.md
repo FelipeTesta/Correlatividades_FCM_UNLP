@@ -66,10 +66,26 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
 ## 4. Espaço, raio, borda
 
 - Grade de espaçamento: múltiplos de **4px** (4/6/8/12/16/24) — os valores atuais já respeitam isso.
-- Raio: **4px** (cards, botões, tooltips). Nada de pill, exceto elementos já existentes.
+- Raio: **6px** em botões, cards e containers (padrão do app); **4px** em chips/elementos inline
+  pequenos. Nada de pill/20px, exceto elementos já existentes (ex.: tooltip do minical).
 - Bordas: `1px solid var(--border)` padrão; `--border-strong` em hover/seleção.
 - Sombras: só em camadas flutuantes (tooltip do minical, modais). Nunca em cards de lista.
 - Scrollbar custom (8px, `--border`) + `scrollbar-width: thin` é parte da identidade.
+
+### 4.1 Botões — vocabulário único (etapa 1, 2026-10-16)
+
+| Variante | Uso | Regra |
+|---|---|---|
+| Padrão (secundário) | ação normal | `13px` / `weight 500`, `padding: 8px 14px`, `min-height: 34px`, fundo `--bg-hover`, borda `1px var(--border)`, texto `--text`; hover: fundo `--bg-input` + borda `--border-strong` |
+| Compacto | chip inline em listas | `12px`, `padding: 4px 10px`, `min-height: 28px` |
+| Destrutivo | remover / resetar / desinscrever | contorno `1px var(--danger)` + texto `--danger`; hover `rgba(239,68,68,.1)`. Ação destrutiva real mantém hold-to-confirm |
+| Preenchido (primário) | **só** estado ativo/selecionado | fundo `--cursando`, texto `#000` |
+| Ícone | ação compacta em card/linha | sem fundo, `min-width/min-height: 24px`, `border-radius: 6px` |
+
+- Botão não é lugar de hex solto: `#fff` → `--text`, `#f87171`/`#ff4444`/`#ff6666` → `--danger`,
+  `#555` → `--border-strong`. Tints com alfa (`rgba(34,211,238,.1)`) são permitidos.
+- Nada de "primário preenchido" para ação comum: enche a tela e mata a hierarquia; o preenchido
+  fica reservado para o que está **selecionado/ativo**.
 
 ## 5. Layout e responsivo
 
@@ -97,8 +113,11 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
 
 ## 7. Acessibilidade (piso)
 
-- Alvos de toque ≥ **24×24px** (mobile e desktop). Medição 2026-10-16 (index): **43 elementos
-  abaixo disso**, ex. `.btn-star-optativa` 24×18 e `.btn-warning-faltantes` 22×21 → corrigir.
+- Alvos de toque ≥ **24×24px** (mobile e desktop). Corrigido em 2026-10-16 (`.btn-star-optativa`,
+  `.btn-warning-faltantes`, `li button`, `.privacy-close`, `.node-btn`): medição no index **43 → 0**.
+- **Exceção aceita:** as células do minicalendário (`.minical-dot`, 13×14px) ficam abaixo de 24px —
+  grid acoplado (`--minical-step` ↔ `MINICAL_STEP_PX`) e o alvo real é a célula do dia. Não
+  aumentar sem refazer as duas constantes juntas.
 - `<main>` landmark ausente (só `nav`): envolver o conteúdo principal de cada página.
 - Contraste ≥ 4.5:1 para texto (§2); não usar `--text-dim` para conteúdo.
 - `img` sem `alt`: 0 (mantido).
@@ -138,9 +157,14 @@ substituí-los por ícones vetoriais é regressão.
 ## 11. Pendências desta rodada (2026-10-16)
 
 - [x] Auditoria visual + baseline (8 screenshots desktop/mobile, medições de overflow/fonte/alvos)
-- [ ] `--text-dim` só decorativo (3.7:1) — auditoria de usos informativos
-- [ ] Alvos < 24px (`.btn-star-optativa`, `.btn-warning-faltantes` e afins) — **corrigido 2026-10-16**
+- [x] Alvos < 24px — corrigido (43 → 0 no index); exceção do minical documentada (§7)
 - [x] Reduced motion: decidido **não** usar (ver §7)
-- [ ] `<main>` nas 6 páginas
-- [ ] Consolidação da escala tipográfica (10 → 8 degraus)
+- [x] Vocabulário de botões unificado (etapa 1): radius 6px, `13px/500`, variantes em §4.1
+- [x] Rótulos de ano do arbol (`AÑO N`): 14px em `--cursando` (cor de status, uso decorativo) →
+      **20px/700 em `--text`** (mobile 13px)
+- [x] Auditoria do `--text-dim`: 12 usos informativos → `--text-faint` (5.9:1). Mantido em bordas/
+      fundos, estados desativados (`no-puede-cursar`, `:disabled`), ícones e minical 8px
+- [ ] `<main>` nas 6 páginas + `label` nos 3 inputs sem rótulo (`#anioIngreso`, `#extensionNombre`, `#extensionHoras`)
+- [ ] Consolidação da escala tipográfica (11 → 8 degraus: `11/12/13/14/16/18/22/32`)
+- [ ] Densidade/padding da tabela de universidades
 - [ ] `user-select: none` global em `body` bloqueia copiar texto de estudo — revisar escopo

@@ -228,12 +228,12 @@ Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa p
 (Pendencias fora do escopo "Otras Universidades" — movidas de AGENTS.md, 2026-10-09)
 
 - [ ] **Sistema de diseño — pendências da auditoria visual de 2026-10-16** (fonte de verdade: `DESIGN.md`):
-  - [ ] Estandarizar botões: primário (preenchido `--cursando`), secundário (borda `--border`), terciário (só texto) — aplicar em Cartelera + Index (a crítica visual apontou mistura de preenchido/borda/só-ícone na Cartelera e em "¿Cómo usar?"/Resetear)
-  - [ ] Modo Árbol: etiquetas de ano (`AÑO 1`) usam `--cursando` (cyan) = cor de estado, o que engana; subir para 20px/700 e usar `--text`/`--text-muted`
+  - [x] Estandarizar botões — **FEITO (etapa 1, rama `design/visual-system`)**: vocabulário único em `DESIGN.md` §4.1 (radius 6px, `13px`/500, secundário neutro, chip compacto, destrutivo `--danger`, preenchido só para estado ativo/selecionado, ícone 24×24); aplicado em `style.css`/`arbol.css`/`cartelera.css`; hex soltos (`#fff`/`#f87171`/`#555`/`#1a1a2e`) removidos
+  - [x] Modo Árbol: etiquetas de ano — **FEITO (etapa 2)**: `AÑO N` agora 20px/700 em `--text` (mobile 13px); a cor de estado (`--cursando`) deixou de ser usada decorativamente
+  - [x] Auditar usos informativos de `--text-dim` — **FEITO (etapa 3)**: 12 usos de texto → `--text-faint` (5.9:1); mantido em bordas/fundos, estados desativados, ícones e nas 8px do minical
   - [ ] Universidades: densidade da tabela (padding de linha 8px 12px) + revisar contraste do texto denso
-  - [ ] Consolidar escala tipográfica (10 tamanhos medidos → 8 degraus 11/12/13/14/16/18/22/32); 8/9px ficam só no minical (acoplados a `MINICAL_STEP_PX`)
-  - [ ] Auditar usos informativos de `--text-dim` (#666666 = 3.7:1, abaixo de AA)
-  - [ ] `<main>` landmark nas 6 páginas (hoje só existe `nav`)
+  - [ ] Consolidar escala tipográfica (11 tamanhos medidos → 8 degraus 11/12/13/14/16/18/22/32); 8/9px ficam só no minical (acoplados a `MINICAL_STEP_PX`)
+  - [ ] `<main>` landmark nas 6 páginas (hoje só existe `nav`) + `label` nos 3 inputs sem rótulo (`#anioIngreso`, `#extensionNombre`, `#extensionHoras`)
   - [ ] Revisar `user-select: none` global em `body` (bloqueia copiar texto de estudo)
 
 - [ ] Corregir el scroll en retrato móvil (Modo Árbol): espacio vacío debajo del contenido visual — transform: scale no afecta el layout real
