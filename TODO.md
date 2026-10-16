@@ -231,10 +231,11 @@ Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa p
   - [x] Estandarizar botões — **FEITO (etapa 1, rama `design/visual-system`)**: vocabulário único em `DESIGN.md` §4.1 (radius 6px, `13px`/500, secundário neutro, chip compacto, destrutivo `--danger`, preenchido só para estado ativo/selecionado, ícone 24×24); aplicado em `style.css`/`arbol.css`/`cartelera.css`; hex soltos (`#fff`/`#f87171`/`#555`/`#1a1a2e`) removidos
   - [x] Modo Árbol: etiquetas de ano — **FEITO (etapa 2)**: `AÑO N` agora 20px/700 em `--text` (mobile 13px); a cor de estado (`--cursando`) deixou de ser usada decorativamente
   - [x] Auditar usos informativos de `--text-dim` — **FEITO (etapa 3)**: 12 usos de texto → `--text-faint` (5.9:1); mantido em bordas/fundos, estados desativados, ícones e nas 8px do minical
-  - [ ] Universidades: densidade da tabela (padding de linha 8px 12px) + revisar contraste do texto denso
+  - [x] Universidades: densidade da tabela — **FEITO (etapa 5)**: `th`/`td` de `10px 12px`/`9px 12px` para `12px` (altura de linha ~31 → ~57px), `#222` → `var(--bg-input)`; mobile segue com `8px`; contraste do texto denso vinha de `--text-muted`/`--text-faint` (etapa 3)
   - [x] Consolidar escala tipográfica — **FEITO (etapa 4, rama `design/visual-system`)**: 16 valores medidos → **8 degraus `9/11/12/13/14/16/18/22`** (+ micro-tier 8px acoplado ao minical/nós); normalização de base em `base.css` (controles 13px, `h1/h2/h3`) e troca de todos os `rem` fora da escala por px; censo do DOM com lista branca = `badCount: 0` nas 6 páginas (1440) e em index/arbol/cartelera (390)
   - [ ] `<main>` landmark nas 6 páginas (hoje só existe `nav`) + `label` nos 3 inputs sem rótulo (`#anioIngreso`, `#extensionNombre`, `#extensionHoras`)
-  - [ ] Revisar `user-select: none` global em `body` (bloqueia copiar texto de estudo)
+  - [x] Revisar `user-select: none` global em `body` — **REVISADO (etapa 7): mantido**, é exigência explícita do usuário (comentário no código: "user requirement: text selection disabled on these pages"); não remover sem pedido
+  - [ ] Dívida: hexes neutros fora de `variables.css` em `universidades.css` (`#141414`, `#151515`, `#c0c0c0`, `#fff`, `#666`, `#555` nas linhas 373/486/555/586/660/707/708/725/760/771`) — exigiriam tokens novos de superfície; trocar só com verificação visual
 
 - [ ] Corregir el scroll en retrato móvil (Modo Árbol): espacio vacío debajo del contenido visual — transform: scale no afecta el layout real
 - NOTA: exportar/importar estado NUNCA existió (mención falsa ya removida del app/README) — no reintroducir sin pedido

@@ -172,5 +172,8 @@ substituí-los por ícones vetoriais é regressão.
       fundos, estados desativados (`no-puede-cursar`, `:disabled`), ícones e minical 8px
 - [ ] `<main>` nas 6 páginas + `label` nos 3 inputs sem rótulo (`#anioIngreso`, `#extensionNombre`, `#extensionHoras`)
 - [x] Consolidação da escala tipográfica — FEITO (etapa 4, rama `design/visual-system`): 16 valores medidos → 8 degraus `9/11/12/13/14/16/18/22` + micro-tier 8px (exceção acoplada) + normalização em `base.css`; Leaflet mantém 10px. Censo no DOM: `badCount: 0` nas 6 páginas (1440) e em index/arbol/cartelera (390).
-- [ ] Densidade/padding da tabela de universidades
-- [ ] `user-select: none` global em `body` bloqueia copiar texto de estudo — revisar escopo
+- [x] Densidade/padding da tabela de universidades — FEITO (etapa 5): `th`/`td` de `10px 12px`/`9px 12px`
+      para **`12px`** (altura de linha 31 → 57px) e `#222` → `var(--bg-input)`; mobile mantém `8px`
+- [x] `user-select: none` global em `body` — **REVISADO: mantido de propósito**. É exigência explícita
+      do usuário (comentário no próprio código em `universidades.css`); os controles já têm regra
+      própria, então nada muda aqui. **Não remover.**

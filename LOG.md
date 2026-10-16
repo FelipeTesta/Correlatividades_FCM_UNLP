@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Optimización visual — etapas 5 y 7 en rama `design/visual-system` (2026-10-16)
+
++ **Etapa 5 — densidad de la tabla de Universidades**: `.uni-table th` pasó de `padding: 10px 12px` a **`12px`** y `.uni-table td` de `9px 12px` a **`12px`** — la altura de fila medida sube de ~31px a **57px** (se mantienen el `padding-left/right: 10px` en ≥1250px y el `8px` en mobile). Los bordes `#222` del sector y de la cabecera pasaron a `var(--bg-input)` (prácticamente el mismo valor: `#222222`). El contraste del texto denso ya venía resuelto por la etapa 3 (`--text-muted` en siglas/ciudad/métricas, `--text-faint` en pendientes).
++ **Etapa 7 — `user-select: none` global: REVISADO, se mantiene.** Es una exigencia explícita del usuario, documentada en el propio código (`universidades.css`: *"user requirement: text selection disabled on these pages"*). No se toca; queda anotado en `DESIGN.md` §11 y en el TODO para que nadie lo "arregle" por error.
++ **Deuda registrada (TODO):** `universidades.css` conserva hexes neutros fuera de `variables.css` (`#141414`, `#151515`, `#c0c0c0`, `#fff`, `#666`, `#555`) — cambiarlos exigiría tokens nuevos de superficie y verificación visual, así que quedan como tarea aparte.
++ **Evidencias**: `62-universidades-table-1440.png`, `63-universidades-table-390.png` en `FLOW/design-2026-10-16/`.
+
 ### Optimización visual — etapa 4 (escala tipográfica) en rama `design/visual-system` (2026-10-16)
 
 + **Etapa 4 — escala tipográfica consolidada (16 valores → 8 degraus)**: el barrido de `font-size` en `APP/*.css` más el censo del DOM renderizado detectaron 16 tamaños distintos (`7 · 7.5 · 8 · 8.5 · 9 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 18 · 20 · 22 · 24`). La escala final queda documentada en `DESIGN.md` §3: **`9 / 11 / 12 / 13 / 14 / 16 / 18 / 22`** con papeles fijos (9 micro, 11 leyenda/piso del texto informativo, 12 etiqueta, 13 UI, 14 cuerpo, 16 énfasis, 18 título de sección, 22 título de página). El micro-tier de **8px se mantiene como excepción acoplada a la geometría** (`.minical-month-label` y badges internos de los nodos) porque vive dentro del paso de grilla de 13px (`--minical-step` ↔ `MINICAL_STEP_PX`).
