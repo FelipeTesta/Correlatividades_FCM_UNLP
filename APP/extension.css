@@ -293,7 +293,8 @@ body {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    margin-top: 2px;
+    margin-top: auto;
+    padding-top: 6px;
 }
 
 .card-link-btn {

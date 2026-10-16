@@ -1474,10 +1474,10 @@ function renderCard(pub, showCatedra, catedraName, subjectName) {
   var dateEl = document.createElement("div");
   dateEl.className = "pub-date";
   if (pub.modificadaDate) {
-    dateEl.textContent = formatDateTime(pub.modificadaDate);
+    dateEl.textContent = "\uD83D\uDCC5 " + formatDateTime(pub.modificadaDate);
     dateEl.classList.add("pub-date-modified");
   } else {
-    dateEl.textContent = pub.dateStr;
+    dateEl.textContent = "\uD83D\uDCC5 " + pub.dateStr;
   }
   header.appendChild(dateEl);
 
@@ -1525,8 +1525,12 @@ function renderCard(pub, showCatedra, catedraName, subjectName) {
     tagsRow.appendChild(catPill);
   }
 
+  // === BOTTOM ROW (pills left + action right, same line) ===
+  var bottomRow = document.createElement("div");
+  bottomRow.className = "pub-card-bottom";
+
   if (tagsRow.children.length > 0 && !leida) {
-    card.appendChild(tagsRow);
+    bottomRow.appendChild(tagsRow);
   }
 
   // === ACTIONS (bottom-right) ===
@@ -1549,7 +1553,8 @@ function renderCard(pub, showCatedra, catedraName, subjectName) {
     })(pub.link, modTs);
     btnContainer.appendChild(btnLeido);
   }
-  card.appendChild(btnContainer);
+  bottomRow.appendChild(btnContainer);
+  card.appendChild(bottomRow);
 
   return card;
 }

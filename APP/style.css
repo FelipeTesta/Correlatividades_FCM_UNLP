@@ -483,22 +483,8 @@ h2 {
     border: none;
 }
 
-/* Pantallas anchas: dos columnas en el index → la mitad de scroll vertical.
-   Se usa `column-count` (no grid) para que el navegador balancee la altura;
-   `break-inside: avoid` evita que una caja quede cortada entre columnas. */
-@media (min-width: 1250px) {
-    .listas {
-        display: block;
-        column-count: 2;
-        column-gap: 24px;
-    }
-
-    .listas > .box {
-        break-inside: avoid;
-        -webkit-column-break-inside: avoid;
-        margin-bottom: 8px;
-    }
-}
+/* Index en UNA sola columna (decisión del usuario, 2026-10-16):
+   se compactan márgenes/paddings, no se divide en columnas. */
 
 /* ============================= */
 /* ITEMS */
@@ -517,6 +503,11 @@ li:not(.app-navbar-list li) {
     padding: 3px 8px;
     border-radius: 4px;
     font-size: 14px;
+}
+
+/* Hover de fila (feedback de lectura, ref: listas de Linear/GitHub) */
+li:not(.app-navbar-list li):hover {
+    background-color: var(--bg-hover);
 }
 
 /* Item row para no puede cursar - dois boxes na mesma linha */
@@ -1156,18 +1147,23 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
     }
 
     .top-bar-left button,
+    .top-bar-right {
+        flex-wrap: wrap;
+    }
+
     .top-bar-right button {
-        flex: 1;
+        flex: 0 0 auto;
         min-height: 44px;
         font-size: 14px;
+        white-space: nowrap;
     }
 
     .btn-reset-hold {
-        width: 100%;
+        width: auto;
     }
 
     .btn-help {
-        width: 100%;
+        width: auto;
     }
 
     /* Legend box */
@@ -1470,8 +1466,8 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 }
 
 .vacunas-footer {
-    margin-top: 16px;
-    padding: 12px 0 16px;
+    margin-top: 10px;
+    padding: 8px 0 12px;
     border-top: 1px solid var(--bg-hover);
     display: flex;
     flex-direction: column;

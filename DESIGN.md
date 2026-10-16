@@ -100,17 +100,40 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
 - Escala vertical canônica: **2 / 4 / 6 / 8 / 10 / 12 / 16 / 24** px (padding, margin, gap).
 - Linhas de lista (`li`): `padding: 3px 8px` + `margin-bottom: 2px`; `ul` `margin: 4px 0`.
 - Caixa: `.box` `padding: 2px 0`; `.box h3` `padding: 6px 12px` + `margin: 0 0 6px`.
-- `hr`: `border: none; border-top: 1px solid var(--border); margin: 10px 0` — o estilo default do
-  navegador abria um vão de ~16px (agora em `base.css`).
+- `hr`: `border: none; border-top: 1px solid var(--border); margin: 4px 0` — o default do navegador
+  abria um vão de ~16px (regra em `base.css`; o margin caiu de 10px para 4px na etapa 9).
 - Cartões: padding de 8–12px (`.pub-card` 8px 10px, `.extension-card` 12px) e gaps de 8–12px.
-- Células de tabela: **9px** de padding (universidades). *Trade-off registrado:* a etapa 5 tinha
-  subido para 12px a pedido do usuário; a etapa 8 priorizou menos scroll e voltou para 9px.
+- Células de tabela: **9px** de padding (universidades). A etapa 5 chegou a subir para 12px;
+  revertido em favor de menos scroll (etapas 8–9) — **9px é o valor canônico**.
 - Mapa de universidades: `height: 45vh; min-height: 320px`.
-- **Índice em ≥1250px:** `.listas` usa `column-count: 2` com `break-inside: avoid` nas caixas.
-  Limite conhecido: caixas altas não se dividem, então a 2ª coluna pode ficar mais alta que a 1ª
-  (sobra espaço no fim da 1ª). Deixar uma caixa se dividir entre colunas só com revisão visual.
+- **Índice em UMA coluna** (decisão do usuário, etapa 9): o `column-count: 2` experimental da
+  etapa 8 foi revertido — com `break-inside: avoid` as caixas altas não se dividem e a 2ª coluna
+  ficava ~724px mais curta (vão morto no rodapé). 1 coluna = página mais alta, porém sem vãos.
+- **Hover de linhas** (etapa 9): `li:not(.app-navbar-list li):hover { background: var(--bg-hover) }`
+  — antes NENHUMA linha de lista do app tinha feedback de hover.
+- Vãos invisíveis: `#status:empty { display: none }` (cartelera) e `.card-links { margin-top: auto }`
+  (extension: links pregados no rodapé dos cards esticados — acaba com os "fundos mortos" de cada
+  fileira do grid).
 - Proibido para compactar: reduzir `min-height` de botões/alvos, sair da escala tipográfica (§3),
   usar `rem`/`em` em `font-size`, ou esconder conteúdo.
+
+### 4.3 Tarjetas de la cartelera — spec visual (etapa 9, 2026-10-16)
+
+Referências: rows de inbox do Linear (meta em uppercase + título clampado), cards do GitHub
+(list row compacta com ações à direita) e acento lateral por tipo (padrão de dashboards).
+
+- **Casca** (`.pub-card`): `border: 1px solid var(--border)`, radius 8px, `padding: 5px 8px`,
+  `gap: 2px`, fundo `var(--bg-card)`, transição de borda 0.15s.
+- **Acento lateral por tipo** via `:has()`: `.tag-avisos` → `#3b82f6` (hex pendente de token),
+  `.tag-examenes` → `var(--danger)`, `.tag-notas` → `var(--aprobada)`, `.tag-general` →
+  `var(--optativa)`, `.tag-otros` → `var(--text-faint)` — 3px à esquerda. Cards lidas não levam.
+- **Header**: matéria em `11px` `--text-muted` **UPPERCASE** (`letter-spacing: 0.4px`); data com
+  📅 em `11px` `--text-faint`, empurrada à direita (`margin-left: auto`).
+- **Título**: `13px/600` em `--text`, clamp de 2 linhas (`-webkit-line-clamp: 2`) — cards uniformes.
+- **Rodapé único** (`.pub-card-bottom`): pills (`9px`, radius 4px, `padding: 1px 5px`) à esquerda +
+  botão "👁 leído"/"Desmarcar" (`11px`, `min-height: 24px`) à direita — uma linha a menos por card.
+- **Hover**: `border-color: var(--border-strong)` + `background: var(--bg-hover)` (lift sutil).
+- **Lidas**: pills somem; título/data em `--text-faint`.
 
 ## 5. Layout e responsivo
 
@@ -127,6 +150,13 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
   `universidades` não os tinham e o banner simplesmente não aparecia (corrigido na etapa 8).
 - **Mobile-first:** toda mudança testada em **390px**; nunca criar `overflow:hidden` sem caminho
   de rolagem. `html,body` usam `overflow-x: hidden` + `overflow-x: clip` (fallback iOS < 15.4).
+- **Grids com conteúdo nowrap:** usar `minmax(0, 1fr)`, nunca `1fr` puro — `1fr` = `minmax(auto, 1fr)`
+  e o min-content estoura a coluna (era o bug dos cards da cartelera saindo da tela a 360px).
+- **Botões em flex containers:** `overflow: hidden` zera o min-width automático do item e o texto
+  corta (era o bug do `#btnResetear` a ≤320px). Em grupos que embrulham: `flex: 0 0 auto` +
+  `white-space: nowrap` nos botões + `flex-wrap: wrap` no pai.
+- **Barra de controles da cartelera (mobile):** uma fila com `flex-wrap` e botões slim
+  (`12px`, `padding: 5px 10px`, `min-height: 30px`).
 - Breakpoints reais em uso: `768` (mobile), `769` (desktop), `1250` (tabela de universidades
   ganha sticky header). Não inventar novos sem necessidade.
 - **Ordem importa:** regras dentro de `@media` que empatam em especificidade com a regra base
@@ -227,3 +257,23 @@ substituí-los por ícones vetoriais é regressão.
 - [x] Banner de privacidade presente e visível nas **6** páginas — **FEITO (etapa 8)**: `vacunas` e
       `universidades` não carregavam `APP/version-check.js` (a `universidades` também não tinha o
       markup). Verificado: `banner: visible 37px` @1440 e 43–45px @390.
+- [x] Vãos verticais identificados e compactados — **FEITO (etapa 9)**: auditoria com detector de
+      faixas vazias (>45px) @1440 — index/arbol/universidades: 0 faixas; cartelera: 52px (bloco
+      `#status` vazio → `#status:empty { display: none }`); extension: 5×47px de "fundos mortos"
+      dos cards esticados (`.card-links { margin-top: auto }`); demais gaps reduzidos (`hr` 4px,
+      `.year-section` 10px, `.source-group` 12px, `.vacunas-footer` 10px).
+- [x] Hover de linhas — **FEITO (etapa 9)**: `li:not(.app-navbar-list li):hover` com `--bg-hover`
+      (antes NENHUMA linha de lista tinha hover no app).
+- [x] Índice de volta a UMA coluna — **FEITO (etapa 9, decisão do usuário)**: o `column-count: 2`
+      da etapa 8 deixava ~724px mortos no fim da 2ª coluna. Altura com listas vazias: 3523 → 3076.
+- [x] Tarjetas de la cartelera repensadas — **FEITO (etapa 9)**: spec em §4.3 (acento por tipo,
+      clamp de 2 linhas, matéria uppercase, rodapé único pills+botão, hover lift); 📅 da data
+      RESTAURADO (a etapa 8 o removeu achando que era um bug de fonte do navegador headless).
+- [x] Mobile — **FEITO (etapa 9, reportes do usuário)**: cards saindo da tela a 360px
+      (`minmax(0, 1fr)`); botões da cartelera em fila com slim 30px; `#btnResetear` cortando
+      texto a ≤320px (`flex: 0 0 auto` + `white-space: nowrap` + wrap no pai). `hOverflow: 0`
+      em 320/360/390.
+- [x] Banner "aparece e fecha sozinho" — **FEITO (etapa 9, reporte do usuário)**:
+      `location.reload()` sem `return` exibia o banner logo antes de recarregar; com localStorage
+      bloqueado entrava em loop infinito → `showBanner()` + guarda `canStore` + `file:` + `return`
+      antes do reload (`APP/version-check.js`).
