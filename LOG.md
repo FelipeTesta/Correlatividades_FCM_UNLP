@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Corrección — aviso de privacidad incondicional en rama `design/visual-system` (2026-10-16)
+## [0.10] — 2026-10-16
+
+Ronda visual completa (auditoría + etapas 1–9 + correcciones de banner y mobile) desarrollada en la rama `design/visual-system` y mergeada en `main`.
+
+### Corrección — aviso de privacidad incondicional (2026-10-16)
 
 + **Decisión del usuario**: el aviso "🔒 Este sitio no comparte tus datos…" debe aparecer **siempre** y solo cerrarse **manualmente** — no puede depender de `localStorage`, `fetch` ni de ningún script.
 + **Banner visible por defecto**: removido el `style="display:none"` inline del `#privacyBanner` en las **6 páginas** — ahora es puro markup + CSS (`display: flex` en `base.css`). Ningún JS lo muestra ni lo oculta; el botón ✕ lo cierra solo para esa vista.
