@@ -138,9 +138,9 @@ Script order in each HTML matters (shared modules first, page logic last):
 | index | materias → state-cache → utils → requisitos → calendar_data → minical → abbreviation → **app** → version-check → nav |
 | arbol | materias → state-cache → utils → requisitos → calendar_data → minical → abbreviation → **arbol** → version-check → nav |
 | cartelera | materias → utils → cartelera_ids → **cartelera** → version-check → nav |
-| vacunas | materias → state-cache → requisitos → vacunas_data → vacunas_fichas → **vacunas** → nav |
+| vacunas | materias → state-cache → requisitos → vacunas_data → vacunas_fichas → **vacunas** → version-check → nav |
 | extension | extension_data → **extension** → version-check → nav |
-| universidades | universidades_data → leaflet (CDN) → **universidades** |
+| universidades | universidades_data → leaflet (CDN) → **universidades** → version-check |
 
 - **Main Page (app.js):** single-pass `render()`, six list boxes + progress bar. Finals display: 5-day enrollment rule (`FINALES_INSCRIPCION_DIAS`), dates PER CÁTEDRA never unified; the popup "Ver Fechas" cátedra selector persists in `catedrasSeleccionadas` and filters the card dates.
 - **Tree Mode (arbol.js):** separate page, shares localStorage. Year rows + SVG connectors. Mini calendario strip + "Inscripción" stickers; "Libre" tags on optativas built dynamically from finals.json.
