@@ -227,6 +227,15 @@ Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa p
 ## Backlog general del proyecto
 (Pendencias fora do escopo "Otras Universidades" — movidas de AGENTS.md, 2026-10-09)
 
+- [ ] **Sistema de diseño — pendências da auditoria visual de 2026-10-16** (fonte de verdade: `DESIGN.md`):
+  - [ ] Estandarizar botões: primário (preenchido `--cursando`), secundário (borda `--border`), terciário (só texto) — aplicar em Cartelera + Index (a crítica visual apontou mistura de preenchido/borda/só-ícone na Cartelera e em "¿Cómo usar?"/Resetear)
+  - [ ] Modo Árbol: etiquetas de ano (`AÑO 1`) usam `--cursando` (cyan) = cor de estado, o que engana; subir para 20px/700 e usar `--text`/`--text-muted`
+  - [ ] Universidades: densidade da tabela (padding de linha 8px 12px) + revisar contraste do texto denso
+  - [ ] Consolidar escala tipográfica (10 tamanhos medidos → 8 degraus 11/12/13/14/16/18/22/32); 8/9px ficam só no minical (acoplados a `MINICAL_STEP_PX`)
+  - [ ] Auditar usos informativos de `--text-dim` (#666666 = 3.7:1, abaixo de AA)
+  - [ ] `<main>` landmark nas 6 páginas (hoje só existe `nav`)
+  - [ ] Revisar `user-select: none` global em `body` (bloqueia copiar texto de estudo)
+
 - [ ] Corregir el scroll en retrato móvil (Modo Árbol): espacio vacío debajo del contenido visual — transform: scale no afecta el layout real
 - NOTA: exportar/importar estado NUNCA existió (mención falsa ya removida del app/README) — no reintroducir sin pedido
 - NOTA: mover el scroll de toda la página en el Modo Árbol fue REVERTIDO (scroll queda en .tree-wrapper, barra superior fija) — no reintentar

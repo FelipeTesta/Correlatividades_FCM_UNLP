@@ -83,7 +83,7 @@ Ver [LOG.md](LOG.md) para o historial completo de modificações.
 
 ## Arquitectura Técnica
 
-Detalles técnicos de implementación para referencia. Ver también [AGENTS.md](AGENTS.md) para orientación a agentes de IA.
+Detalles técnicos de implementación para referencia. Ver también [AGENTS.md](AGENTS.md) para orientación a agentes de IA y [DESIGN.md](DESIGN.md) para el contrato visual (paleta, tipografía, accesibilidad, loop de verificación).
 
 ### Modo Árbol — Detalles
 

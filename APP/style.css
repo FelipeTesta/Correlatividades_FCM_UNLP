@@ -608,6 +608,8 @@ li span:first-child {
     padding: 0 4px !important;
     margin-left: 4px;
     display: inline-block !important; /* Forçar exibição */
+    min-width: 24px; /* alvo de toque mínimo (DESIGN.md §7) */
+    min-height: 24px;
 }
 
 .btn-warning-faltantes:hover {
@@ -620,6 +622,7 @@ li button {
     padding: 4px 6px;
     background-color: transparent;
     border: none;
+    min-height: 24px; /* alvo de toque mínimo (DESIGN.md §7) */
 }
 
 /* Star button for optativas */
@@ -631,6 +634,8 @@ li button {
     cursor: pointer;
     transition: transform 0.15s ease, filter 0.15s ease;
     line-height: 1;
+    min-width: 24px; /* alvo de toque mínimo (DESIGN.md §7) */
+    min-height: 24px;
 }
 
 .btn-star-optativa:hover {
