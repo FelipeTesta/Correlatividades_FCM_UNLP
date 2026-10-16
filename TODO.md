@@ -232,7 +232,7 @@ Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa p
   - [x] Modo Árbol: etiquetas de ano — **FEITO (etapa 2)**: `AÑO N` agora 20px/700 em `--text` (mobile 13px); a cor de estado (`--cursando`) deixou de ser usada decorativamente
   - [x] Auditar usos informativos de `--text-dim` — **FEITO (etapa 3)**: 12 usos de texto → `--text-faint` (5.9:1); mantido em bordas/fundos, estados desativados, ícones e nas 8px do minical
   - [ ] Universidades: densidade da tabela (padding de linha 8px 12px) + revisar contraste do texto denso
-  - [ ] Consolidar escala tipográfica (11 tamanhos medidos → 8 degraus 11/12/13/14/16/18/22/32); 8/9px ficam só no minical (acoplados a `MINICAL_STEP_PX`)
+  - [x] Consolidar escala tipográfica — **FEITO (etapa 4, rama `design/visual-system`)**: 16 valores medidos → **8 degraus `9/11/12/13/14/16/18/22`** (+ micro-tier 8px acoplado ao minical/nós); normalização de base em `base.css` (controles 13px, `h1/h2/h3`) e troca de todos os `rem` fora da escala por px; censo do DOM com lista branca = `badCount: 0` nas 6 páginas (1440) e em index/arbol/cartelera (390)
   - [ ] `<main>` landmark nas 6 páginas (hoje só existe `nav`) + `label` nos 3 inputs sem rótulo (`#anioIngreso`, `#extensionNombre`, `#extensionHoras`)
   - [ ] Revisar `user-select: none` global em `body` (bloqueia copiar texto de estudo)
 

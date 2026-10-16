@@ -139,7 +139,7 @@
      background: transparent;
      border: none;
      color: #aaa;
-     font-size: 24px;
+     font-size: 22px;
      cursor: pointer;
      line-height: 1;
      padding: 0 4px;
@@ -362,7 +362,7 @@
  /* Optativa label */
  .optativa-label {
      display: block;
-     font-size: 10px;
+     font-size: 11px;
      color: var(--optativa);
      text-transform: uppercase;
      letter-spacing: 1px;
@@ -376,7 +376,7 @@
  /* ============================= */
  
  .year-header {
-     font-size: 20px;
+     font-size: 18px;
      font-weight: 700;
      color: var(--text);
      text-transform: uppercase;
@@ -429,7 +429,7 @@
  }
  
  .node-name {
-     font-size: 10px;
+     font-size: 11px;
      font-weight: 600;
      color: var(--text);
      line-height: 1.3;
@@ -842,7 +842,7 @@
  }
  
  .legend-section-title {
-     font-size: 10px;
+     font-size: 11px;
      font-weight: 600;
      color: var(--cursando);
      text-transform: uppercase;
@@ -908,7 +908,7 @@
      background: none;
      border: none;
      color: var(--text-dim);
-     font-size: 20px;
+     font-size: 18px;
      cursor: pointer;
      width: 28px;
      height: 28px;
@@ -1142,7 +1142,7 @@
      background: none;
      border: none;
      color: var(--text-dim);
-     font-size: 24px;
+     font-size: 22px;
      cursor: pointer;
      width: 32px;
      height: 32px;
@@ -1326,7 +1326,7 @@
          border: 1px solid rgba(255, 255, 255, 0.15);
          background: rgba(30, 30, 30, 0.85);
          cursor: pointer;
-         font-size: 24px;
+         font-size: 22px;
          line-height: 1;
          transition: all 0.15s ease;
          -webkit-tap-highlight-color: transparent;
@@ -1361,7 +1361,7 @@
      }
  
      .mobile-fab-label {
-         font-size: 10px;
+         font-size: 11px;
          color: #ccc;
          margin-top: 3px;
          white-space: nowrap;
@@ -1408,7 +1408,7 @@
      }
  
      .node-meta {
-         font-size: 7px;
+         font-size: 9px;
          flex-wrap: wrap;
      }
  
@@ -1418,7 +1418,7 @@
      }
  
      .optativa-label {
-         font-size: 10px;
+         font-size: 11px;
          margin-bottom: 3px;
          margin-left: 0;
          padding-left: 0;
@@ -1447,12 +1447,12 @@
      }
  
      .tree-legend h4 {
-         font-size: 10px;
+         font-size: 11px;
          margin-bottom: 4px;
      }
  
      .legend-item {
-         font-size: 10px;
+         font-size: 11px;
          margin-bottom: 2px;
      }
  
@@ -1462,7 +1462,7 @@
  
      .legend-buttons {
          gap: 8px;
-         font-size: 10px;
+         font-size: 11px;
      }
  
      .modal-content {

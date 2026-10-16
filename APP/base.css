@@ -25,6 +25,18 @@ body {
     padding-top: 48px;
 }
 
+/* ---- Type scale normalization (DESIGN.md §3) ----
+   Los controles de formulario usan el font-size por defecto del navegador
+   (13.33px) y los títulos sus tamaños por defecto (1.1em, 1.2em...). Se
+   anclan a los degraus de la escala: 22 / 18 / 16 / 13. */
+input, button, select, textarea {
+    font-family: inherit;
+    font-size: 13px;
+}
+h1 { font-size: 22px; }
+h2 { font-size: 18px; }
+h3, h4 { font-size: 16px; }
+
 @media (min-width: 769px) {
     body { margin: 12px 12%; }
 }

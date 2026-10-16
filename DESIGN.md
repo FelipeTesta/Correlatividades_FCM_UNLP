@@ -50,15 +50,21 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
 
 - Família: `system-ui, -apple-system, Arial, Helvetica, sans-serif` (sem webfont — decisão
   consciente: app offline/estático, zero requisição externa).
-- **Escala real medida (2026-10-16):** desktop `32 / 17.6 / 16 / 15 / 14 / 13 / 12 / 11 / 9 / 8`
-  px; mobile `22 / 18 / 16 / 15 / 14 / 13 / 12 / 9 / 8` px. São **10 tamanhos**, com
-  `12px` (191 usos) e `16px` (126) dominando e um empate 15/16px sem critério.
-- **Escala-alvo (migração incremental, não big-bang):** `11 / 12 / 13 / 14 / 16 / 18 / 22 / 32`.
-  Regra: cada tamanho tem um papel — 32 título de página, 18 título de caixa, 16 corpo,
-  14 item de lista, 13 secundário, 12 rótulo/metadado, 11 piso absoluto.
-- **Exceção acoplada:** o minicalendário usa 8px/9px dentro de um passo de grade de 13px
-  (`--minical-step` ↔ `MINICAL_STEP_PX` em `APP/minical.js`). Não aumentar a fonte lá sem
-  ajustar as duas constantes juntas.
+- **Escala final (etapa 4, 2026-10-16) — 8 degraus: `9 / 11 / 12 / 13 / 14 / 16 / 18 / 22` px.**
+  Papéis: `22` título de página · `18` título de seção/caixa · `16` corpo grande/ênfase · `14` corpo ·
+  `13` UI (botões, inputs, controles) · `12` rótulo/metadado · `11` legenda (piso do texto
+  informativo) · `9` micro-rótulo. Consolidada a partir de 16 valores medidos
+  (`7 · 7.5 · 8 · 8.5 · 9 · 10 · 11 · 12 · 13 · 14 · 15 · 16 · 18 · 20 · 22 · 24`).
+- **Micro-tier 8px = exceção acoplada à geometria:** `.minical-month-label` e os rótulos internos
+  dos nós (`.node-*` 8px, árvore e mapa) vivem em caixas de tamanho fixo — o minicalendário é um
+  passo de grade de 13px (`--minical-step` ↔ `MINICAL_STEP_PX` em `APP/minical.js`). Não aumentar
+  a fonte lá sem refazer as duas constantes juntas.
+- **Normalização de base (`base.css`):** `input, button, select, textarea { font-family: inherit;
+  font-size: 13px }` + `h1 → 22px / h2 → 18px / h3, h4 → 16px`. Mata os padrões do navegador
+  (13.33px nos controles, 1.1em/1.2em/1.5em nos títulos). **Não usar `rem`/`em` em `font-size`
+  novo** — usar px da escala.
+- **Terceiros:** o Leaflet mantém 10px onde o CSS dele exige (`!important` na atribuição do mapa);
+  não é violação da escala.
 - Números de contagem (`[14]`, horas) não precisam de fonte tabular; alinhe com `gap`, não com espaços.
 - Títulos de página `<h1>` ficam **ocultos** (`display:none !important` em `base.css`) porque a
   navbar já mostra o nome da página. Mantido por decisão — não reintroduzir h1 visível.
@@ -165,6 +171,6 @@ substituí-los por ícones vetoriais é regressão.
 - [x] Auditoria do `--text-dim`: 12 usos informativos → `--text-faint` (5.9:1). Mantido em bordas/
       fundos, estados desativados (`no-puede-cursar`, `:disabled`), ícones e minical 8px
 - [ ] `<main>` nas 6 páginas + `label` nos 3 inputs sem rótulo (`#anioIngreso`, `#extensionNombre`, `#extensionHoras`)
-- [ ] Consolidação da escala tipográfica (11 → 8 degraus: `11/12/13/14/16/18/22/32`)
+- [x] Consolidação da escala tipográfica — FEITO (etapa 4, rama `design/visual-system`): 16 valores medidos → 8 degraus `9/11/12/13/14/16/18/22` + micro-tier 8px (exceção acoplada) + normalização em `base.css`; Leaflet mantém 10px. Censo no DOM: `badCount: 0` nas 6 páginas (1440) e em index/arbol/cartelera (390).
 - [ ] Densidade/padding da tabela de universidades
 - [ ] `user-select: none` global em `body` bloqueia copiar texto de estudo — revisar escopo
