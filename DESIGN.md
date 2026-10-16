@@ -144,10 +144,11 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
 - **Estrutura de página:** `nav` (navbar) + `main` (conteúdo). O `<main>` é um wrapper de bloco
   **sem estilo próprio** — o layout segue dirigido pelas classes internas de cada página; não
   aplicar `display: flex/grid` nele sem reconferir as 6 páginas (etapa 6).
-- **Banner de privacidade** (`.privacy-notice`/`#privacyBanner`, CSS em `base.css`): o markup existe
-  nas **6** páginas, mas só fica visível se a página carregar `APP/version-check.js` — é ele que faz
-  `display: flex` (além do auto-reload de versão). Não remover o markup nem o script: `vacunas` e
-  `universidades` não os tinham e o banner simplesmente não aparecia (corrigido na etapa 8).
+- **Banner de privacidade** (`.privacy-notice`/`#privacyBanner`, CSS em `base.css`): **visível por
+  padrão** no markup das **6** páginas (sem `display:none` inline) — decisão do usuário (2026-10-16):
+  o aviso aparece **sempre** e só é fechado **manualmente** (✕); não pode depender de `localStorage`,
+  `fetch` nem de nenhum script. `version-check.js` **nunca toca no banner** — só faz auto-reload de
+  versão. Não reintroduzir `display:none` inline nem condicionar o banner a JS.
 - **Mobile-first:** toda mudança testada em **390px**; nunca criar `overflow:hidden` sem caminho
   de rolagem. `html,body` usam `overflow-x: hidden` + `overflow-x: clip` (fallback iOS < 15.4).
 - **Grids com conteúdo nowrap:** usar `minmax(0, 1fr)`, nunca `1fr` puro — `1fr` = `minmax(auto, 1fr)`
@@ -277,3 +278,9 @@ substituí-los por ícones vetoriais é regressão.
       `location.reload()` sem `return` exibia o banner logo antes de recarregar; com localStorage
       bloqueado entrava em loop infinito → `showBanner()` + guarda `canStore` + `file:` + `return`
       antes do reload (`APP/version-check.js`).
+- [x] Banner **incondicional** — **FEITO (decisão do usuário: "o aviso não deveria salvar no
+      localStorage de qualquer forma" / "deve aparecer sempre e o usuário fecha manualmente")**:
+      supersede o item acima — o banner ficou **visível por padrão no markup** das 6 páginas
+      (`display:none` inline removido) e o `version-check.js` parou de tocá-lo de vez (só faz
+      auto-reload). Verificado: `flex` 37px estável nas 6 páginas @1440, 45px @390, fechamento
+      manual OK, e na primeira visita (reload de versão) o banner nunca desaparece.

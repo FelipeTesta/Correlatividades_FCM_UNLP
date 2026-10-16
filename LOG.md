@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Corrección — aviso de privacidad incondicional en rama `design/visual-system` (2026-10-16)
+
++ **Decisión del usuario**: el aviso "🔒 Este sitio no comparte tus datos…" debe aparecer **siempre** y solo cerrarse **manualmente** — no puede depender de `localStorage`, `fetch` ni de ningún script.
++ **Banner visible por defecto**: removido el `style="display:none"` inline del `#privacyBanner` en las **6 páginas** — ahora es puro markup + CSS (`display: flex` en `base.css`). Ningún JS lo muestra ni lo oculta; el botón ✕ lo cierra solo para esa vista.
++ **`version-check.js` desacoplado del banner**: ahora solo hace el auto-reload de versión (guarda `canStore` con probe, cooldown de 3s vía `lastReloadAttempt`, `return` antes de cada reload, protocolo `file:` ignorado). Antes el banner dependía del resultado del fetch — y el reload lo re-escondía ("aparecía y cerraba solo en 1 segundo", reporte del usuario).
++ **Verificado**: `flex` 37px en las 6 páginas @1440 (estable 4s+, sin reloads), 45px @390 con `hOverflow: 0`, cierre manual OK, y en primera visita (con el reload único de versión) el banner permanece visible durante todo el ciclo.
+
 ### Optimización visual — etapa 9 (vãos, hover, tarjetas, mobile) en rama `design/visual-system` (2026-10-16)
 
 + **Vãos verticais (pedido del usuario)**: auditoria con detector de bandas vacías (>45px) a 1440 — index/arbol/universidades limpias; cartelera tenía 52px (bloque `#status` vacío) y extensión 5×47px de "fondos muertos" en cada fila del grid. Corregido: `hr` 10→**4px**, `.year-section` 14→**10px**, `.source-group` 16→**12px**, `#status` 12→8px + `#status:empty { display: none }`, `.vacunas-footer` 16→**10px**, `.card-links { margin-top: auto }` (links pegados al pie de las tarjetas estiradas).
