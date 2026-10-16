@@ -57,14 +57,14 @@ body {
     border: 1px solid var(--border);
     border-left: 4px solid var(--optativa);
     border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 14px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
     font-size: 13px;
     color: var(--text-muted);
 }
 
 .extension-header p {
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
 }
 
 .extension-faculty-links {
@@ -97,7 +97,7 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
     flex-wrap: wrap;
 }
 
@@ -182,8 +182,8 @@ body {
 .extension-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 14px;
 }
 
 @media (max-width: 600px) {
@@ -200,10 +200,10 @@ body {
     background-color: var(--bg-elevated);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     position: relative;
     transition: border-color 0.2s, transform 0.15s;
 }
@@ -293,7 +293,7 @@ body {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 .card-link-btn {
@@ -335,7 +335,7 @@ body {
 .card-actividad {
     font-size: 11px;
     color: var(--text-faint);
-    margin-top: 4px;
+    margin-top: 2px;
     text-align: right;
 }
 
@@ -345,7 +345,7 @@ body {
 
 .empty-state {
     text-align: center;
-    padding: 40px 20px;
+    padding: 24px 20px;
     color: var(--text-faint);
     font-size: 14px;
 }

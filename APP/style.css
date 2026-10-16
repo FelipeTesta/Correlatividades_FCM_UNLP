@@ -206,17 +206,17 @@ h2 {
 /* ============================= */
 
 .progress-container {
-    padding: 10px 14px;
+    padding: 8px 14px;
     background-color: var(--bg-elevated);
     border: 1px solid var(--bg-hover);
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .progress-info {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     font-size: 13px;
-    color: #ccc;
+    color: var(--text-muted);
 }
 
 .progress-bar-wrapper {
@@ -483,21 +483,38 @@ h2 {
     border: none;
 }
 
+/* Pantallas anchas: dos columnas en el index → la mitad de scroll vertical.
+   Se usa `column-count` (no grid) para que el navegador balancee la altura;
+   `break-inside: avoid` evita que una caja quede cortada entre columnas. */
+@media (min-width: 1250px) {
+    .listas {
+        display: block;
+        column-count: 2;
+        column-gap: 24px;
+    }
+
+    .listas > .box {
+        break-inside: avoid;
+        -webkit-column-break-inside: avoid;
+        margin-bottom: 8px;
+    }
+}
+
 /* ============================= */
 /* ITEMS */
 /* ============================= */
 
 ul:not(.app-navbar-list) {
     padding-left: 8px;
-    margin: 6px 0;
+    margin: 4px 0;
 }
 
 li:not(.app-navbar-list li) {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 4px;
-    padding: 4px 8px;
+    margin-bottom: 2px;
+    padding: 3px 8px;
     border-radius: 4px;
     font-size: 14px;
 }
@@ -762,7 +779,7 @@ li button:hover {
 
 .regularizadas-box {
     background-color: var(--bg-elevated);
-    padding: 10px;
+    padding: 8px;
     border: 1px solid var(--bg-card);
     border-radius: 4px;
 }
@@ -774,7 +791,7 @@ li button:hover {
 
 /* Título interno menor */
 .sub-section h4 {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-size: 14px;
     opacity: 0.8;
 }
@@ -928,7 +945,7 @@ li button:hover {
 /* ============================= */
 
 .box {
-    padding: 4px 0;
+    padding: 2px 0;
     border: none;
     background-color: transparent;
 }
@@ -941,8 +958,8 @@ li button:hover {
     -webkit-touch-callout: none;
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 10px;
-    padding: 8px 12px;
+    margin: 0 0 6px;
+    padding: 6px 12px;
     border-radius: 6px;
     border-left: 4px solid;
     transition: background 0.15s, filter 0.15s;
@@ -989,7 +1006,7 @@ li button:hover {
 }
 
 .box-count {
-    color: #d0d0d0;
+    color: var(--text-muted);
     font-size: 13px;
     font-weight: normal;
     margin-left: 4px;
@@ -1014,7 +1031,7 @@ li button:hover {
 
 /* Indent sub-sections inside a box */
 .box-content .sub-section {
-    margin-left: 16px;
+    margin-left: 12px;
 }
 
 
@@ -1027,7 +1044,7 @@ li button:hover {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 /* Hover effect on list items (desktop) */
@@ -1331,14 +1348,14 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 .venn-hint {
     font-size: 12px;
     color: var(--text-faint);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 #vennFilters {
     display: flex;
     flex-wrap: wrap;
     gap: 6px 12px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .venn-filter {
@@ -1352,7 +1369,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 }
 
 .venn-filter input {
-    accent-color: #22d3ee;
+    accent-color: var(--cursando);
     cursor: pointer;
 }
 
@@ -1428,7 +1445,7 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 }
 
 .ficha-section a {
-    color: #22d3ee;
+    color: var(--cursando);
     text-decoration: none;
 }
 
@@ -1453,12 +1470,85 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
 }
 
 .vacunas-footer {
-    margin-top: 28px;
-    padding: 16px 0 36px;
+    margin-top: 16px;
+    padding: 12px 0 16px;
     border-top: 1px solid var(--bg-hover);
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+/* ---- Página de vacunas: barra superior (solo botón Reset) ---- */
+.top-bar-vacunas {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+/* ---- Encabezados de caja por color, igual que los .box-* del index ---- */
+#faltantesBox h3 {
+    color: var(--regularizada);
+    background: rgba(249, 115, 22, 0.08);
+    border-left-color: var(--regularizada);
+}
+
+#historicoBox h3 {
+    color: var(--cursando);
+    background: rgba(34, 211, 238, 0.08);
+    border-left-color: var(--cursando);
+}
+
+#vennBox h3 {
+    color: var(--optativa);
+    background: rgba(168, 85, 247, 0.08);
+    border-left-color: var(--optativa);
+}
+
+/* ---- Fila de encabezado con control (título + input de fecha) ---- */
+.box-head-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border-left: 4px solid;
+}
+
+.box-head-row h3 {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border-left: none;
+}
+
+#faltantesBox .box-head-row {
+    background: rgba(249, 115, 22, 0.08);
+    border-left-color: var(--regularizada);
+}
+
+#globalVacunaFecha {
+    width: 96px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: var(--text);
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+/* ---- Listas de vacunas: rejilla de 2 columnas (evita el hueco muerto
+   entre el nombre y el botón "Agregar" en pantallas anchas) ---- */
+#faltantesList,
+#historicoList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 4px 16px;
+    align-items: start;
+    margin: 0;
+    padding-left: 0;
 }
 
 .vacunas-footer h4 {

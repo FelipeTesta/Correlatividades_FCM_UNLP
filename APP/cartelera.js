@@ -1474,10 +1474,10 @@ function renderCard(pub, showCatedra, catedraName, subjectName) {
   var dateEl = document.createElement("div");
   dateEl.className = "pub-date";
   if (pub.modificadaDate) {
-    dateEl.textContent = "\uD83D\uDCC5 " + formatDateTime(pub.modificadaDate);
+    dateEl.textContent = formatDateTime(pub.modificadaDate);
     dateEl.classList.add("pub-date-modified");
   } else {
-    dateEl.textContent = "\uD83D\uDCC5 " + pub.dateStr;
+    dateEl.textContent = pub.dateStr;
   }
   header.appendChild(dateEl);
 
@@ -1542,7 +1542,7 @@ function renderCard(pub, showCatedra, catedraName, subjectName) {
   } else {
     var btnLeido = document.createElement("button");
     btnLeido.className = "btn-leido";
-    btnLeido.textContent = "\uD83D\uDC41 lido";
+    btnLeido.textContent = "\uD83D\uDC41 le\u00EDdo";
     btnLeido.setAttribute("aria-label", "Marcar como le\u00EDdo");
     (function(link, modTs) {
       btnLeido.addEventListener("click", function () { marcarLeida(link, modTs); });

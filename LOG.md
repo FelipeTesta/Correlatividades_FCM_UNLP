@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Optimización visual — etapa 8 (compactación vertical + pulido de tarjetas) en rama `design/visual-system` (2026-10-16)
+
++ **Compactación vertical**: se priorizó reducir el scroll en todas las páginas. Alturas medidas a 1440px: **index 3523 → 2302** (−35%: las cinco cajas ahora se reparten en 2 columnas con `column-count` a partir de 1250px), **universidades 2128 → 1835**, **vacunas 1659 → 1288**, **extension 2234 → 2086**; `arbol` ya entraba en el viewport (900). La cartelera no es comparable 1:1 porque su altura depende de las publicaciones que devuelve el Worker, así que su compactación se verificó elemento por elemento. `hOverflow: 0` en las 6 páginas a 1440 y 390.
++ **Contrato de densidad** documentado en `DESIGN.md` §4.2 (escala 2/4/6/8/10/12/16/24; filas `li` 3px 8px + 2px; `.box h3` 6px 12px; `hr` con token; celdas 9px; tarjetas 8–12px). Trade-off registrado: la tabla de Universidades vuelve de los 12px de la etapa 5 a **9px**, porque ahora la prioridad es menos scroll.
++ **Cartelera — pulido de tarjetas**: `.pub-card` con borde `--border` + radio 8px + `padding: 8px 10px` + hover `--border-strong`; `.source-header` 18 → **16px** (márgenes 20/10 → 12/8); `.subject-title` `1rem` → **14px** (estaba fuera de la escala tipográfica); pills de detalle 9 → 11px; la fecha ya no lleva el emoji 📅 (se veía como un cuadradito de color); el botón decía **"lido"** (portugués) → **"👁 leído"**.
++ **Vacunas — rediseño**: la lista de faltantes y el histórico pasan a **2 columnas** (`grid` `minmax(420px, 1fr)`) — antes cada fila ocupaba todo el ancho y el botón "Agregar" quedaba pegado al extremo derecho dejando un hueco muerto enorme; los tres encabezados (Faltantes / Histórico / Mapa) llevan ahora la tinta de estado de las cajas del índice; el encabezado de Faltantes agrupa título + `#globalVacunaFecha` en `.box-head-row`; el botón Reset queda alineado a la derecha (`.top-bar-vacunas` no existía como regla).
++ **Alerta/banner de privacidad (reportado por el usuario)**: `vacunas` no cargaba `APP/version-check.js` y `universidades` no tenía ni el markup ni el script, así que el banner "🔒 Este sitio no comparte tus datos…" no aparecía. Corregido en ambas páginas y verificado visible (37px a 1440; 43–45px a 390) en las 6 páginas.
++ **Extensión**: encabezado y tarjetas más compactos (padding 12px, gap 8–12px, márgenes tokenizados). **Árbol**: footer 28/36 → 16/20px y link con `--text-faint`. **Base**: `hr` deja el estilo del navegador (vão de ~16px → 10px con `--border`).
++ **Evidencias**: `76`–`89` en `FLOW/design-2026-10-16/` (compactación y banner, 1440 y 390).
+
 ### Optimización visual — etapa 6 (accesibilidad estructural) en rama `design/visual-system` (2026-10-16)
 
 + **`<main>` landmark en las 6 páginas**: antes solo existía `nav`. Ahora cada página (index, arbol, cartelera, universidades, vacunas, extension) tiene **un** `<main>` que envuelve el contenido principal; `nav`, modales, banner de privacidad y scripts quedan **fuera**. En `arbol` el contenedor existente pasó a ser `<main class="tree-page">` (la clase se conserva para no romper CSS/JS).

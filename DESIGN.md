@@ -93,6 +93,25 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
 - Nada de "primário preenchido" para ação comum: enche a tela e mata a hierarquia; o preenchido
   fica reservado para o que está **selecionado/ativo**.
 
+### 4.2 Densidade vertical — menos scroll (etapa 8, 2026-10-16)
+
+- Objetivo: cada página deve pedir o **menor scroll possível** sem quebrar §3 (tipografia),
+  §4.1 (botões) nem §7 (alvos ≥ 24px). Densidade não é licença para encolher controle.
+- Escala vertical canônica: **2 / 4 / 6 / 8 / 10 / 12 / 16 / 24** px (padding, margin, gap).
+- Linhas de lista (`li`): `padding: 3px 8px` + `margin-bottom: 2px`; `ul` `margin: 4px 0`.
+- Caixa: `.box` `padding: 2px 0`; `.box h3` `padding: 6px 12px` + `margin: 0 0 6px`.
+- `hr`: `border: none; border-top: 1px solid var(--border); margin: 10px 0` — o estilo default do
+  navegador abria um vão de ~16px (agora em `base.css`).
+- Cartões: padding de 8–12px (`.pub-card` 8px 10px, `.extension-card` 12px) e gaps de 8–12px.
+- Células de tabela: **9px** de padding (universidades). *Trade-off registrado:* a etapa 5 tinha
+  subido para 12px a pedido do usuário; a etapa 8 priorizou menos scroll e voltou para 9px.
+- Mapa de universidades: `height: 45vh; min-height: 320px`.
+- **Índice em ≥1250px:** `.listas` usa `column-count: 2` com `break-inside: avoid` nas caixas.
+  Limite conhecido: caixas altas não se dividem, então a 2ª coluna pode ficar mais alta que a 1ª
+  (sobra espaço no fim da 1ª). Deixar uma caixa se dividir entre colunas só com revisão visual.
+- Proibido para compactar: reduzir `min-height` de botões/alvos, sair da escala tipográfica (§3),
+  usar `rem`/`em` em `font-size`, ou esconder conteúdo.
+
 ## 5. Layout e responsivo
 
 - `body { margin: 12px }` e **`12%` lateral a partir de 769px** (`base.css`) — o app "vive" em
@@ -102,6 +121,10 @@ minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--
 - **Estrutura de página:** `nav` (navbar) + `main` (conteúdo). O `<main>` é um wrapper de bloco
   **sem estilo próprio** — o layout segue dirigido pelas classes internas de cada página; não
   aplicar `display: flex/grid` nele sem reconferir as 6 páginas (etapa 6).
+- **Banner de privacidade** (`.privacy-notice`/`#privacyBanner`, CSS em `base.css`): o markup existe
+  nas **6** páginas, mas só fica visível se a página carregar `APP/version-check.js` — é ele que faz
+  `display: flex` (além do auto-reload de versão). Não remover o markup nem o script: `vacunas` e
+  `universidades` não os tinham e o banner simplesmente não aparecia (corrigido na etapa 8).
 - **Mobile-first:** toda mudança testada em **390px**; nunca criar `overflow:hidden` sem caminho
   de rolagem. `html,body` usam `overflow-x: hidden` + `overflow-x: clip` (fallback iOS < 15.4).
 - Breakpoints reais em uso: `768` (mobile), `769` (desktop), `1250` (tabela de universidades
@@ -191,3 +214,16 @@ substituí-los por ícones vetoriais é regressão.
 - [x] `user-select: none` global em `body` — **REVISADO: mantido de propósito**. É exigência explícita
       do usuário (comentário no próprio código em `universidades.css`); os controles já têm regra
       própria, então nada muda aqui. **Não remover.**
+- [x] Compactação vertical das 6 páginas — **FEITO (etapa 8, rama `design/visual-system`)**: alturas
+      medidas a 1440 — index 3523 → **2302** (−35%, 2 colunas em ≥1250px), universidades 2128 →
+      **1835**, vacunas 1659 → **1288**, extension 2234 → **2086**; `arbol` já cabia (900).
+      Contrato de densidade em §4.2. `hOverflow: 0` em 1440 e 390. A cartelera não é comparável 1:1
+      (altura depende das publicações do Worker) — compactação verificada elemento a elemento.
+- [x] Pulido visual da cartelera e de vacunas — **FEITO (etapa 8)**: cartelera (cards com borda/raio
+      e hover consistentes, `.source-header` 16px, pills 11px, data sem o emoji 📅, botão "👁 leído"
+      em espanhol); vacunas (faltantes/histórico em 2 colunas — acabou o vão morto antes do botão
+      "Agregar" —, os 3 cabeçalhos com tinta de estado, `.box-head-row` para encabezado + fecha,
+      footer compacto).
+- [x] Banner de privacidade presente e visível nas **6** páginas — **FEITO (etapa 8)**: `vacunas` e
+      `universidades` não carregavam `APP/version-check.js` (a `universidades` também não tinha o
+      markup). Verificado: `banner: visible 37px` @1440 e 43–45px @390.

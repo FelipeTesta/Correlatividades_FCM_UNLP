@@ -1560,6 +1560,6 @@
      }
  }
 /* ═══ Otras Universidades footer — removable block ═══ */
-.tree-footer { text-align: center; padding: 28px 0 36px; }
-.tree-footer-link { font-size: 12px; color: #666; text-decoration: none; letter-spacing: 0.3px; transition: color 0.2s; }
-.tree-footer-link:hover { color: #e5e5e5; }
+.tree-footer { text-align: center; padding: 16px 0 20px; }
+.tree-footer-link { font-size: 12px; color: var(--text-faint); text-decoration: none; letter-spacing: 0.3px; transition: color 0.2s; }
+.tree-footer-link:hover { color: var(--text); }

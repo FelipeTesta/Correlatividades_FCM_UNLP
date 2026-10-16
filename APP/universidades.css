@@ -184,7 +184,7 @@ body {
 
 .uni-table-sector {
     max-width: 1200px;
-    margin: 0 auto 14px;
+    margin: 0 auto 10px;
     padding: 0 4px;
     background-color: var(--bg-card);
     border: 1px solid var(--bg-input);
@@ -207,7 +207,7 @@ body {
     letter-spacing: 1px;
     color: var(--text-muted);
     text-align: left;
-    padding: 12px;
+    padding: 9px;
     border-bottom: 1px solid var(--bg-input);
     white-space: nowrap;
 }
@@ -232,7 +232,7 @@ body {
 }
 
 .uni-table td {
-    padding: 12px;
+    padding: 9px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     vertical-align: middle;
 }
@@ -477,13 +477,13 @@ body {
 .uni-map-sector {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 4px 14px;
+    padding: 0 4px 10px;
 }
 .uni-map {
-    height: 60vh;
-    min-height: 400px;
+    height: 45vh;
+    min-height: 320px;
     background-color: var(--bg-elevated);
-    border: 1px solid #222;
+    border: 1px solid var(--bg-input);
     border-radius: 12px;
     overflow: hidden;
 }
