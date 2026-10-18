@@ -376,11 +376,11 @@
  /* ============================= */
  
  .year-header {
-     font-size: 18px;
-     font-weight: 700;
-     color: var(--text);
+     font-size: 14px;
+     font-weight: 600;
+     color: var(--text-muted);
      text-transform: uppercase;
-     letter-spacing: 2px;
+     letter-spacing: 1px;
      padding: 2px 4px;
      margin-bottom: 8px;
      border-bottom: 2px solid var(--bg-hover);
@@ -1278,7 +1278,7 @@
      }
  
      .year-header {
-         font-size: 13px;
+         font-size: 12px;
          letter-spacing: 0.5px;
          padding: 2px 0;
          margin-bottom: 2px;

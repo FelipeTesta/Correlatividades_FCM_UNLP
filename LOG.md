@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Ajuste — rótulos de ano del árbol (2026-10-18)
+
++ **`AÑO N` menor y más discreto (pedido del usuario: "es solo un label")**: `.year-header` pasa de `18px/700` en `--text` a **`14px/600` en `--text-muted`** (mobile 13 → **12px**), `letter-spacing` 2 → 1px. El borde inferior queda como separador.
+
 ## [0.10] — 2026-10-16
 
 Ronda visual completa (auditoría + etapas 1–9 + correcciones de banner y mobile) desarrollada en la rama `design/visual-system` y mergeada en `main`.

@@ -232,7 +232,8 @@ substituí-los por ícones vetoriais é regressão.
 - [x] Reduced motion: decidido **não** usar (ver §7)
 - [x] Vocabulário de botões unificado (etapa 1): radius 6px, `13px/500`, variantes em §4.1
 - [x] Rótulos de ano do arbol (`AÑO N`): 14px em `--cursando` (cor de status, uso decorativo) →
-      **20px/700 em `--text`** (mobile 13px)
+      20px/700 em `--text` → **ajustado a pedido do usuário (2026-10-18): 14px/600 em
+      `--text-muted`** (mobile 12px), `letter-spacing` 2 → 1px — "é só um label"
 - [x] Auditoria do `--text-dim`: 12 usos informativos → `--text-faint` (5.9:1). Mantido em bordas/
       fundos, estados desativados (`no-puede-cursar`, `:disabled`), ícones e minical 8px
 - [x] `<main>` nas 6 páginas + nome acessível nos inputs — **FEITO (etapa 6)**: um `<main>` por
