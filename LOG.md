@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11] — 2026-10-18
+
 ### Auditoría responsive Android/iOS — ronda 3 en rama `design/polish-a11y-seo` (2026-10-18)
 
 + **Matriz de viewports** (iPhone SE 320, Android 360/412, iPhone 14 landscape 844) × 6 páginas: `hOverflow: 0` en todas; los elementos que transbordan (tabla de universidades, `#vennSvg`) están dentro de scrollers horizontales intencionales.
