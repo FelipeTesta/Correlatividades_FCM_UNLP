@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Accesibilidad y SEO — ronda 1 (Lighthouse) en rama `design/polish-a11y-seo` (2026-10-18)
+
++ **Lighthouse (mobile) antes → después**: index A11y 87→**96**, SEO 90→**100**; arbol A11y 90→**96**; cartelera A11y 96→**100**, SEO 90→**100**; universidades SEO 91→**100**, BP 96→**100**; vacunas A11y 93→**96**; extension 100 en todo. Perf real medida en producción (FCP 120–656ms, ~28 recursos): sin problema de rendimiento — los hallazgos eran de a11y/SEO.
++ **4 tokens nuevos** en `variables.css` (paleta 18→22): `--info`/`--info-text` para avisos (el `#3b82f6` pendiente) y variantes claras `--danger-text`/`--optativa-text` — tokens saturados para borde/acento, variantes `-text` para texto pequeño.
++ **Contraste**: chips activos de la cartelera extienden `var(--bg)` al sufijo "dias"; labels JUL–DIC del minical y título "No puede cursar" pasan de `--text-dim` a `--text-faint`; ítems no obligatorios de vacunas `opacity 0.5` → `0.65`; texto de las pills (Avisos/Exámenes/General) en las variantes `-text`.
++ **ARIA**: "Ver Fechas" con `aria-label` alineado al texto visible ("Ver Fechas: todas las fechas de final"); los 14 toggles de cursando nombrados por materia ("Cursando: Anatomía"); `role="switch"` retirado de los toggles del arbol (exigía `aria-checked`); `aria-label` redundante retirado de las filas de universidades (el texto visible ya es el nombre).
++ **SEO/perf**: meta description en las 6 páginas + preconnects (proxy worker, unpkg, cartocdn); tiles de Leaflet @2x (`{y}{r}.png` + `detectRetina: true`).
++ **Datos (pedido del usuario)**: abreviaturas "Salud Pública I/II" → **"Salud Pub I/II"** y "Dx Imagenes I/II" → **"Dx Img I/II"** (`APP/materias.js`).
++ Evidencias: `FLOW/design-2026-10-18/108`–`112` (390px); reports de Lighthouse generados por chrome-devtools MCP.
+
 ### Ajuste — rótulos de ano del árbol (2026-10-18)
 
 + **`AÑO N` menor y más discreto (pedido del usuario: "es solo un label")**: `.year-header` pasa de `18px/700` en `--text` a **`14px/600` en `--text-muted`** (mobile 13 → **12px**), `letter-spacing` 2 → 1px. El borde inferior queda como separador.

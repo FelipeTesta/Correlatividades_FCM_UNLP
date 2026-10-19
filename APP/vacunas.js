@@ -482,7 +482,7 @@ function renderizar() {
         // 1. Serie Inicial
         if (aplicadas.length < config.dosesSeries) {
             const li = document.createElement("li");
-            if (!alerta) li.style.opacity = "0.5";
+            if (!alerta) li.style.opacity = "0.65";
             li.innerHTML = `${config.nome}: Falta(n) ${config.dosesSeries - aplicadas.length} dosis 
                 ${alerta ? `<button class="btn-warning-faltantes" onclick="abrirExplicacion('${key}')">⚠</button>` : ''}
                 <button class="btn-primary" style="margin-left: auto; padding: 2px 6px;" onclick="registrarDosisRapido('${key}')">Agregar</button>`;
@@ -496,7 +496,7 @@ function renderizar() {
             
             if (proximoRefuerzo <= hoje) {
                 const li = document.createElement("li");
-                if (!alerta) li.style.opacity = "0.5";
+                if (!alerta) li.style.opacity = "0.65";
                 li.innerHTML = `${config.nome}: Requiere refuerzo 
                     ${alerta ? `<button class="btn-warning-faltantes" onclick="abrirExplicacion('${key}')">⚠</button>` : ''}
                     <button class="btn-primary" style="margin-left: auto; padding: 2px 6px;" onclick="registrarDosisRapido('${key}')">Agregar</button>`;

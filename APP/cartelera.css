@@ -120,13 +120,17 @@ h1 {
 .group-btn.active,
 .filter-days-wrap.active {
     background-color: var(--cursando);
-    color: #000;
+    color: var(--bg);
     border-color: var(--cursando);
 }
 
 .filter-days-wrap.active .filter-days-input {
-    color: #000;
+    color: var(--bg);
     background: transparent;
+}
+
+.filter-days-wrap.active .filter-days-suffix {
+    color: var(--bg);
 }
 
 #refreshBtn {
@@ -305,7 +309,7 @@ h1 {
     margin-top: 6px;
     padding-top: 6px;
     font-weight: 600;
-    color: var(--optativa);
+    color: var(--optativa-text);
 }
 
 .pub-date {
@@ -366,16 +370,16 @@ h1 {
 }
 
 /* Tag type pill colors */
-.pub-detail-pill.tag-avisos { color: #3b82f6; background: rgba(59, 130, 246, 0.15); }
-.pub-detail-pill.tag-examenes { color: var(--danger); background: rgba(239, 68, 68, 0.15); }
+.pub-detail-pill.tag-avisos { color: var(--info-text); background: rgba(59, 130, 246, 0.15); }
+.pub-detail-pill.tag-examenes { color: var(--danger-text); background: rgba(239, 68, 68, 0.15); }
 .pub-detail-pill.tag-notas { color: var(--aprobada); background: rgba(34, 197, 94, 0.15); }
 .pub-detail-pill.tag-otros { color: var(--text-faint); background: rgba(136, 136, 136, 0.15); }
-.pub-detail-pill.tag-general { color: var(--optativa); background: rgba(168, 85, 247, 0.15); }
+.pub-detail-pill.tag-general { color: var(--optativa-text); background: rgba(168, 85, 247, 0.15); }
 
 /* Acento lateral por tipo de publicación (ref: Linear/Material — la barra
    identifica el tipo sin ocupar altura; no aparece en cards ya leídas,
    que ocultan sus pills) */
-.pub-card:has(.tag-avisos) { border-left: 3px solid #3b82f6; }
+.pub-card:has(.tag-avisos) { border-left: 3px solid var(--info); }
 .pub-card:has(.tag-examenes) { border-left: 3px solid var(--danger); }
 .pub-card:has(.tag-notas) { border-left: 3px solid var(--aprobada); }
 .pub-card:has(.tag-general) { border-left: 3px solid var(--optativa); }
@@ -1070,7 +1074,7 @@ a.no-pubs-link {
 
 .btn-subscribe {
   background: var(--bg-hover);
-  color: var(--optativa);
+  color: var(--optativa-text);
   border: 1px solid var(--optativa);
   padding: 6px 12px;
   border-radius: 4px;
@@ -1079,7 +1083,7 @@ a.no-pubs-link {
 }
 .btn-subscribe:hover {
   background: var(--optativa);
-  color: #000;
+  color: var(--bg);
 }
 
 /* ============================= */

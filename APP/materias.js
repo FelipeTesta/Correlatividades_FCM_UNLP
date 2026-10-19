@@ -177,7 +177,7 @@ const materias = [
     {materia:"P9001",condicion:"regularizada"}
   ]
 },
-{ codigo:"HG001", nombre:"Salud Pública - Módulo I", nombreCorto: "Salud Pública I", anio:4, categoria:"cuatrimestral", horas:60,
+{ codigo:"HG001", nombre:"Salud Pública - Módulo I", nombreCorto: "Salud Pub I", anio:4, categoria:"cuatrimestral", horas:60,
   paraCursar:[
     {materia:"S0003",condicion:"regularizada"}
   ],
@@ -237,7 +237,7 @@ const materias = [
     {materia:"SEM91",condicion:"aprobada"}
   ]
 },
-{ codigo:"R9001", nombre:"Diagnóstico y Terapéutica por Imágenes - Módulo I", nombreCorto: "Dx Imagenes I", anio:4, categoria:"bimestral", horas:50,
+{ codigo:"R9001", nombre:"Diagnóstico y Terapéutica por Imágenes - Módulo I", nombreCorto: "Dx Img I", anio:4, categoria:"bimestral", horas:50,
   paraCursar:[
     {materia:"PT001",condicion:"regularizada"},
     {materia:"SEM91",condicion:"regularizada"}
@@ -301,7 +301,7 @@ const materias = [
     {materia:"F9001",condicion:"regularizada"}
   ]
 },
-{ codigo:"HG002", nombre:"Salud Pública - Módulo II", nombreCorto: "Salud Pública II", anio:5, categoria:"cuatrimestral", horas:60,
+{ codigo:"HG002", nombre:"Salud Pública - Módulo II", nombreCorto: "Salud Pub II", anio:5, categoria:"cuatrimestral", horas:60,
   paraCursar:[
     {materia:"HG001",condicion:"regularizada"}
   ],
@@ -318,7 +318,7 @@ const materias = [
     {materia:"C1001",condicion:"aprobada"}
   ]
 },
-{ codigo:"R9002", nombre:"Diagnóstico y Terapéutica por Imágenes - Módulo II", nombreCorto: "Dx Imagenes II", anio:5, categoria:"bimestral", horas:40,
+{ codigo:"R9002", nombre:"Diagnóstico y Terapéutica por Imágenes - Módulo II", nombreCorto: "Dx Img II", anio:5, categoria:"bimestral", horas:40,
   paraCursar:[
     {materia:"R9001",condicion:"regularizada"}
   ],

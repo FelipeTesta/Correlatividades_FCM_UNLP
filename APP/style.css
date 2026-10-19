@@ -991,7 +991,7 @@ li button:hover {
 }
 
 .box-no-puede-cursar h3 {
-    color: var(--text-dim);
+    color: var(--text-faint);
     background: rgba(102, 102, 102, 0.08);
     border-left-color: var(--text-dim);
 }

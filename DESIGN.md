@@ -31,7 +31,7 @@ Cascata obrigatória: `variables.css → base.css → nav.css → <page>.css`.
 | `--text` | `#e5e5e5` | texto principal | 15.8:1 ✅ |
 | `--text-muted` | `#999999` | texto secundário | 7.4:1 ✅ |
 | `--text-faint` | `#888888` | texto terciário | 5.9:1 ✅ |
-| `--text-dim` | `#666666` | **só decorativo** (labels do minical) | 3.7:1 ⚠️ |
+| `--text-dim` | `#666666` | **só decorativo** (bordas, desativado, textos não essenciais) | 3.7:1 ⚠️ |
 | `--border` | `#333333` | borda padrão | (não-texto) |
 | `--border-strong` | `#444444` | borda em destaque/hover | (não-texto) |
 | `--aprobada` | `#22c55e` | ✅ matéria aprovada | 9.1:1 ✅ |
@@ -41,10 +41,17 @@ Cascata obrigatória: `variables.css → base.css → nav.css → <page>.css`.
 | `--optativa-dark` | `#581c87` | fundo de optativa (não-texto) | — |
 | `--puede-cursar` | `#facc15` | habilitada a cursar | alto ✅ |
 | `--danger` | `#ef4444` | ⚠ faltam pré-requisitos / perigo | 5.6:1 ✅ |
+| `--danger-text` | `#f87171` | texto de perigo pequeno (pills) | 7.6:1 ✅ |
+| `--optativa-text` | `#c084fc` | texto optativa pequeno (pills/links) | 7.9:1 ✅ |
+| `--info` | `#3b82f6` | acento de aviso (borda de card) | (não-texto) |
+| `--info-text` | `#60a5fa` | texto de aviso pequeno (pill "Avisos") | 8.3:1 ✅ |
 
 **Regra de contraste:** texto informativo ≥ 4.5:1 contra o fundo real. `--text-dim` (3.7:1)
-**não pode** ser usado para texto que o usuário precisa ler — hoje só aparece nos labels do
-minical (8px, decorativos). Se precisar de texto legível "bem apagado", use `--text-faint`.
+**não pode** ser usado para texto que o usuário precisa ler — fica para bordas, estados
+desativados e textos decorativos (ronda 1 Lighthouse: os labels do minical foram para
+`--text-faint`). Se precisar de texto legível "bem apagado", use `--text-faint`.
+**Tokens saturados (`--optativa`, `--danger`, `--info`) são para borda/acento; texto pequeno
+usa as variantes claras (`-text`), que sobre tints `rgba(cor, .15)` continuam ≥ 4.5:1.**
 
 ## 3. Tipografia
 
@@ -124,7 +131,7 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
 
 - **Casca** (`.pub-card`): `border: 1px solid var(--border)`, radius 8px, `padding: 5px 8px`,
   `gap: 2px`, fundo `var(--bg-card)`, transição de borda 0.15s.
-- **Acento lateral por tipo** via `:has()`: `.tag-avisos` → `#3b82f6` (hex pendente de token),
+- **Acento lateral por tipo** via `:has()`: `.tag-avisos` → `var(--info)`,
   `.tag-examenes` → `var(--danger)`, `.tag-notas` → `var(--aprobada)`, `.tag-general` →
   `var(--optativa)`, `.tag-otros` → `var(--text-faint)` — 3px à esquerda. Cards lidas não levam.
 - **Header**: matéria em `11px` `--text-muted` **UPPERCASE** (`letter-spacing: 0.4px`); data com
@@ -134,6 +141,10 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
   botão "👁 leído"/"Desmarcar" (`11px`, `min-height: 24px`) à direita — uma linha a menos por card.
 - **Hover**: `border-color: var(--border-strong)` + `background: var(--bg-hover)` (lift sutil).
 - **Lidas**: pills somem; título/data em `--text-faint`.
+- **Texto das pills** (ronda 1 Lighthouse): variantes claras da paleta — `.tag-avisos` em
+  `--info-text`, `.tag-examenes` em `--danger-text`, `.tag-general` em `--optativa-text`
+  (≥ 4.5:1 sobre o tint `rgba(cor, .15)`); chips ativos dos filtros: texto `var(--bg)` inclusive
+  o sufixo "dias".
 
 ## 5. Layout e responsivo
 
@@ -190,6 +201,11 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
 - **Nomes acessíveis em controles (etapa 6):** `#anioIngreso` ganhou `for` no `<label>` visível;
   `#extensionNombre`, `#extensionHoras`, `#notifyEmail` e `#globalVacunaFecha` ganharam `aria-label`
   (sem custo de layout). Todo `<input>`/`<select>` do app tem nome acessível — manter assim.
+- **Padrões de aria (ronda 1 Lighthouse, 2026-10-18):** `aria-label` deve conter o texto visível
+  ("🗓 Ver Fechas" → `aria-label="Ver Fechas: …"`); toggle com `<label>` de texto **não** usa
+  `role="switch"` (exigiria `aria-checked`; o checkbox nativo já comunica o estado); toggles de
+  cursando nomeados por matéria ("Cursando: Anatomía"); itens não-obrigatórios de vacunas em
+  `opacity 0.65` (0.5 quebrava 4.5:1); Leaflet `{y}{r}.png` + `detectRetina: true` (tiles @2x).
 - Contraste ≥ 4.5:1 para texto (§2); não usar `--text-dim` para conteúdo.
 - `img` sem `alt`: 0 (mantido).
 - **Reduced motion: NÃO usar.** Decisão do usuário (2026-10-16): este app **não** implementa
@@ -286,3 +302,15 @@ substituí-los por ícones vetoriais é regressão.
       (`display:none` inline removido) e o `version-check.js` parou de tocá-lo de vez (só faz
       auto-reload). Verificado: `flex` 37px estável nas 6 páginas @1440, 45px @390, fechamento
       manual OK, e na primeira visita (reload de versão) o banner nunca desaparece.
+- [x] **Ronda 1 — Lighthouse a11y/SEO (2026-10-18, branch `design/polish-a11y-seo`)**: index
+      A11y 87→96 / SEO 90→100; arbol 90→96; cartelera 96→**100**/100; universidades SEO 91→100,
+      BP 96→100; vacunas 93→96; extension 100. 4 tokens `-text`/`--info` (§2), meta description +
+      preconnects nas 6 páginas, aria-labels alinhados ao texto visível, `role="switch"` fora,
+      tiles @2x (retina). Perf real medida (FCP 120–656ms) — sem problema de performance; o MCP
+      roda sem categoria Performance (`--no-performance-crux`), o CLS aparece em "Agentic Browsing".
+- [ ] **Ronda 2 (abertos)**: hit-area dos dots do minical (`::before` `inset: -6px`, mantém o
+      visual); acordeões `role=button` em headings → `<button>` real dentro do heading; **CLS**
+      (index 0.366, vacunas ~0.3, universidades 0.061 — investigar com layout-shift); links do
+      rodapé de vacunas < 24px; pins do mapa (exceção geográfica — documentar); Venn viewBox
+      1000×500 vs ~455 de conteúdo; hexes neutros de `universidades.css` → tokens de superfície;
+      scroll em retrato mobile do Modo Árbol.

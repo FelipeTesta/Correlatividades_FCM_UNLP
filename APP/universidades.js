@@ -268,9 +268,10 @@ function initMap() {
     });
 
     // CartoDB Dark tiles (API key)
-    L.tileLayer('https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_41qr_1_e31aed0c04d6b1eccbeec395', {
+    L.tileLayer('https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_41qr_1_e31aed0c04d6b1eccbeec395', {
         attribution: '© OpenStreetMap contributors © CARTO',
-        maxZoom: 19
+        maxZoom: 19,
+        detectRetina: true
     }).addTo(uniMap);
 
     // Add markers for each university
@@ -650,7 +651,7 @@ function buildUniversityTable() {
         row.dataset.uniId = uni.id;
         row.setAttribute('tabindex', '0');
         row.setAttribute('role', 'button');
-        row.setAttribute('aria-label', uni.nombre + ' — información');
+        // no aria-label: accessible name = visible row text (aria-label caused label-content-name-mismatch)
 
         // Universidad cell: sigla only — full name as hover title, click opens modal
         const tdUni = document.createElement('td');

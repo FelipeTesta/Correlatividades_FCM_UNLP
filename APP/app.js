@@ -934,6 +934,8 @@ infoText += materia.anio + "° Año";
             var switchInput = document.createElement("input");
             switchInput.type = "checkbox";
             switchInput.checked = isCursandoOn;
+            var cursandoMateria = codigo ? (materias.find(m => m.codigo === codigo) || {}).nombre || texto : texto;
+            switchInput.setAttribute("aria-label", "Cursando: " + cursandoMateria);
             switchInput.onchange = function() { toggleCursandoMain(codigo, this.checked); };
             switchLabel.appendChild(switchInput);
 
@@ -1066,7 +1068,7 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
                     btnCalendario = document.createElement("button");
                     btnCalendario.innerText = "🗓 Ver Fechas";
                     btnCalendario.className = "btn-calendario";
-                    btnCalendario.setAttribute('aria-label', 'Ver todas las fechas de final');
+                    btnCalendario.setAttribute('aria-label', 'Ver Fechas: todas las fechas de final');
                     btnCalendario.title = "Ver todas las fechas";
                     btnCalendario.onclick = (e) => {
                         e.stopPropagation();
@@ -1077,7 +1079,7 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
                     btnCalendario = document.createElement("button");
                     btnCalendario.innerText = "🗓 Ver Fechas";
                     btnCalendario.className = "btn-calendario";
-                    btnCalendario.setAttribute('aria-label', 'Ver todas las fechas de final');
+                    btnCalendario.setAttribute('aria-label', 'Ver Fechas: todas las fechas de final');
                     btnCalendario.title = "Ver todas las fechas";
                     btnCalendario.onclick = (e) => {
                         e.stopPropagation();
