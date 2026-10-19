@@ -92,6 +92,10 @@ hr {
     color: #aaa;
     background: rgba(0, 0, 0, 0.92);
     padding: 6px 12px;
+    /* safe-area: não colidir com a barra de gestos do iPhone (env() sem suporte cai no padding acima) */
+    padding-left: calc(12px + env(safe-area-inset-left, 0px));
+    padding-right: calc(12px + env(safe-area-inset-right, 0px));
+    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--bg-input);
     display: flex;
     justify-content: center;

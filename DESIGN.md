@@ -168,6 +168,14 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
 - **Botões em flex containers:** `overflow: hidden` zera o min-width automático do item e o texto
   corta (era o bug do `#btnResetear` a ≤320px). Em grupos que embrulham: `flex: 0 0 auto` +
   `white-space: nowrap` nos botões + `flex-wrap: wrap` no pai.
+- **Inputs em touch (Android/iOS, ronda 3):** iOS Safari dá **zoom forçado** ao focar inputs com
+  `font-size < 16px`. Regra: `@media (pointer: coarse) { font-size: 16px }` para todo input de
+  texto/número (`.filter-days-input`, `#notifyEmail`, `#globalVacunaFecha`, `.search-input`).
+  Checkbox/range não zoomeiam — não precisam. Desktop (pointer fine) mantém a escala (§3).
+- **Safe-area (iPhone notch/barra de gestos):** elementos fixos de borda a borda (hoje o
+  `.privacy-notice`) adicionam `padding` com `env(safe-area-inset-*, 0px)` **depois** do padding
+  normal — sem suporte a `env()` a declaração cai e o fallback permanece. Matriz de auditoria
+  iOS/Android (2026-10-18): 320/360/412/844-landscape × 6 páginas → `hOverflow: 0` em todas.
 - **Barra de controles da cartelera (mobile):** uma fila com `flex-wrap` e botões slim
   (`12px`, `padding: 5px 10px`, `min-height: 30px`).
 - Breakpoints reais em uso: `768` (mobile), `769` (desktop), `1250` (tabela de universidades
@@ -331,3 +339,9 @@ substituí-los por ícones vetoriais é regressão.
       cargas reais — aceito, §7); pins do mapa (exceção geográfica — documentar); Venn viewBox
       1000×500 vs ~455 de conteúdo; hexes neutros de `universidades.css` → tokens de superfície;
       scroll em retrato mobile do Modo Árbol.
+- [x] **Ronda 3 — auditoria mobile Android/iOS (2026-10-18)**: matriz 320/360/412/844-landscape
+      × 6 páginas → `hOverflow: 0` em todas; zoom de input do iOS resolvido (`pointer: coarse` →
+      16px nos 4 inputs de texto); banner com `env(safe-area-inset-*)`. `100dvh`+fallback,
+      `overscroll-behavior`, `touch-action: manipulation` e `-webkit-tap-highlight-color` já
+      existiam (auditoria iOS de 2026-09 + etapa 9). Tabela de universidades e `#vennSvg`
+      transbordam **dentro** dos scrollers horizontais intencionais.

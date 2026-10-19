@@ -247,6 +247,7 @@ Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa p
 
   - [x] Ronda 2 — refinamientos Lighthouse: dots do minical com hit-area 24px vertical (`::before`); links do rodapé de vacunas ≥24px (inline-block + padding, sem margem negativa); `role="button"`/`tabindex` removidos dos headings (decisão do usuário: sem teclado). Vacunas A11y 96→**100**; index fica 96 (teto = exceção dos dots, DESIGN §7)
   - [ ] Aceito/dívida: CLS só sob throttling do Lighthouse (re-render async; 0 em cargas reais — DESIGN §7); pins do mapa como exceção geográfica; Venn viewBox e hexes de universidades.css seguem nas dívidas acima
+  - [x] Auditoria responsiva Android/iOS (ronda 3): matriz 320/360/412/844-landscape × 6 páginas com `hOverflow: 0`; inputs de texto 16px em `pointer: coarse` (anti-zoom iOS Safari); banner de privacidade com `env(safe-area-inset-*)` — regras no DESIGN §5
 
 - [ ] Corregir el scroll en retrato móvil (Modo Árbol): espacio vacío debajo del contenido visual — transform: scale no afecta el layout real
 - NOTA: exportar/importar estado NUNCA existió (mención falsa ya removida del app/README) — no reintroducir sin pedido

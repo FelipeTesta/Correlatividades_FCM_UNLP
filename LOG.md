@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Auditoría responsive Android/iOS — ronda 3 en rama `design/polish-a11y-seo` (2026-10-18)
+
++ **Matriz de viewports** (iPhone SE 320, Android 360/412, iPhone 14 landscape 844) × 6 páginas: `hOverflow: 0` en todas; los elementos que transbordan (tabla de universidades, `#vennSvg`) están dentro de scrollers horizontales intencionales.
++ **Zoom de inputs en iOS Safari** (enfocar un input con `font-size < 16px` zoomea la página): `@media (pointer: coarse)` sube a **16px** los 4 inputs de texto (`.filter-days-input` y `#notifyEmail` en cartelera, `#globalVacunaFecha` en vacunas, `.search-input` en extensión); desktop sin cambios (13px).
++ **Safe-area del banner de privacidad**: padding con `env(safe-area-inset-left/right/bottom, 0px)` — no colisiona con la barra de gestos del iPhone (retrato y landscape); sin soporte a `env()` cae en el padding original.
++ **Ya existían** (auditoría iOS previa + etapa 9): `100vh` + fallback `100dvh`, `overflow-x: hidden` + `clip` (iOS < 15.4), `overscroll-behavior: none`, `touch-action: manipulation`, `-webkit-tap-highlight-color`, `-webkit-backdrop-filter`, `minmax(0, 1fr)`.
++ Verificación: `font-size` computado 16px en móvil / 13px desktop, `hOverflow: 0`, padding del banner 6px/12px donde `env()` = 0.
+
 ### Accesibilidad — ronda 2 (refinamientos Lighthouse) en rama `design/polish-a11y-seo` (2026-10-18)
 
 + **Vacunas A11y 96 → 100**: links del rodapé con `inline-block` + `padding: 6px 8px` (≥24px; el primer intento con margen negativa quedó "obscured" en `target-size` y fue revertido); `role="button"`/`tabindex` retirados de los 3 headings colapsables.

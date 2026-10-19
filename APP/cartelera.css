@@ -1235,3 +1235,11 @@ a.no-pubs-link {
 button, a, .btn-cartelera, .btn-subscribe, select {
     touch-action: manipulation;
 }
+
+/* iOS Safari auto-zooms the page when focusing inputs with font-size < 16px */
+@media (pointer: coarse) {
+    .filter-days-input,
+    #notifyEmail {
+        font-size: 16px;
+    }
+}
