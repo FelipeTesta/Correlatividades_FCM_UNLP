@@ -55,7 +55,7 @@
 
 <div class="box" id="faltantesBox">
   <div class="box-head-row">
-    <h3 onclick="toggleFaltantes()" tabindex="0" role="button">Vacunas Necesarias / Faltantes ⬇️</h3>
+    <h3 onclick="toggleFaltantes()">Vacunas Necesarias / Faltantes ⬇️</h3>
     <input type="text" id="globalVacunaFecha" placeholder="03/2026" aria-label="Fecha de vacuna (MM/AAAA)">
   </div>
   <div class="box-content">
@@ -64,7 +64,7 @@
 </div>
 
 <div class="box" id="historicoBox">
-  <h3 onclick="toggleBox(this)" tabindex="0" role="button">Histórico de Vacunas ⬇️</h3>
+  <h3 onclick="toggleBox(this)">Histórico de Vacunas ⬇️</h3>
   <div class="box-content">
     <ul id="historicoList"></ul>
   </div>
@@ -72,7 +72,7 @@
 
 <!-- Mapa de vacunas y cepas (Venn/Euler interactivo) -->
 <div class="box" id="vennBox" style="display:none;">
-  <h3 onclick="toggleBox(this)" tabindex="0" role="button">Mapa de Vacunas y Cepas ⬇️</h3>
+  <h3 onclick="toggleBox(this)">Mapa de Vacunas y Cepas ⬇️</h3>
   <div class="box-content">
     <div class="venn-hint">Círculos = vacunas del Calendario Nacional (tamaño ∝ patógenos cubiertos). Clic en un círculo → ficha con tipos, marcas y enlaces oficiales.</div>
     <div id="vennFilters"></div>

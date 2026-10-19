@@ -191,6 +191,14 @@ main > h1,
     cursor: pointer;
 }
 
+/* Área de toque estendida sem mudar o visual (24px de altura);
+   a exceção de largura 13px segue documentada (§7, grid acoplado). */
+.minical-dot::before {
+    content: "";
+    position: absolute;
+    inset: -5px 0;
+}
+
 .minical-dot-base {
     display: block;
 }

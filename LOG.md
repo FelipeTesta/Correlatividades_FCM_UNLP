@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Accesibilidad — ronda 2 (refinamientos Lighthouse) en rama `design/polish-a11y-seo` (2026-10-18)
+
++ **Vacunas A11y 96 → 100**: links del rodapé con `inline-block` + `padding: 6px 8px` (≥24px; el primer intento con margen negativa quedó "obscured" en `target-size` y fue revertido); `role="button"`/`tabindex` retirados de los 3 headings colapsables.
++ **Index**: A11y 96 (techo = excepción documentada de los dots del minical, §7); `role="button"`/`tabindex` retirados de los 5 `h3` + 1 `h4`; Agentic Browsing 14 → 65.
++ **Dots del minical**: `::before` extiende el área de toque a 24px de altura sin cambiar el visual (53 dots en index y arbol; anchura 13px acoplada a `--minical-step`).
++ **Decisión del usuario**: headings colapsables solo con `onclick` — sin `role="button"`, sin `tabindex`, sin soporte de teclado. No reintroducir.
++ **CLS**: 0 en cargas reales (probe `performance.getEntriesByType('layout-shift')` vacío en index/vacunas/universidades); el 0.366/0.193 solo aparece bajo throttling de Lighthouse (re-render asíncrono) — aceptado y documentado (§7).
+
 ### Accesibilidad y SEO — ronda 1 (Lighthouse) en rama `design/polish-a11y-seo` (2026-10-18)
 
 + **Lighthouse (mobile) antes → después**: index A11y 87→**96**, SEO 90→**100**; arbol A11y 90→**96**; cartelera A11y 96→**100**, SEO 90→**100**; universidades SEO 91→**100**, BP 96→**100**; vacunas A11y 93→**96**; extension 100 en todo. Perf real medida en producción (FCP 120–656ms, ~28 recursos): sin problema de rendimiento — los hallazgos eran de a11y/SEO.

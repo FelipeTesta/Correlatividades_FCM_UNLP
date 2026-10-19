@@ -191,8 +191,9 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
 - Alvos de toque ≥ **24×24px** (mobile e desktop). Corrigido em 2026-10-16 (`.btn-star-optativa`,
   `.btn-warning-faltantes`, `li button`, `.privacy-close`, `.node-btn`): medição no index **43 → 0**.
 - **Exceção aceita:** as células do minicalendário (`.minical-dot`, 13×14px) ficam abaixo de 24px —
-  grid acoplado (`--minical-step` ↔ `MINICAL_STEP_PX`) e o alvo real é a célula do dia. Não
-  aumentar sem refazer as duas constantes juntas.
+  grid acoplado (`--minical-step` ↔ `MINICAL_STEP_PX`). Desde 2026-10-18 um `::before` estende a
+  área de toque para **24px de altura** sem mudar o visual (largura 13px permanece — é o teto do
+  índice no `target-size` do Lighthouse). Não aumentar a largura sem refazer as duas constantes.
 - **`<main>` landmark (etapa 6, 2026-10-16):** as 6 páginas agora têm **um** `<main>` envolvendo o
   conteúdo. Na `arbol` o container existente virou `<main class="tree-page">` (classe preservada);
   nas outras o `<main>` foi inserido ao redor do bloco de conteúdo, com `nav`, modais, banner de
@@ -206,6 +207,19 @@ Referências: rows de inbox do Linear (meta em uppercase + título clampado), ca
   `role="switch"` (exigiria `aria-checked`; o checkbox nativo já comunica o estado); toggles de
   cursando nomeados por matéria ("Cursando: Anatomía"); itens não-obrigatórios de vacunas em
   `opacity 0.65` (0.5 quebrava 4.5:1); Leaflet `{y}{r}.png` + `detectRetina: true` (tiles @2x).
+- **Headings interativos (decisão do usuário, 2026-10-18):** os `h3`/`h4` que colapsam caixas
+  (index e vacunas) usam **só `onclick`** — sem `role="button"`, sem `tabindex`, **sem suporte de
+  teclado** (pedido explícito: "não precisa de suporte de teclado"). Não reintroduzir ARIA de
+  botão nesses headings. Os equivalentes gerados por JS na cartelera (`source-header`, título de
+  seção) mantêm `role="button"` + `tabindex` com tratamento próprio — não copiar o padrão do
+  index para lá.
+- **Rodapé de vacunas:** links `display: inline-block` + `padding: 6px 8px` (alvo ≥ 24px).
+  **Sem margem negativa** — padding compensado com margem negativa deixa o alvo "obscured" no
+  `target-size` e reprova na auditoria.
+- **CLS:** `performance.getEntriesByType('layout-shift')` vazio nas cargas reais (localhost e
+  produção); o shift (0.366/0.193) só ocorre sob throttling do Lighthouse, quando o re-render
+  assíncrono (finales/venn) cai depois do primeiro paint. Aceito como característica do app
+  renderizado por JS — não perseguir.
 - Contraste ≥ 4.5:1 para texto (§2); não usar `--text-dim` para conteúdo.
 - `img` sem `alt`: 0 (mantido).
 - **Reduced motion: NÃO usar.** Decisão do usuário (2026-10-16): este app **não** implementa
@@ -308,9 +322,12 @@ substituí-los por ícones vetoriais é regressão.
       preconnects nas 6 páginas, aria-labels alinhados ao texto visível, `role="switch"` fora,
       tiles @2x (retina). Perf real medida (FCP 120–656ms) — sem problema de performance; o MCP
       roda sem categoria Performance (`--no-performance-crux`), o CLS aparece em "Agentic Browsing".
-- [ ] **Ronda 2 (abertos)**: hit-area dos dots do minical (`::before` `inset: -6px`, mantém o
-      visual); acordeões `role=button` em headings → `<button>` real dentro do heading; **CLS**
-      (index 0.366, vacunas ~0.3, universidades 0.061 — investigar com layout-shift); links do
-      rodapé de vacunas < 24px; pins do mapa (exceção geográfica — documentar); Venn viewBox
+- [x] **Ronda 2 — refinamentos (2026-10-18)**: hit-area dos dots do minical (`::before` 24px de
+      altura; largura 13px segue como exceção documentada §7); links do rodapé de vacunas ≥ 24px
+      (`inline-block` + padding, sem margem negativa); `role="button"`/`tabindex` removidos dos
+      headings do index/vacunas (decisão do usuário: sem suporte de teclado). Lighthouse mobile:
+      vacunas A11y 96→**100**; index 96 (teto = exceção dos dots); Agentic 14→65 / 32→77.
+- [ ] **Ronda 2 — restantes (aceitos/dívida)**: CLS sob throttling (re-render assíncrono; 0 em
+      cargas reais — aceito, §7); pins do mapa (exceção geográfica — documentar); Venn viewBox
       1000×500 vs ~455 de conteúdo; hexes neutros de `universidades.css` → tokens de superfície;
       scroll em retrato mobile do Modo Árbol.

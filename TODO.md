@@ -245,7 +245,8 @@ Fonte oficial principal: med.unlp.edu.ar/index.php/inscripciones (worker avisa p
   - [x] Equilíbrio das 2 colunas do índice — **RESOLVIDO POR DECISÃO DO USUÁRIO (etapa 9)**: o índice voltou a UMA coluna; o desequilíbrio deixou de existir
   - [ ] Dívida: hexes neutros fora de `variables.css` em `universidades.css` (`#141414`, `#151515`, `#c0c0c0`, `#fff`, `#666`, `#555` nas linhas 373/486/555/586/660/707/708/725/760/771`) — exigiriam tokens novos de superfície; trocar só com verificação visual
 
-  - [ ] Ronda 2 (Lighthouse, branch `design/polish-a11y-seo`): hit-area dos dots do minical (`::before` inset -6px, mantém o visual); acordeões `role=button` em headings (index/cartelera/vacunas) → `<button>` real; CLS (index 0.366, vacunas ~0.3, universidades 0.061 — investigar layout-shift); links do rodapé de vacunas < 24px; pins do mapa (exceção geográfica a documentar)
+  - [x] Ronda 2 — refinamientos Lighthouse: dots do minical com hit-area 24px vertical (`::before`); links do rodapé de vacunas ≥24px (inline-block + padding, sem margem negativa); `role="button"`/`tabindex` removidos dos headings (decisão do usuário: sem teclado). Vacunas A11y 96→**100**; index fica 96 (teto = exceção dos dots, DESIGN §7)
+  - [ ] Aceito/dívida: CLS só sob throttling do Lighthouse (re-render async; 0 em cargas reais — DESIGN §7); pins do mapa como exceção geográfica; Venn viewBox e hexes de universidades.css seguem nas dívidas acima
 
 - [ ] Corregir el scroll en retrato móvil (Modo Árbol): espacio vacío debajo del contenido visual — transform: scale no afecta el layout real
 - NOTA: exportar/importar estado NUNCA existió (mención falsa ya removida del app/README) — no reintroducir sin pedido
