@@ -792,30 +792,28 @@ function tagClassName(tag) {
 function parseCatedraHtml(html) {
   var parser = new DOMParser();
   var doc = parser.parseFromString(html, "text/html");
-  var cards = doc.querySelectorAll(".ribbon-wrapper.card");
+  var cards = doc.querySelectorAll("article.card.home-publication");
   var results = [];
 
   cards.forEach(function (card) {
-    // Tag
-    var ribbonEl = card.querySelector(".ribbon");
-    var tag = ribbonEl ? ribbonEl.textContent.trim() : "Otros";
+    // Tag: category badge (redesign 2026-10); old ribbon removed
+    var tagEl = card.querySelector(".home-publication-badge");
+    var tag = tagEl ? tagEl.textContent.trim() : "Otros";
+    if (tag === "Más reciente") tag = "Otros"; // meta badge, not a category
 
-    // Date from card-text with fa-calendar-alt
+    // Date from <time> element inside .home-publication-date
     var dateStr = null;
-    var dateEl = card.querySelector("p.card-text i.fa-calendar-alt");
-    if (dateEl && dateEl.parentElement) {
-      dateStr = dateEl.parentElement.textContent.trim();
+    var dateEl = card.querySelector(".home-publication-date time");
+    if (dateEl) {
+      dateStr = dateEl.textContent.trim();
+    } else {
+      // fallback: datetime attribute (YYYY-MM-DD) → convert
+      var dateAttr = card.querySelector(".home-publication-date");
+      if (dateAttr && /\d{2}\/\d{2}\/\d{4}/.test(dateAttr.textContent)) {
+        dateStr = dateAttr.textContent.trim();
+      }
     }
-    if (!dateStr) {
-      // try fallback: any card-text
-      var allTexts = card.querySelectorAll("p.card-text");
-      allTexts.forEach(function (p) {
-        if (!dateStr && p.textContent.match(/\d{2}\/\d{2}\/\d{4}/)) {
-          dateStr = p.textContent.trim();
-        }
-      });
-    }
-    if (!dateStr) return; // skip if no date
+    if (!dateStr || !dateStr.match(/\d{2}\/\d{2}\/\d{4}/)) return;
 
     var date = parseDateDDMMYYYY(dateStr);
     if (!date) return;
@@ -826,29 +824,25 @@ function parseCatedraHtml(html) {
     var link = titleEl ? titleEl.getAttribute("href") : null;
     var fullLink = link ? (link.startsWith("http") ? link : CARTELERA_BASE + link) : null;
 
-    // Subtitle
-    var subtitleEl = card.querySelector(".card-subtitle");
+    // Summary (replaces old .card-subtitle)
+    var subtitleEl = card.querySelector(".home-publication-summary");
     var subtitle = subtitleEl ? subtitleEl.textContent.trim() : null;
 
-    // Professor: first p.card-text.text-right without text-muted
+    // Author: .home-publication-author (p contains only icon + span)
     var professor = null;
-    var profEls = card.querySelectorAll("p.card-text.text-right");
-    profEls.forEach(function (p) {
-      if (!professor && !p.classList.contains("text-muted")) {
-        var txt = p.textContent.trim();
-        if (txt && txt.length > 0) {
-          professor = txt;
-        }
-      }
-    });
+    var profEl = card.querySelector(".home-publication-author span");
+    if (profEl) {
+      var txt = profEl.textContent.trim();
+      if (txt && txt.length > 0) professor = txt;
+    }
 
-    // Modificada: p.card-text.text-right.text-muted
+    // Modificada: p.course-publication-updated ("Modificada el DD/MM/YYYY a las HH:MM hs")
     var modificada = null;
     var modificadaDate = null;
-    var modEl = card.querySelector("p.card-text.text-right.text-muted");
+    var modEl = card.querySelector("p.course-publication-updated");
     if (modEl) {
       modificada = modEl.textContent.trim();
-      var m = modificada.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{1,2}):(\d{2})?/);
+      var m = modificada.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(?:a\s+las\s*)?(\d{1,2}):(\d{2})?/);
       if (m) {
         modificadaDate = new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0));
       }
@@ -873,15 +867,22 @@ function parseCatedraHtml(html) {
 function parseHomeHtml(html) {
   var parser = new DOMParser();
   var doc = parser.parseFromString(html, "text/html");
-  // Home faculty publications use .card.card-outline-success (NOT .ribbon-wrapper.card)
-  var cards = doc.querySelectorAll(".card.card-outline-success");
+  // Home faculty publications use the same .home-publication cards (2026-10 redesign)
+  var cards = doc.querySelectorAll("article.card.home-publication");
   var results = [];
 
   cards.forEach(function (card) {
-    // Date inside .card-header h5
+    // Date inside <time> element within .home-publication-date
     var dateStr = null;
-    var headerEl = card.querySelector(".card-header");
-    if (headerEl) dateStr = headerEl.textContent.trim();
+    var dateEl = card.querySelector(".home-publication-date time");
+    if (dateEl) {
+      dateStr = dateEl.textContent.trim();
+    } else {
+      var dateContainer = card.querySelector(".home-publication-date");
+      if (dateContainer && /\d{2}\/\d{2}\/\d{4}/.test(dateContainer.textContent)) {
+        dateStr = dateContainer.textContent.trim();
+      }
+    }
     if (dateStr && !dateStr.match(/\d{2}\/\d{2}\/\d{4}/)) dateStr = null;
     if (!dateStr) return; // skip if no date
     var date = parseDateDDMMYYYY(dateStr);
@@ -893,33 +894,33 @@ function parseHomeHtml(html) {
     var link = titleEl ? titleEl.getAttribute("href") : null;
     var fullLink = link ? (link.startsWith("http") ? link : CARTELERA_BASE + link) : null;
 
-    // Subtitle
-    var subtitleEl = card.querySelector(".card-subtitle");
-    var subtitle = subtitleEl ? (subtitleEl.textContent.trim() || null) : null;
+    // Summary (replaces old .card-subtitle)
+    var subtitleEl = card.querySelector(".home-publication-summary");
+    var subtitle = subtitleEl ? subtitleEl.textContent.trim() : null;
     if (subtitle === "-") subtitle = null;
 
-    // Author (department)
+    // Author (department): .home-publication-author (p contains only icon + span)
     var professor = null;
-    var profEl = card.querySelector("p.card-text.text-right");
+    var profEl = card.querySelector(".home-publication-author span");
     if (profEl) {
       var txt = profEl.textContent.trim();
       if (txt && txt.length > 0) professor = txt;
     }
 
-    // Modificada text (home cards may have modification text)
+    // Modificada text: p.course-publication-updated (home cards may have it)
     var modificada = null;
     var modificadaDate = null;
-    var allTexts = card.querySelectorAll("p.card-text.text-right");
-    allTexts.forEach(function (p) {
-      var txt = p.textContent.trim();
-      if (/modificad[ao]/i.test(txt)) {
-        modificada = txt;
-        var m = txt.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{1,2}):(\d{2})?/);
+    var modEl = card.querySelector("p.course-publication-updated");
+    if (modEl) {
+      var modTxt = modEl.textContent.trim();
+      if (/modificad[ao]/i.test(modTxt)) {
+        modificada = modTxt;
+        var m = modTxt.match(/(\d{2})\/(\d{2})\/(\d{4})\s*(?:a\s+las\s*)?(\d{1,2}):(\d{2})?/);
         if (m) {
           modificadaDate = new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0));
         }
       }
-    });
+    }
 
     results.push({
       tag: "General",

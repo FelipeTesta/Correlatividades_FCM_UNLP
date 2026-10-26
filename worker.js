@@ -806,22 +806,22 @@ async function listAllKeys(env) {
 
 function parseCatedraHtml(html) {
   const results = [];
-  // Split by ribbon-wrapper card blocks
-  const blocks = html.split(/class="ribbon-wrapper card"/);
+  // Split by publication article blocks (2026-10 redesign: .home-publication cards)
+  const blocks = html.split(/class="card home-publication/);
   for (let i = 1; i < blocks.length; i++) {
     const block = blocks[i];
     // Extract title + link: href and text inside first <a> within card-title
     const titleMatch = block.match(/class="card-title"[^>]*>[\s\S]*?<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/);
     const link = titleMatch ? titleMatch[1].trim() : '';
     const title = titleMatch ? titleMatch[2].replace(/<[^>]*>/g, '').trim() : '';
-    // Extract date: text after fa-calendar-alt </i>
-    const dateMatch = block.match(/fa-calendar-alt[^>]*><\/i>\s*([^<]+)/);
-    const dateStr = dateMatch ? dateMatch[1].trim() : '';
-    // Extract modification text+time
+    // Extract date: <time> element text (DD/MM/YYYY)
+    const dateMatch = block.match(/<time[^>]*>(\d{2}\/\d{2}\/\d{4})<\/time>/);
+    const dateStr = dateMatch ? dateMatch[1] : '';
+    // Extract modification text+time ("Modificada el 17/10/2026 a las 10:38 hs")
     let modified = null;
-    const modMatch = block.match(/text-muted[^>]*>\s*\*\s*Modificad[ao]\s+el\s+d[ií]a\s+(\d{2}\/\d{2}\/\d{4})\s*(\d{1,2}):(\d{2})?/i);
+    const modMatch = block.match(/Modificad[ao]\s+el\s+(\d{2}\/\d{2}\/\d{4})\s+a\s+las\s+(\d{1,2}):(\d{2})/i);
     if (modMatch) {
-      modified = modMatch[1] + ' ' + (modMatch[2]||'00') + ':' + (modMatch[3]||'00');
+      modified = modMatch[1] + ' ' + modMatch[2] + ':' + modMatch[3];
     }
     if (title && dateStr) {
       const pub = { title, date: dateStr, link };
@@ -842,31 +842,32 @@ async function fetchCatedraPubs(id) {
 
 function parseHomeHtml(html) {
   const results = [];
-  // Home uses .card.card-outline-success (NOT .ribbon-wrapper.card)
-  const blocks = html.split(/class="card card-outline-success"/);
+  // Home uses the same .home-publication article cards (2026-10 redesign)
+  const blocks = html.split(/class="card home-publication/);
   for (let i = 1; i < blocks.length; i++) {
     const block = blocks[i];
     // Title + link (href=/noticia/N)
     const titleMatch = block.match(/class="card-title"[^>]*>[\s\S]*?<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/);
     const link = titleMatch ? titleMatch[1].trim() : '';
     const title = titleMatch ? titleMatch[2].replace(/<[^>]*>/g, '').trim() : '';
-    // Date inside .card-header h5 after fa-calendar-alt </i>
-    const dateMatch = block.match(/fa-calendar-alt[^>]*><\/i>\s*([^<]+)/);
-    const dateStr = dateMatch ? dateMatch[1].trim() : '';
-    // Subtitle
+    // Date inside <time> element (DD/MM/YYYY)
+    const dateMatch = block.match(/<time[^>]*>(\d{2}\/\d{2}\/\d{4})<\/time>/);
+    const dateStr = dateMatch ? dateMatch[1] : '';
+    // Summary
     let subtitle = '';
-    const subMatch = block.match(/class="card-subtitle[^>]*>([^<]*)/);
-    if (subMatch) subtitle = subMatch[1].trim();
+    const subMatch = block.match(/class="home-publication-summary[^>]*>([\s\S]*?)<\/p>/);
+    if (subMatch) subtitle = subMatch[1].replace(/<[^>]*>/g, '').trim();
     // Author (department)
     let professor = '';
-    const profMatch = block.match(/class="card-text text-right"[^>]*>\s*([^<]+)/);
+    const profMatch = block.match(/class="home-publication-author[^>]*>[\s\S]*?<span>([\s\S]*?)<\/span>/);
     if (profMatch) professor = profMatch[1].trim();
-    // Modification text+time
+    // Modification text+time ("Modificada el 17/10/2026 a las 10:38 hs")
     let modified = null;
-    const modMatch = block.match(/text-muted[^>]*>\s*\*\s*Modificad[ao]\s+el\s+d[ií]a\s+(\d{2}\/\d{2}\/\d{4})\s*(\d{1,2}):(\d{2})?/i);
+    const modMatch = block.match(/Modificad[ao]\s+el\s+(\d{2}\/\d{2}\/\d{4})\s+a\s+las\s+(\d{1,2}):(\d{2})/i);
     if (modMatch) {
-      modified = modMatch[1] + ' ' + (modMatch[2]||'00') + ':' + (modMatch[3]||'00');
+      modified = modMatch[1] + ' ' + modMatch[2] + ':' + modMatch[3];
     }
+    // Skip the "Más reciente" meta badge — not a publication category
     if (title && dateStr) {
       const pub = { title, date: dateStr, link, subtitle, professor };
       if (modified) pub.modified = modified;

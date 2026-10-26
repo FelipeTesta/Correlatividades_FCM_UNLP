@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Cartelera — Adaptación al redesign del upstream (2026-10-26)
+
++ **Causa raíz:** `cartelera.med.unlp.edu.ar` lanzó un redesign (vertical `?v=20261014-2`, nuevo CSS `home-publications.css`); los selectores antiguos del parser (`ribbon-wrapper card`, `card card-outline-success`, `fa-calendar-alt`) dejaron de existir → cron encontraba 0 publicaciones, emails parados y página vacía. Worker y proxy seguían OK; era solo parsing.
++ **Nuevo markup** (`article.card.home-publication` en ambos pages): fecha en `<time datetime="YYYY-MM-DD">`, modificación en `p.course-publication-updated` ("Modificada el DD/MM/YYYY a las HH:MM hs"), autor en `.home-publication-author`, categoría en `.home-publication-badge` (taxonomy Avisos/Exámenes/Notas/Otros sin cambios; badge "Más reciente" del home filtrado), links ahora `/publicacion/show/N` (cátedra) y `/noticia/N` (home).
++ **`worker.js`**: `parseCatedraHtml` + `parseHomeHtml` reescritos; formato de salida y del campo `modified` ("DD/MM/YYYY HH:MM") **sin cambios** → snapshots KV dedupeables, cero divergencia con históricos.
++ **`APP/cartelera.js`**: parsers client-side actualizados igual (DOM); `.home-publication-summary` mapeado a `subtitle`.
++ **Verificado live:** `/test-cron` — parseSuccess en todas las cátedras suscriptas (Semiología 240, Literatura 44, ...); `/test-edits` — `pubsWithMod` correcto; `?id=home` 200; home 67/67 pubs, cátedra 150 → 49/49, cátedra 110 → 15/15.
++ Worker redeployado (`wrangler deploy`, version `204c8caa`).
+
 ## [0.11] — 2026-10-18
 
 ### Auditoría responsive Android/iOS — ronda 3 en rama `design/polish-a11y-seo` (2026-10-18)
