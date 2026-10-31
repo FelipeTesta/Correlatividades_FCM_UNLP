@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Correlatividades — Medicina Interna II (MI291) (2026-10-31)
+
++ **Correção:** `MI191` (Medicina Interna I) removido dos pré-requisitos de `MI291` — Interna I **não é mais correlativa** de Interna II.
++ `APP/materias.js`: removida `{materia:"MI191",condicion:"aprobada"}` de `paraCursar` e `paraAprobar` de MI291.
++ Ficam para Interna II (ambas as listas): F9001 (Farmacología Básica) regularizada, M0001 (Microbiología y Parasitología) regularizada, PT001 (Patología) aprobada, SEM91 (Semiología) aprobada.
+
+### Correlatividades — IFM02 e PFOFO (2026-10-31)
+
++ **IFM02 (Informática Médica):** adicionados pré-requisitos para **cursar**: FB001 (Fisiología y Física Biológica, aprobada), PG001 (Psicología Médica, regularizada), EP001 (Epidemiología, regularizada). `paraAprobar` mantém somente IFB01.
++ **PFOFO (Práctica Final Obligatoria):** adicionado MI191 (Medicina Interna I, aprobada) a **paraCursar** e **paraAprobar**.
++ Arquivo: `APP/materias.js`.
+
 ### Cartelera — Adaptación al redesign del upstream (2026-10-26)
 
 + **Causa raíz:** `cartelera.med.unlp.edu.ar` lanzó un redesign (vertical `?v=20261014-2`, nuevo CSS `home-publications.css`); los selectores antiguos del parser (`ribbon-wrapper card`, `card card-outline-success`, `fa-calendar-alt`) dejaron de existir → cron encontraba 0 publicaciones, emails parados y página vacía. Worker y proxy seguían OK; era solo parsing.

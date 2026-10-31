@@ -56,7 +56,10 @@ const materias = [
 },
 { codigo:"IFM02", nombre:"Informática Médica", nombreCorto: "Inf Médica", anio:2, categoria:"bimestral", horas:50,
   paraCursar:[
-    {materia:"IFB01",condicion:"aprobada"}
+    {materia:"IFB01",condicion:"aprobada"},
+    {materia:"FB001",condicion:"aprobada"},
+    {materia:"PG001",condicion:"regularizada"},
+    {materia:"EP001",condicion:"regularizada"}
   ],
   paraAprobar:[
     {materia:"IFB01",condicion:"aprobada"}
@@ -358,14 +361,12 @@ const materias = [
 },
 { codigo:"MI291", nombre:"Medicina Interna II", nombreCorto: "Med Interna II", anio:5, categoria:"cuatrimestral", horas:200,
   paraCursar:[
-    {materia:"MI191",condicion:"aprobada"},
     {materia:"F9001",condicion:"regularizada"},
     {materia:"M0001",condicion:"regularizada"},
     {materia:"PT001",condicion:"aprobada"},
     {materia:"SEM91",condicion:"aprobada"}
   ],
   paraAprobar:[
-    {materia:"MI191",condicion:"aprobada"},
     {materia:"F9001",condicion:"regularizada"},
     {materia:"M0001",condicion:"regularizada"},
     {materia:"PT001",condicion:"aprobada"},
@@ -392,6 +393,7 @@ const materias = [
     {materia:"IFM02",condicion:"aprobada"},
     {materia:"F9002",condicion:"aprobada"},
     {materia:"MI191",condicion:"aprobada"},
+
     {materia:"OF001",condicion:"aprobada"},
     {materia:"C1001",condicion:"aprobada"},
     {materia:"C2001",condicion:"aprobada"},
@@ -415,6 +417,7 @@ const materias = [
     {materia:"IFM02",condicion:"aprobada"},
     {materia:"F9002",condicion:"aprobada"},
     {materia:"MI191",condicion:"aprobada"},
+
     {materia:"OF001",condicion:"aprobada"},
     {materia:"C1001",condicion:"aprobada"},
     {materia:"C2001",condicion:"aprobada"},
