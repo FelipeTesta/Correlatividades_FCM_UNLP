@@ -556,7 +556,8 @@ function initMinical() {
         barraVotos.textContent = eleccionesRenderBarraVotos(eleccionesPctVotos(data));
         barraVotos.style.textAlign = 'center';
         barraVotos.style.fontFamily = 'monospace';
-        barraVotos.style.fontSize = '13px';
+        barraVotos.style.fontSize = 'clamp(9px, 3vw, 13px)';
+        barraVotos.style.whiteSpace = 'nowrap';
         barraVotos.style.marginBottom = '10px';
         barraVotos.style.color = 'var(--text)';
         eleccionesModal.appendChild(barraVotos);
