@@ -37,7 +37,8 @@ const MINICAL_CALENDAR = {
         { id: 'invierno', emoji: '🔵', label: 'Vacaciones de invierno (receso UNLP)', start: '2026-07-20', end: '2026-08-02' },
         { id: 'letivo2',  emoji: '🔘', label: 'Período letivo',                   start: '2026-08-03', end: '2026-12-05' },
         { id: 'verano2',  emoji: '⚫', label: 'Vacaciones de verano',               start: '2026-12-06', end: '2026-12-31' },
-        { id: 'ingreso',  emoji: '🟠', label: 'Inscripción Ingresantes (Ingreso 2027)', start: '2026-11-09T12:00', end: '2026-12-11T12:00' }
+        { id: 'ingreso',  emoji: '🟠', label: 'Inscripción Ingresantes (Ingreso 2027)', start: '2026-11-09T12:00', end: '2026-12-11T12:00' },
+        { id: 'elecciones', emoji: '🔴', label: 'Elecciones Estudiantiles',        start: '2026-11-04', end: '2026-11-06', research: false }
     ],
 
     // Ventanas de inscripción a MATERIAS OBLIGATORIAS (🟡) — 2026

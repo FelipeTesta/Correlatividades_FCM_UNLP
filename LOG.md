@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
++ `minical.js` — barra de progresso de votos acima da tabela no modal de Elecciones: `|▮…▯ NN%|` textual (18 slots), % sobre meta de ~15.000 votos, 100% quando "Datos Finales" detectado (persistido em `localStorage eleccionesDatosFinales`), cap 99% sem finais.
++ `worker.js` — `parseEleccionesHtml()` v2: coleta TODOS os blocos `var csvData` da homepage unlp.edu.ar (um por faculdade) e isola o de Ciencias Médicas via contexto `renderFacultad_ienciasedicas`; detecta colorState (Amarillo=parcial/Rojo=final/Verde) a partir do CSV; snapshot da CSV crua em KV `eleccionesCsvDataRaw`.
++ `worker.js` — endpoint GET `/test-elecciones-fetch`: diagnósticos detalhados de scrape (tentativas por URL, instrumentação csvData vars, medicaSearch).
+
+### Changed
++ `minical.js` — cooldown de 5 min do botão "🔄 Actualizar" desativado via flag `ELECCIONES_COOLDOWN_ENABLED = false` (timestamp segue sendo salvo; reativar mudando flag).
++ `minical.js` — barra de progresso das Eleições corrigida: % calculada SOMENTE sobre votos Centro (meta `ELECCIONES_META_VOTOS = 15000`), Claustro é eleição separada e não entra no cálculo; slots com `Math.floor` (evita 99% renderizar barra cheia).
++ `minical.js` — modal de Eleições com ordem fixa decrescente (maior votos Centro em cima; tie-break: Claustro desc, nome); sistema de reordenação clicável dos cabeçalhos (3 estados) removido.
++ `worker.js` — `/elecciones-scrape` resiliente: headers de navegador (Firefox UA), 2 URLs candidatas × 2 tentativas + fallback sem csvData, timeout 20s, cache-buster `?elecciones_ts=` (removido `cache:'no-store'` — não suportado no CF Workers), 1s de backoff; resposta inclui `csvScope`, `colorState`, `totalMatch`, `rawCsvPreview`, `source`.
+
+### Fixed
++ `worker.js` — dados incoerentes de eleições: scraper pegava o PRIMEIRO `var csvData` da homepage (bloco de outra faculdade); agora filtra o bloco médicas e valida soma vs linha `Total` (vazia/advisory não bloqueia).
++ `worker.js` — falsos positivos de "Datos Finales" (frase presente no template do script e no resto da página): detecção restrita ao `csvRaw` do bloco médicas OU `colorState==='Rojo'`; flag KV `eleccionesDatosFinales` deletada quando recuento ainda em andamento.
++ `minical.js` — barra travada em 100%: flag `eleccionesDatosFinales` do localStorage persistia após scrape fresco confirmar recuento em andamento; agora o caminho de sucesso do Atualizar remove a flag quando `eleicoesTerminadas:false`.
+
 ### Correlatividades — Medicina Interna II (MI291) (2026-10-31)
 
 + **Correção:** `MI191` (Medicina Interna I) removido dos pré-requisitos de `MI291` — Interna I **não é mais correlativa** de Interna II.
@@ -27,6 +43,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 + **`APP/cartelera.js`**: parsers client-side actualizados igual (DOM); `.home-publication-summary` mapeado a `subtitle`.
 + **Verificado live:** `/test-cron` — parseSuccess en todas las cátedras suscriptas (Semiología 240, Literatura 44, ...); `/test-edits` — `pubsWithMod` correcto; `?id=home` 200; home 67/67 pubs, cátedra 150 → 49/49, cátedra 110 → 15/15.
 + Worker redeployado (`wrangler deploy`, version `204c8caa`).
+
+### Mini Calendario — Elecciones Estudiantiles (2026-11-06)
+
++ **Círculo 🔴 en el minicalendario:** agregado evento `elecciones` (04–06/11/2026) en `APP/calendar_data.js` (`fixedEvents`). Cuando la semana actual coincide con la semana de elecciones, el dot muestra 🔴 + 🟢 (semana actual) superpuestos.
++ **Botón "Elecciones Estudiantiles":** se inyecta debajo del mini calendario solo cuando la semana actual es la semana de elecciones. Al hacer clic, abre un modal flotante con la lista de agrupaciones y votos (Centro / Claustro).
++ **Modal — ordenación estilo universidades.html:** clic en los encabezados de columna (Agrupación / Centro / Claustro) cicla 3 estados: asc → desc → orden original, con indicadores ▲/▼ y aria-sort.
++ **Modal — destacados:** 1º lugar con fondo más intenso y negrita; 2º lugar con resalte intermedio; resto del listado en `lightgray`.
++ **Modal — botón Actualizar centralizado:** debajo de la lista, con subtexto "Últ. actualización" debajo del botão. Cooldown de 5 min entre scrapes (botão desabilitado com opacidade 0.5).
++ **Worker — scraping automático:** endpoint `POST /elecciones-scrape` en `worker.js` hace fetch a `unlp.edu.ar/` (busca botón `class="pill pillienciasedicas"` para seguir link a la página de elecciones), parsea votos por agrupación, detecta "Datos Finales" en la página y guarda en KV (`eleccionesVotos`, `eleccionesLastUpdate`, `eleccionesDatosFinales`).
++ **Worker — envío automático de email:** cuando el scrape detecta "Datos Finales" (elecciones terminadas), dispara `sendEleccionesEmailAutomatico()` que envía email via Resend a todos los inscritos en `CARTELERA_SUBS` con el resultado final (ganador destacado + tabla completa).
++ **Frontend — barra de progreso animada:** barra creciente durante el scrape (0→70% mientras carga, →100% al completar) debajo de la tabla de votos.
++ **Frontend — diferencia de votos:** compara números nuevos vs anteriores y muestra `(+N)` en cinza a lado de cada número que changed.
++ **Frontend — botão desabilitado durante scrape:** opacidade 0.5 y cursor not-allowed mientras se ejecuta el scrape.
++ **Frontend — timestamp actualizado:** muestra la fecha/hora de la última actualización exitosa.
++ Archivos: `APP/calendar_data.js`, `APP/minical.js`, `APP/base.css`, `worker.js`.
 
 ## [0.11] — 2026-10-18
 

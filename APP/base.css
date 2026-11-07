@@ -252,4 +252,153 @@ main > h1,
     top: calc(100% + 6px);
 }
 
+/* ============================= */
+/* ELECCIONES ESTUDANTILES — banner + modal */
+/* ============================= */
+
+.elecciones-banner {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.elecciones-btn {
+    background: var(--danger);
+    color: var(--bg);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.elecciones-btn:hover {
+    background: var(--danger-text);
+}
+
+.elecciones-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.elecciones-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.elecciones-item.top2 {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid var(--danger);
+}
+
+.elecciones-nombre {
+    flex: 1;
+    color: var(--text);
+}
+
+.elecciones-votos {
+    text-align: right;
+    width: 70px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.elecciones-votos.centro {
+    color: var(--cursando);
+}
+
+.elecciones-votos.claustro {
+    color: var(--info-text);
+}
+
+.elecciones-sort-btn:hover {
+    background: var(--bg-hover);
+}
+
+.elecciones-modal h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: var(--text);
+}
+
+/* Cabeçalhos clicáveis (estilo universidades.html) */
+.elecciones-th {
+    cursor: pointer;
+    user-select: none;
+    padding: 2px 4px;
+}
+.elecciones-th:hover {
+    color: var(--text);
+}
+.elecciones-th-sorted {
+    color: var(--cursando);
+}
+
+/* Destaque 1º y 2º lugar, resto lightgray */
+.elecciones-item.primero {
+    background: rgba(239, 68, 68, 0.25);
+    border: 1px solid var(--danger);
+    color: var(--text);
+    font-weight: 700;
+}
+.elecciones-item.segundo {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid var(--danger-text);
+    color: var(--text);
+    font-weight: 600;
+}
+.elecciones-item.primero .elecciones-nombre,
+.elecciones-item.segundo .elecciones-nombre {
+    color: var(--text);
+}
+.elecciones-item.primero .elecciones-votos,
+.elecciones-item.segundo .elecciones-votos {
+    color: var(--text);
+}
+
+/* Rodapé centralizado do modal */
+.elecciones-foot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+/* Barra de progresso durante o scrape */
+.elecciones-progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.elecciones-progress-fill {
+    height: 100%;
+    background: var(--cursando);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Diferença de votos em cinza ao lado do número */
+.elecciones-diff {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: normal;
+    margin-left: 4px;
+}
+
 

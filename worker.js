@@ -458,7 +458,271 @@ export default {
       }
     }
 
-    // GET /test-inscripciones — diagnostic for inscripciones pages monitoring (no email)
+    // POST /elecciones-scrape — scraping da página oficial de eleições e armazena votos no KV
+    if (url.pathname === '/elecciones-scrape' && request.method === 'POST') {
+      try {
+        // Prioridades de URL + headers de browser (evita bloqueio de bots/datacenter)
+        const UNLP_URLS = ['https://unlp.edu.ar/', 'https://www.unlp.edu.ar/'];
+        const UNLP_HEADERS = {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'es-AR,es;q=0.9',
+          'Referer': 'https://unlp.edu.ar/'
+        };
+        let html = null;
+        let usedUrl = null;
+        let lastErr = null;
+        outer:
+        for (const cand of UNLP_URLS) {
+          for (let intento = 0; intento < 2; intento++) {
+            try {
+              const ctrl = new AbortController();
+              const t = setTimeout(() => ctrl.abort(), 20000);
+              const res = await fetch(cand + '?elecciones_ts=' + Date.now(), { signal: ctrl.signal, headers: UNLP_HEADERS });
+              clearTimeout(t);
+              if (!res.ok) throw new Error('HTTP ' + res.status + ' fetching ' + cand);
+              const htmlTmp = await res.text();
+              if (htmlTmp.match(/var csvData\s*=\s*"/)) { html = htmlTmp; usedUrl = cand; break outer; }
+              lastErr = new Error('csvData não encontrado em ' + cand);
+            } catch (fe) {
+              lastErr = fe;
+            }
+            if (intento < 1) await new Promise(r => setTimeout(r, 1000));
+          }
+        }
+        if (!html) {
+          // Última tentativa sem csvData-check em cada URL, para diferenciar HTTP error de página sem csvData
+          for (const cand of UNLP_URLS) {
+            try {
+              const ctrl = new AbortController();
+              const t = setTimeout(() => ctrl.abort(), 20000);
+              const res = await fetch(cand + '?elecciones_ts=' + Date.now(), { signal: ctrl.signal, headers: UNLP_HEADERS });
+              clearTimeout(t);
+              if (res.ok) { const htmlTmp = await res.text(); if (htmlTmp) { html = htmlTmp; usedUrl = cand; break; } }
+            } catch (fe) { lastErr = fe; }
+          }
+        }
+        if (!html) throw new Error('Homepage UNLP inacessível: ' + (lastErr ? lastErr.message : 'desconhecido'));
+
+        // A variável csvData com os votos está na homepage (unlp.edu.ar/),
+        // não na página /eleições. Parseia diretamente o HTML da homepage.
+        const parsed = parseEleccionesHtml(html);
+        const data = parsed.resultados;
+        if (!data || data.length === 0) throw new Error('Nenhuma agrupación encontrada na página oficial (csvData não encontrado)');
+
+        // Validação de coerência: soma dos votos parseados deve bater com a linha TOTAL do CSV
+        // Usa o csvRaw per-faculdade confiável do parser
+        const csvRaw = parsed.csvRaw || '';
+        let totalMatch = null; // null = linha TOTAL ausente (não-block)
+        if (csvRaw) {
+          const linhasCsv = csvRaw.split(/\\n|\\r/);
+          for (const l of linhasCsv) {
+            const tt = l.trim().split(',');
+            if (tt[0] && tt[0].trim().toUpperCase() === 'TOTAL') {
+              const rawC = (tt[1] || '').trim();
+              const rawK = (tt[2] || '').trim();
+              // Total vazio (ex: "Total,,") = dados oficiais sem total → sem validação
+              if (!rawC || !rawK) break;
+              const totC = parseInt(rawC, 10) || 0;
+              const totK = parseInt(rawK, 10) || 0;
+              const somaC = data.reduce((s, d) => s + d.votosCentro, 0);
+              const somaK = data.reduce((s, d) => s + d.votosClaustro, 0);
+              totalMatch = (somaC === totC && somaK === totK);
+              break;
+            }
+          }
+        }
+        if (totalMatch === false) {
+          console.warn('[elecciones] totalMatch=false — soma dos votos (' + data.reduce((s, d) => s + d.votosCentro, 0) + '/' + data.reduce((s, d) => s + d.votosClaustro, 0) + ') difere da linha TOTAL do CSV (recuento em curso fairy); dados armazenados mesmo assim.');
+        }
+        // Guarda: bloco deve ser da Facultad de Ciencias Médicas
+        if (parsed.csvScope !== 'medicas') {
+          return new Response(JSON.stringify({ ok: false, error: 'Bloco scrub da Facultad de Ciencias Médicas não encontrado na homepage (csvScope=' + parsed.csvScope + '). Dados não armazenados.' }), { status: 502, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+        }
+        // Snapshot bruto do csvData para debug de incoerências futuras
+        if (csvRaw) {
+          try { await env.CARTELERA_SUBS.put('eleccionesCsvDataRaw', csvRaw.slice(0, 4000)); } catch (e) { /* ignore */ }
+        }
+
+        await env.CARTELERA_SUBS.put('eleccionesVotos', JSON.stringify(data));
+        await env.CARTELERA_SUBS.put('eleccionesLastUpdate', new Date().toISOString());
+        if (parsed.eleicoesTerminadas) {
+          await env.CARTELERA_SUBS.put('eleccionesDatosFinales', 'true');
+        } else {
+          await env.CARTELERA_SUBS.delete('eleccionesDatosFinales');
+        }
+
+        // Se detectou "Datos Finales" (eleições encerradas), envia email automaticamente
+        let emailEnviado = null;
+        if (parsed.eleicoesTerminadas) {
+          try {
+            const sendResult = await sendEleccionesEmailAutomatico(env, data);
+            emailEnviado = sendResult;
+          } catch (e) {
+            console.error('Erro ao enviar email automático de eleições: ' + e.message);
+          }
+        }
+
+        return new Response(JSON.stringify({
+          ok: true,
+          scraped: data.length,
+          data,
+          eleicoesTerminadas: parsed.eleicoesTerminadas,
+          emailEnviado,
+          totalMatch,
+          rawCsvPreview: csvRaw ? csvRaw.slice(0, 200) : null,
+          source: usedUrl,
+          csvScope: parsed.csvScope,
+          colorState: parsed.colorState
+        }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // GET /test-elecciones-fetch — diagnóstico: fetch homepage sem armazenar nada
+    if (url.pathname === '/test-elecciones-fetch' && request.method === 'GET') {
+      try {
+        const UNLP_URLS_T = ['https://unlp.edu.ar/', 'https://www.unlp.edu.ar/'];
+        const UNLP_HEADERS_T = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0', 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Language': 'es-AR,es;q=0.9', 'Referer': 'https://unlp.edu.ar/' };
+        const resultados = [];
+        let html = null;
+        for (const cand of UNLP_URLS_T) {
+          for (let intento = 0; intento < 2; intento++) {
+            try {
+              const ctrl = new AbortController();
+              const t = setTimeout(() => ctrl.abort(), 20000);
+              const res = await fetch(cand + '?test_ts=' + Date.now(), { signal: ctrl.signal, headers: UNLP_HEADERS_T });
+              clearTimeout(t);
+              const htmlTmp = await res.text();
+              resultados.push({ url: cand, attempt: intento + 1, httpStatus: res.status, htmlLength: htmlTmp.length, csvDataPresent: !!htmlTmp.match(/var csvData\s*=\s*"/) });
+              if (res.ok && htmlTmp.match(/var csvData\s*=\s*"/)) { html = htmlTmp; break; }
+            } catch (fe) {
+              resultados.push({ url: cand, attempt: intento + 1, error: fe.message });
+            }
+            if (intento < 1) await new Promise(r => setTimeout(r, 1000));
+          }
+          if (html) break;
+        }
+        // Dump de TODAS as variáveis Data da página (por faculdade)
+        const allDataVars = {};
+        const reData = /var\s+([A-Za-z_0-9]+[Dd]ata)\s*=\s*"((?:[^"\\]|\\.)*)"/g;
+        let m;
+        while ((m = reData.exec(html)) !== null) {
+          allDataVars[m[1]] = m[2].slice(0, 800);
+        }
+        // Também varre qualquer <div class=...> ids/table com dados de faculdades (contagem)
+        const facultyHits = [];
+        const reFac = /Facultad[^,<>\n]{0,80}|Ciencias M[eé]dicas[^,<>\n]{0,60}|Arquitectura[^,<>\n]{0,60}/gi;
+        while ((m = reFac.exec(html)) !== null) {
+          facultyHits.push(m[0].slice(0, 100));
+          if (facultyHits.length > 40) break;
+        }
+        // Instrumentação 2: localizar CSVs por faculdade
+        const medicaSearch = {};
+        medicaSearch.remediarCount = (html.match(/Remediar/g) || []).length;
+        medicaSearch.franjaCount = (html.match(/Franja/g) || []).length;
+        medicaSearch.vientoCount = (html.match(/Viento de abajo/g) || []).length;
+        medicaSearch.onclickFns = [...new Set((html.match(/Facultad_[A-Za-z]*\(/g) || []).slice(0, 60))];
+        medicaSearch.dataArgVzvz = [...new Set((html.match(/\(([A-Za-z]*[Dd]ata)[A-Za-z]*\s*(?:,|\))/g) || []).slice(0, 60))];
+        medicaSearch.medicaCtx = [];
+        for (const term of ['Remediar', 'Medicas', 'medicas']) {
+          let idx = html.indexOf(term);
+          let hits = 0;
+          while (idx !== -1 && hits < 2) {
+            medicaSearch.medicaCtx.push({ term, slice: html.slice(Math.max(0, idx - 700), idx + 700).replace(/\s+/g, ' ') });
+            hits++;
+            idx = html.indexOf(term, idx + 1);
+          }
+        }
+        medicaSearch.inicioFnBodies = [];
+        const reFns = /function\s+Facultad_[A-Za-z]*\s*\(([^)]*)\)/g;
+        let fm;
+        while ((fm = reFns.exec(html)) !== null) {
+          medicaSearch.inicioFnBodies.push(fm[1]);
+        }
+        const csvMatch = html ? html.match(/var csvData\s*=\s*"([^"]+)"/) : null;
+        const parsed = html ? parseEleccionesHtml(html) : { resultados: [], eleicoesTerminadas: false };
+        return new Response(JSON.stringify({
+          ok: true,
+          resultPage: resultados,
+          csvDataRaw: csvMatch ? csvMatch[1].slice(0, 600) : null,
+          parsed: parsed.resultados,
+          eleicoesTerminadas: parsed.eleicoesTerminadas,
+          parsedCsvScope: parsed.csvScope,
+          parsedColorState: parsed.colorState,
+          parsedCsvRaw: parsed.csvRaw ? parsed.csvRaw.slice(0, 600) : null,
+          allDataVars,
+          facultyHits,
+          facultyHitsCount: facultyHits.length,
+          medicaSearch
+        }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // POST /elecciones-send — envia email com resultado final para todos os inscritos cadastrados
+    if (url.pathname === '/elecciones-send' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const { email: rawEmail } = body || {};
+        const targetEmail = rawEmail ? rawEmail.toLowerCase().trim() : null;
+
+        const votosRaw = await env.CARTELERA_SUBS.get('eleccionesVotos');
+        if (!votosRaw) throw new Error('Dados de eleições não encontrados (rode /elecciones-scrape primeiro)');
+
+        const data = JSON.parse(votosRaw);
+
+        // Ordenar por votos Centro desc para determinar vencedor
+        const ordenado = data.slice().sort((a, b) => b.votosCentro - a.votosCentro);
+        const ganador = ordenado[0];
+
+        const emails = [];
+        if (targetEmail) {
+          emails.push(targetEmail);
+        } else {
+          // Todos os inscritos cadastrados em CARTELERA_SUBS (apenas chaves que sejam emails)
+          const allKeys = await listAllKeys(env);
+          for (const key of allKeys) {
+            const email = key.name;
+            if (!email.includes('@')) continue;  // pula chaves internas (eleccionesVotos, visits:, etc.)
+            emails.push(email);
+          }
+        }
+
+        const results = [];
+        for (const email of emails) {
+          try {
+            const subject = '🏆 Elecciones Estudiantiles FCM UNLP — Resultado Final';
+            const html = buildEleccionesEmailHtml(ganador, ordenado, data);
+            await sendEmail(email, subject, html, env);
+            results.push({ email, ok: true });
+          } catch (e) {
+            results.push({ email, ok: false, error: e.message });
+          }
+        }
+
+        const okCount = results.filter(r => r.ok).length;
+        return new Response(JSON.stringify({
+          ok: true,
+          ganador,
+          enviados: okCount,
+          total: results.length,
+          results
+        }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      } catch (e) {
+        return new Response(JSON.stringify({ ok: false, error: e.message }), {
+          status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+      }
+    }
+
+    // POST /test-inscripciones — diagnostic for inscripciones pages monitoring (no email)
     if (url.pathname === '/test-inscripciones') {
       try {
         const results = [];
@@ -923,6 +1187,143 @@ async function sendEmail(to, subject, html, env) {
     console.error('Resend API error:', res.status, errText);
     throw new Error('Resend API returned ' + res.status);
   }
+}
+
+// ─── Elecciones Estudiantiles — scraping + email ───
+
+// Extrai votos por agrupación da página oficial de eleições da UNLP.
+// A homepage tem VÁRIOS blocos <script> com var csvData (um por faculdade, escopo de bloco).
+// Só nos interessa o bloco da Facultad de Ciencias Médicas (renderFacultad_ienciasedicas).
+function parseEleccionesHtml(html) {
+  const vacio = { resultados: [], eleicoesTerminadas: false, csvRaw: null, colorState: null, csvScope: null };
+
+  // Encontra todos os var csvData="..." e determina qual bloco é o de Ciencias Médicas:
+  // critério = nos ~600 chars seguintes ao match existe 'renderFacultad_ienciasedicas' ou 'modal-ienciasedicas'
+  const candidatos = [];
+  const reData = /var csvData\s*=\s*"((?:[^"\\]|\\.)*)"/g;
+  let m;
+  while ((m = reData.exec(html)) !== null) {
+    const contexto = html.slice(m.index, m.index + 600 + m[1].length);
+    candidatos.push({ csv: m[1], contexto, ctxIdx: m.index, ctxLen: m[0].length });
+  }
+  if (candidatos.length === 0) return vacio;
+
+  let escolhido = candidatos.find(c => /renderFacultad_ienciasedicas|modal-ienciasedicas/i.test(c.contexto));
+  const csvScope = escolhido ? 'medicas' : null;
+  if (!escolhido) escolhido = candidatos[0]; // fallback: primeiro csvData (comportamento antigo), flag indicará
+
+  const csvRaw = escolhido.csv;
+  const contexto = escolhido.contexto;
+
+  // Estado: curso de color na 1ª linha não-vazia do CSV (Amarillo/Rojo/Verde...)
+  let colorState = null;
+  const linhasDecod = csvRaw.split(/\\n|\\r/);
+  for (const ll of linhasDecod) {
+    const t = ll.trim();
+    if (!t) continue;
+    const primeiros = t.split(',')[0].trim();
+    if (primeiros && /^\w+$/.test(primeiros)) { colorState = primeiros; break; }
+  }
+
+  // Finalizou: cor "Rojo" no CSV OU a frase "Datos Finales" no PRÓPRIO csvData
+  // (NÃO testar blocoScript: o template do script contém a frase literal sempre)
+  const eleicoesTerminadas = colorState === 'Rojo' || /Datos\s+Finales/i.test(csvRaw);
+
+  const resultados = [];
+
+  // Pula linhas de cabeçalho até "Agrupaciones,Centro,Claustro"
+  let inicio = false;
+  for (const linha of linhasDecod) {
+    const txt = linha.trim();
+    if (!txt) continue;
+
+    if (/^Agrupaciones[,\s]/.test(txt)) { inicio = true; continue; }
+    if (!inicio) continue;
+
+    // Pula linha Total (case-insensitive: "Total,," ou "TOTAL,...")
+    if (/^Total\s*[,]/i.test(txt)) continue;
+
+    // Formato: Nome,Centro,Claustro
+    const partes = txt.split(',');
+    if (partes.length >= 2) {
+      const nombre = partes[0].trim();
+      const votosCentro = parseInt(partes[1], 10) || 0;
+      const votosClaustro = parseInt(partes[2], 10) || 0;
+      if (nombre) {
+        resultados.push({ nombre, votosCentro, votosClaustro });
+      }
+    }
+  }
+
+  return { resultados, eleicoesTerminadas, csvRaw, colorState, csvScope };
+}
+
+function buildEleccionesEmailHtml(ganador, ordenado, todos) {
+  let html =
+    '<h2>🗳 Elecciones Estudiantiles — FCM UNLP 2026</h2>' +
+    '<p><strong>Resultado Final</strong> — contagem encerrada ("Datos Finales" marcado).</p>' +
+    '<hr>' +
+    '<h3>🏆 Ganador</h3>' +
+    '<p><strong>' + escapeHtml(ganador.nombre) + '</strong></p>' +
+    '<ul style="margin:8px 0">' +
+    '<li><strong>Centro:</strong> ' + ganador.votosCentro + ' votos</li>' +
+    '<li><strong>Claustro:</strong> ' + ganador.votosClaustro + ' votos</li>' +
+    '</ul>' +
+    '<h3>📊 Resultados por agrupación</h3>' +
+    '<table border="1" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:sans-serif">' +
+    '<thead><tr style="background:#1a1a1a;color:#e5e5e5">' +
+    '<th style="text-align:left">Agrupación</th>' +
+    '<th style="text-align:right">Centro</th>' +
+    '<th style="text-align:right">Claustro</th>' +
+    '</tr></thead><tbody>';
+
+  for (const r of ordenado) {
+    const esGanador = r.nombre === ganador.nombre;
+    const filaStyle = esGanador ? 'background:#fecaca;font-weight:700' : '';
+    html += '<tr style="' + filaStyle + '">' +
+      '<td>' + escapeHtml(r.nombre) + '</td>' +
+      '<td style="text-align:right">' + r.votosCentro + '</td>' +
+      '<td style="text-align:right">' + r.votosClaustro + '</td>' +
+      '</tr>';
+  }
+
+  html += '</tbody></table>' +
+    '<hr>' +
+    '<p style="color:#888;font-size:12px">Elecciones Estudiantiles FCM UNLP 2026 — Resultado declarado tras marcar "Datos Finales" en el modal.</p>' +
+    '<p style="color:#888;font-size:12px">Correlatividades Medicina UNLP</p>';
+
+  return html;
+}
+
+// ─── Envio automático de email de eleições para todos os inscritos cadastrados ───
+async function sendEleccionesEmailAutomatico(env, data) {
+  // Ordenar por votos Centro desc para determinar vencedor
+  const ordenado = data.slice().sort((a, b) => b.votosCentro - a.votosCentro);
+  const ganador = ordenado[0];
+
+  // Todos os inscritos cadastrados em CARTELERA_SUBS (apenas chaves que sejam emails)
+  const allKeys = await listAllKeys(env);
+  const emails = [];
+  for (const key of allKeys) {
+    const email = key.name;
+    if (!email.includes('@')) continue;
+    emails.push(email);
+  }
+
+  const results = [];
+  for (const email of emails) {
+    try {
+      const subject = '🏆 Elecciones Estudiantiles FCM UNLP — Resultado Final';
+      const html = buildEleccionesEmailHtml(ganador, ordenado, data);
+      await sendEmail(email, subject, html, env);
+      results.push({ email, ok: true });
+    } catch (e) {
+      results.push({ email, ok: false, error: e.message });
+    }
+  }
+
+  const okCount = results.filter(r => r.ok).length;
+  return { ok: true, ganador, enviados: okCount, total: results.length, results };
 }
 
 function parsePubDate(str) {
