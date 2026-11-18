@@ -482,6 +482,10 @@
  .node-border.status-regularizada {
      background-color: var(--regularizada);
  }
+
+ .node-border.status-cursando {
+     background-color: var(--cursando);
+ }
  
  .node-border.status-puede-cursar {
      background-color: var(--puede-cursar);
@@ -533,6 +537,10 @@
  .subject-node.status-puede-cursar {
      background-color: rgba(250, 204, 21, 0.12);
  }
+
+ .subject-node.status-cursando {
+     background-color: rgba(34, 211, 238, 0.08);
+ }
  
  .subject-node.status-no-puede-cursar {
      background-color: rgba(51, 51, 51, 0.15);
@@ -557,6 +565,14 @@
  
  .subject-node.status-puede-cursar .node-code {
      color: var(--puede-cursar);
+ }
+
+ .subject-node.status-cursando .node-code {
+     color: var(--cursando);
+ }
+
+ .subject-node.status-cursando .node-name {
+     color: var(--text);
  }
  
  .subject-node.status-no-puede-cursar .node-code {
@@ -583,6 +599,7 @@
  .subject-node.status-aprobada .node-dependents { color: var(--aprobada); }
  .subject-node.status-regularizada .node-dependents { color: var(--regularizada); }
  .subject-node.status-puede-cursar .node-dependents { color: var(--puede-cursar); }
+ .subject-node.status-cursando .node-dependents { color: var(--cursando); }
  .subject-node.status-no-puede-cursar .node-dependents { color: var(--text-dim); }
  .subject-node.status-optativa-puede-cursar .node-dependents { color: var(--optativa); }
  .subject-node.status-optativa-no-puede-cursar .node-dependents { color: var(--text-dim); }
@@ -648,68 +665,10 @@
      background-color: rgba(255, 255, 255, 0.15);
  }
  
- /* Cursando mini toggle */
- .node-cursando-toggle {
-     order: -1;
-     display: flex;
-     align-items: center;
-     gap: 4px;
-     flex-shrink: 0;
+ .node-btn-cursando:hover {
+     background-color: rgba(34, 211, 238, 0.2);
  }
- 
- .node-cursando-label {
-     font-size: 8px;
-     color: var(--text-muted);
-     white-space: nowrap;
-     user-select: none;
- }
- 
- .node-cursando-switch {
-     position: relative;
-     display: inline-block;
-     width: 28px;
-     height: 16px;
-     flex-shrink: 0;
- }
- 
- .node-cursando-switch input {
-     opacity: 0;
-     width: 0;
-     height: 0;
- }
- 
- .node-cursando-slider {
-     position: absolute;
-     cursor: pointer;
-     top: 0;
-     left: 0;
-     right: 0;
-     bottom: 0;
-     background-color: var(--border);
-     border-radius: 8px;
-     transition: background-color 0.3s ease;
- }
- 
- .node-cursando-slider::before {
-     content: '';
-     position: absolute;
-     width: 12px;
-     height: 12px;
-     background-color: var(--text);
-     border-radius: 50%;
-     top: 2px;
-     left: 2px;
-     transition: transform 0.3s ease;
- }
- 
- .node-cursando-switch input:checked + .node-cursando-slider {
-     background-color: var(--cursando);
- }
- 
- .node-cursando-switch input:checked + .node-cursando-slider::before {
-     transform: translateX(12px);
- }
- 
+
  /* ============================= */
  /* SELECTION SYSTEM              */
  /* ============================= */

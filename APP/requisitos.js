@@ -40,7 +40,8 @@ function verificarRequisito(req) {
     }
     var estadoMateria = estados[req.materia];
     if (req.condicion === "aprobada") return estadoMateria === "aprobada";
-    if (req.condicion === "regularizada") return !!estadoMateria;
+    // 'cursando' is a pre-regularizada: visible marker, but does NOT satisfy prerequisites
+    if (req.condicion === "regularizada") return estadoMateria === "regularizada" || estadoMateria === "aprobada";
     return false;
 }
 

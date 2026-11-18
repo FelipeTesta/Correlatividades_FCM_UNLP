@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
++ `arbol.js` — `getSubjectStatus`: `estados === 'cursando'` → status `'cursando'` (novo); `STATUS_CLASS_MAP` atualizado; 🟡"falta 1" e ⭕"no puede final" tratados (`countMissingPrerequisites` + `isRegularOrCanCursar`).
++ `arbol.js`/`app.js` — nomenclatura dos botões: reset visível quando há estado explícito; `showCursando` inclui listas puede-cursar/puedeFinal/noPuedeFinal/aprobadas/favoritas. `setSubjectState`/`removeSubjectState` não limpam mais key legada (estados único).
++ **Regra final do 🟡 "Falta N": cursando conta como pendência** — cada prerrequisito/material em cursando suma 1 no contador (`countMissingPrerequisites`: node cursando → 0 próprio, pai contribui `Math.max(1,…)`); 🟡 **só com exatamente 1** pendência (verificado no U0001 Urología: PT001 regular + SEM91 cursando → 🟡 "falta 1" + animação; SEM91 reset → 🟡 sem animação; ambos cursando → 2 pendências → sem 🟡, só animação; ambos regular → puede cursar). `requisitos.js` exige `regularizada` real (cursando nunca satisfaz correlatividade); animação `cursando-pending` independente. Página principal: `calcularProgreso` conta cursando unmet como faltante normalmente.
++ `requisitos.js` — requisito `regularizada`: aceita `regularizada|aprobada` apenas.
++ `arbol.html` — legenda long-press: Aprobar/Regularizar/Cursando (+ 🟦 na lista de botões). Help modal do árbol atualizado.
++ `README.md`/`AGENTS.md` — key table `cursando` removida; estados = `aprobada|regularizada|cursando`; docs de Cartelera/arbol atualizados.
+
+### Fixed
++ `arbol.js` — nó bloqueado com **2+ pendências em cursando** mostrava 🟡 "falta 1" (fallback único `+1` quando o ramo todo era cursando, mesmo com vários). Corrigido: contador agora soma `Math.max(1, recursão)` por ramo unmet, cursando inclusive (self=0 → contribui exatamente 1); 🟡 só com exatamente 1 (verificado: 1 cursando → 🟡; 2 cursando → sem 🟡).
+
 ### Added
++ **`estados[CODE]='cursando'` virou 3º estado unificado** (árvore + página principal + Cartelera + progresso): legado da key `cursando` (`{CODE:true}`) → migrado no load (`state-cache.js`, ids sem estado migram; `estados` pré-existente vence; key removida). Cartelera mantém fallback read-only da key legada.
++ **Árbol: botão 🟦 Cursando em todos os nós** (desktop: `node-btn node-btn-cursando`; mobile FAB `mobile-fab-btn-cursando`) — visível mesmo com matéria já marcada ✅/🟧 (marcou errado? um clique, sem resetar). Escondido só quando a matéria já está cursando. Fluxo: ✅ 🟧 🟦 🔄.
++ **Página principal: botão 🟦** substituiu o toggle switch (`toggleCursandoMain` removido) — ✅🟧🟦; reset sempre visível quando há estado explícito, inclusive em puede-cursar com cursando.
++ `APP/arbol.css`: `.status-cursando` (borda/código/dependentes em `--cursando`), `.node-btn-cursando:hover`; CSS do toggle morto removido (`.node-cursando-*`, `.cursando-toggle-main` etc.).
 + `minical.js` — barra de progresso de votos acima da tabela no modal de Elecciones: `|▮…▯ NN%|` textual (18 slots), % sobre meta de ~15.000 votos, 100% quando "Datos Finales" detectado (persistido em `localStorage eleccionesDatosFinales`), cap 99% sem finais.
 + `worker.js` — `parseEleccionesHtml()` v2: coleta TODOS os blocos `var csvData` da homepage unlp.edu.ar (um por faculdade) e isola o de Ciencias Médicas via contexto `renderFacultad_ienciasedicas`; detecta colorState (Amarillo=parcial/Rojo=final/Verde) a partir do CSV; snapshot da CSV crua em KV `eleccionesCsvDataRaw`.
 + `worker.js` — endpoint GET `/test-elecciones-fetch`: diagnósticos detalhados de scrape (tentativas por URL, instrumentação csvData vars, medicaSearch).

@@ -1047,15 +1047,6 @@ li button:hover {
 /* Cursando active background is subtle, no animation */
 li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid rgba(34,211,238,0.4); }
 
-/* Cursando toggle on main page */
-.cursando-toggle-main { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-faint); margin-left: 8px; white-space: nowrap; }
-.cursando-switch-main { position: relative; display: inline-block; width: 28px; height: 16px; }
-.cursando-switch-main input { opacity: 0; width: 0; height: 0; }
-.cursando-slider-main { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); border-radius: 16px; overflow: hidden; transition: background 0.2s; }
-.cursando-slider-main::before { content: ""; position: absolute; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--text-muted); border-radius: 50%; transition: transform 0.2s; }
-.cursando-switch-main input:checked + .cursando-slider-main { background-color: rgba(34,211,238,0.6); }
-.cursando-switch-main input:checked + .cursando-slider-main::before { transform: translateX(12px); background-color: var(--cursando); }
-
 /* Abbreviate names switch */
 .abbreviate-switch-wrap {
     display: inline-flex;
@@ -1323,8 +1314,6 @@ li.cursando-active { background: rgba(34,211,238,0.08); border-left: 2px solid r
         font-size: 14px;
         min-width: 50px;
     }
-
-    .cursando-toggle-main { font-size: 11px; gap: 2px; }
 
     /* Abbreviated mode mobile */
     .abbreviated-mode .optativa-nombre,

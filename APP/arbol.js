@@ -18,6 +18,7 @@ const LINE_COLORS = {
 const STATUS_CLASS_MAP = {
     aprobada: 'status-aprobada',
     regularizada: 'status-regularizada',
+    cursando: 'status-cursando',
     'puede-cursar': 'status-puede-cursar',
     'no-puede-cursar': 'status-no-puede-cursar',
     'optativa-puede-cursar': 'status-optativa-puede-cursar',
@@ -263,7 +264,7 @@ function createSubjectNode(m) {
             markerInfo = { emoji: '\uD83D\uDFE1', title: 'Te falta 1 materia para cursarla' };
         }
     } else {
-        var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar');
+        var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar' || status === 'cursando');
         if (isRegularOrCanCursar && !canTakeFinal(m.codigo)) {
             markerInfo = { emoji: '\u2B55', title: 'Puede cursar pero no rendir final' };
         }
@@ -334,8 +335,20 @@ function createSubjectNode(m) {
         actions.appendChild(btnRegularizar);
     }
 
-    // 🔄 Resetear: only visible when subject has an explicit state (aprobada or regularizada)
-    if (status === 'aprobada' || status === 'regularizada') {
+    // 🟦 Cursando: 3rd state (pre-regularizada). Always available except when already cursando —
+    // switching from aprobada/regularizada here avoids the reset step on mis-mark.
+    if (status !== 'cursando') {
+        var btnCursando = document.createElement('button');
+        btnCursando.className = 'node-btn node-btn-cursando';
+        btnCursando.textContent = '\uD83D\uDFE6';
+        btnCursando.title = 'Cursando';
+        btnCursando.onclick = function(e) { e.stopPropagation(); setSubjectState(m.codigo, 'cursando'); };
+        btnCursando.setAttribute('aria-label', 'Cursando ' + m.nombre);
+        actions.appendChild(btnCursando);
+    }
+
+    // 🔄 Resetear: only visible when subject has an explicit state (aprobada, regularizada or cursando)
+    if (status === 'aprobada' || status === 'regularizada' || status === 'cursando') {
         var btnReset = document.createElement('button');
         btnReset.className = 'node-btn node-btn-reset';
         btnReset.textContent = '\uD83D\uDD04';
@@ -345,42 +358,9 @@ function createSubjectNode(m) {
         actions.appendChild(btnReset);
     }
 
-    // Cursando toggle - only for puede-cursar / optativa-puede-cursar nodes
-    var isCursandoStatus = (status === 'puede-cursar' || status === 'optativa-puede-cursar');
-    if (isCursandoStatus) {
-        var cursandoOn = isCursando(m.codigo);
-
-        var toggleDiv = document.createElement('div');
-        toggleDiv.className = 'node-cursando-toggle';
-
-        var cursandoLabel = document.createElement('span');
-        cursandoLabel.className = 'node-cursando-label';
-        cursandoLabel.textContent = 'Cursando';
-        toggleDiv.appendChild(cursandoLabel);
-
-        var cursandoSwitch = document.createElement('label');
-        cursandoSwitch.className = 'node-cursando-switch';
-
-        var cursandoInput = document.createElement('input');
-        cursandoInput.type = 'checkbox';
-        cursandoInput.checked = cursandoOn;
-        cursandoInput.setAttribute('aria-label', 'Cursando ' + m.nombre);
-        cursandoInput.onchange = function(e) { e.stopPropagation(); toggleCursando(m.codigo); };
-        cursandoSwitch.appendChild(cursandoInput);
-
-        var cursandoSlider = document.createElement('span');
-        cursandoSlider.className = 'node-cursando-slider';
-        cursandoSwitch.appendChild(cursandoSlider);
-
-        toggleDiv.appendChild(cursandoSwitch);
-        actions.appendChild(toggleDiv);
-    }
-
     // Apply cursando-active class when cursando is ON
-    if (isCursandoStatus) {
-        if (isCursando(m.codigo)) {
-            node.classList.add('cursando-active');
-        }
+    if (status === 'cursando') {
+        node.classList.add('cursando-active');
     }
 
     content.appendChild(actions);
@@ -418,7 +398,7 @@ function createSubjectNode(m) {
     // Tooltip
     // Tooltip (sin el nombre de la materia — ya está visible en el card)
     var tooltipText = '';
-    var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar');
+    var isRegularOrCanCursar = (status === 'regularizada' || status === 'puede-cursar' || status === 'optativa-puede-cursar' || status === 'cursando');
     if (isRegularOrCanCursar && !canTakeFinal(m.codigo)) {
         tooltipText += '(No puede Final)';
     } else {
@@ -440,6 +420,7 @@ function getStatusLabel(status) {
     var labels = {
         'aprobada': '✅ Aprobada',
         'regularizada': '🟧 Regularizada',
+        'cursando': '🟦 Cursando',
         'puede-cursar': 'Puede cursar',
         'no-puede-cursar': 'No puede cursar',
         'optativa-puede-cursar': 'Optativa (puede cursar)',
@@ -486,6 +467,7 @@ function getSubjectStatus(codigo) {
     // Check explicit state
     if (estados[codigo] === 'aprobada') return 'aprobada';
     if (estados[codigo] === 'regularizada') return 'regularizada';
+    if (estados[codigo] === 'cursando') return 'cursando';
 
     // Check if prerequisites are met
     var puedeCursar = cumpleRequisitos(m.paraCursar);
@@ -531,7 +513,7 @@ function countMissingPrerequisites(codigo, visited) {
 
     // If already approved or regularized, no missing prerequisites
     var estado = estados[codigo];
-    if (estado === 'aprobada' || estado === 'regularizada') return 0;
+    if (estado === 'aprobada' || estado === 'regularizada' || estado === 'cursando') return 0;
 
     // Count missing prerequisites recursively
     var missingCount = 0;
@@ -548,17 +530,13 @@ function countMissingPrerequisites(codigo, visited) {
                               (req.condicion === 'regularizada' && (reqEstado === 'aprobada' || reqEstado === 'regularizada'));
 
                 if (!isMet) {
-                    // This prerequisite is not met - count its own missing prerequisites recursively
-                    missingCount += countMissingPrerequisites(req.materia, new Set(visited));
+                    // Cursando = PENDING (counts as 1 missing for the 🟡 "falta N" marker),
+                    // but trigger the border animation elsewhere — it never satisfies prereqs.
+                    // A cursando node itself yields 0 (handled above) → contributes exactly 1 here.
+                    missingCount += Math.max(1, countMissingPrerequisites(req.materia, new Set(visited)));
                 }
             }
         }
-    }
-
-    // If this subject itself has no missing prerequisites but is not taken,
-    // it counts as 1 missing item (leaf unmet prerequisite)
-    if (missingCount === 0 && !estado) {
-        return 1;
     }
 
     return missingCount;
@@ -574,14 +552,7 @@ function setSubjectState(codigo, estado) {
     try { localStorage.setItem('estados', JSON.stringify(estadosData)); } catch(e) {}
     window.estados = estadosData;
 
-    // Clear cursando for this subject (avoids duplicate in Cartelera)
-    var cursandoData = getCachedState('cursando');
-    if (cursandoData[codigo]) {
-        delete cursandoData[codigo];
-        try { localStorage.setItem('cursando', JSON.stringify(cursandoData)); } catch(e) {}
-        _stateCache['cursando'] = null;
-    }
-
+    // Any explicit state (aprobada/regularizada/cursando) overwrites the previous — no reset step needed
     updateTree();
 }
 
@@ -591,36 +562,15 @@ function removeSubjectState(codigo) {
     try { localStorage.setItem('estados', JSON.stringify(estadosData)); } catch(e) {}
     window.estados = estadosData;
 
-    // Also clear cursando state for this subject
-    var cursandoData = getCachedState('cursando');
-    if (cursandoData[codigo]) {
-        delete cursandoData[codigo];
-        try { localStorage.setItem('cursando', JSON.stringify(cursandoData)); } catch(e) {}
-    }
-
     updateTree();
 }
 
 // ===============================
-// CURSANDO STATE
+// CURSANDO STATE (unified into `estados` as the 'cursando' value)
 // ===============================
 
 function isCursando(codigo) {
-    var data = getCachedState('cursando');
-    return !!data[codigo];
-}
-
-function toggleCursando(codigo) {
-    var data = getCachedState('cursando');
-    if (data[codigo]) {
-        delete data[codigo];
-    } else {
-        data[codigo] = true;
-    }
-    try { localStorage.setItem('cursando', JSON.stringify(data)); } catch(e) {}
-    _stateCache['cursando'] = null;  // Invalidate cache immediately on desktop/PC
-    invalidateStateCache('cursando');  // Invalidate cache so PC animation updates immediately on toggle
-    updateTree();
+    return estados[codigo] === 'cursando';
 }
 
 function cumpleRequisitosConCursando(lista) {
@@ -640,12 +590,12 @@ function verificarRequisitoConCursando(req) {
     }
     var estadoMateria = estados[req.materia];
     if (req.condicion === 'aprobada') return estadoMateria === 'aprobada' || isCursando(req.materia);
-    if (req.condicion === 'regularizada') return !!estadoMateria || isCursando(req.materia);
+    if (req.condicion === 'regularizada') return estadoMateria === 'regularizada' || estadoMateria === 'aprobada' || isCursando(req.materia);
     return false;
 }
 
 function wouldBeAvailableWithCursando(m) {
-    if (estados[m.codigo] === 'aprobada' || estados[m.codigo] === 'regularizada') return false;
+    if (estados[m.codigo] === 'aprobada' || estados[m.codigo] === 'regularizada' || estados[m.codigo] === 'cursando') return false;
     if (m.categoria === 'optativa') {
         return cumpleRequisitosConCursando(m.paraCursar) ? 'optativa-puede-cursar' : null;
     }
@@ -1298,24 +1248,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        if (status === 'aprobada' || status === 'regularizada') {
+        // 🟦 Cursando: third state — always available except when already cursando
+        if (status !== 'cursando') {
+            buttons.push({
+                emoji: '\uD83D\uDFE6',
+                label: 'Cursando',
+                cls: 'mobile-fab-btn-cursando',
+                action: function() { setSubjectState(codigo, 'cursando'); dismissFAB(); }
+            });
+        }
+
+        if (status === 'aprobada' || status === 'regularizada' || status === 'cursando') {
             buttons.push({
                 emoji: '\uD83D\uDD04',
                 label: 'Resetear',
                 cls: 'mobile-fab-btn-reset',
                 action: function() { removeSubjectState(codigo); dismissFAB(); }
-            });
-        }
-
-        // Cursando toggle for puede-cursar nodes
-        var isCursandoStatus = (status === 'puede-cursar' || status === 'optativa-puede-cursar');
-        if (isCursandoStatus) {
-            var cursandoOn = isCursando(codigo);
-            buttons.push({
-                emoji: cursandoOn ? '\uD83D\uDD1B' : '\uD83D\uDFE6',
-                label: cursandoOn ? 'Cursando ON' : 'Cursando',
-                cls: 'mobile-fab-btn-cursando',
-                action: function() { toggleCursando(codigo); dismissFAB(); }
             });
         }
 
@@ -1549,9 +1497,9 @@ function showTreeHelpModal() {
         '<b>🔍 Estructura:</b> Columnas de 1º a 6º año con materias obligatorias y optativas.',
         '<b>👆 Selección:</b> Toca una materia para resaltar sus correlativas y dependencias. Toca fuera para desseleccionar.',
         '<b>⚡ Acciones:</b> ' + (isMobile
-            ? 'Mantén pulsado 400ms (<i>long-press</i>) sobre una materia para Aprobar, Regularizar o Resetear.'
+            ? 'Mantén pulsado 400ms (<i>long-press</i>) sobre una materia para Aprobar, Regularizar, Cursando o Resetear.'
             : 'Pasa el cursor sobre una materia para ver los botones de estado.'),
-        '<b>📌 Cursando:</b> Activa "Cursando" en materias disponibles para ver el borde animado de dependencias.',
+        '<b>📌 Cursando:</b> Tercer estado (pre-regularizada). Marca 🟦 las materias que estás cursando — funciona sobre cualquier tarjeta, incluso si ya marcó aprobada/regularizada (sin necesidad de resetear). Muestra el borde animado de dependencias por liberar.',
         '<b>📖 Leyenda y Ayuda:</b> Consulta la leyenda de colores e iconos, o revisa la cartelera de tus cátedras activas.'
     ];
 

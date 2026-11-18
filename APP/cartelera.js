@@ -295,10 +295,18 @@ function loadCatedrasData() {
 // =============================
 
 function getCursandoCodes() {
-  var obj = getLocalStorageJSON("cursando", {});
-  return Object.keys(obj).filter(function (code) {
-    return obj[code] === true;
+  var obj = getLocalStorageJSON("estados", {});
+  var codes = Object.keys(obj).filter(function (code) {
+    return obj[code] === "cursando";
   });
+  // Legacy fallback: `cursando` key not yet migrated (state-cache.js migration runs on index/arbol/vacunas)
+  var legacy = getLocalStorageJSON("cursando", null);
+  if (legacy) {
+    Object.keys(legacy).forEach(function (code) {
+      if (legacy[code] === true && codes.indexOf(code) === -1) codes.push(code);
+    });
+  }
+  return codes;
 }
 
 function getRegularizadaCodes() {

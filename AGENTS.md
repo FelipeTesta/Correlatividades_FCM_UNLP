@@ -97,8 +97,7 @@ The `materias` array contains objects with this schema:
 
 | Key | Type | Purpose |
 |---|---|---|
-| `estados` | `{ "CODE": "aprobada" \| "regularizada" }` | Subject states |
-| `cursando` | `{ "CODE": true }` | Currently enrolled subjects |
+| `estados` | `{ "CODE": "aprobada" \| "regularizada" \| "cursando" }` | Subject states (cursando = 3rd state, pre-regularizada; migrated from legacy `cursando: {CODE: true}` on load) |
 | `proyectosExtension` | `[{ id, nombre, horas }]` | Extension project favorites |
 | `anioIngreso` | `number` | Enrollment year |
 | `boxStates` | `{ "BoxName": true/false }` | Collapsed/expanded UI boxes |
@@ -146,7 +145,7 @@ Script order in each HTML matters (shared modules first, page logic last):
 
 - **Main Page (app.js):** single-pass `render()`, six list boxes + progress bar. Finals display: 5-day enrollment rule (`FINALES_INSCRIPCION_DIAS`), dates PER CÁTEDRA never unified; the popup "Ver Fechas" cátedra selector persists in `catedrasSeleccionadas` and filters the card dates.
 - **Tree Mode (arbol.js):** separate page, shares localStorage. Year rows + SVG connectors. Mini calendario strip + "Inscripción" stickers; "Libre" tags on optativas built dynamically from finals.json.
-- **Cartelera:** standalone; reads `cursando` + `estados`; publications via Worker proxy; "Por materia"/"Cronológico" modes; email notifications via Worker cron.
+- **Cartelera:** standalone; reads `estados` (`cursando`/`regularizada` values + legacy-read fallback); publications via Worker proxy; "Por materia"/"Cronológico" modes; email notifications via Worker cron.
 - **Extension:** static data, filters + search, no backend.
 - **Universidades:** Leaflet map + read-only tree + stats table (research state in TODO.md).
 - **Worker (worker.js):** cartelera proxy (`?id=` → cartelera.med.unlp.edu.ar, zero KV); `POST /heartbeat` (D1 presence + visits, counts memoized 60s); Resend email; cron 12/16/22 UTC = daily stats + presence cleanup + inscripciones pages check (day 1 monthly) + finales reminder (1st business day of Feb + 1st business day post-winter-break, flag KV per semester); `/test-*` diagnostic endpoints.

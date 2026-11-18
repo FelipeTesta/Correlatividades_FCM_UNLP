@@ -253,26 +253,9 @@ function guardarLocalYRender() {
 function resetearTodos() {
     var estadosData = getCachedState('estados');
     for (var k in estadosData) delete estadosData[k];
-    var cursandoData = getCachedState('cursando');
-    for (var k in cursandoData) delete cursandoData[k];
     try { localStorage.setItem("estados", JSON.stringify(estadosData)); } catch(e) {}
-    try { localStorage.setItem("cursando", JSON.stringify(cursandoData)); } catch(e) {}
+    try { localStorage.removeItem('cursando'); } catch(e) {} // legacy key (pre-migration)
     render();
-}
-
-function toggleCursandoMain(code, checked) {
-    var cursando = getCachedState('cursando');
-    if (checked) cursando[code] = true; else delete cursando[code];
-    try { localStorage.setItem('cursando', JSON.stringify(cursando)); } catch(e) {}
-    guardarLocalYRender();
-}
-
-function clearCursandoForSubject(code) {
-    var cursando = getCachedState('cursando');
-    if (cursando[code]) {
-        delete cursando[code];
-        try { localStorage.setItem('cursando', JSON.stringify(cursando)); } catch(e) {}
-    }
 }
 
 function toggleOptativaFavorita(code) {
@@ -537,16 +520,11 @@ function actualizarBarraProgreso() {
             aprobadas += puntos;
         } else if (estado === "regularizada") {
             regularizadas += puntos;
-        } else {
-            // Check cursando state — counts as progress (silver segment)
-            var isCursandoOn = false;
-            var cursandoData = getCachedState('cursando');
-            isCursandoOn = !!cursandoData[m.codigo];
-            if (isCursandoOn) {
-                cursando += puntos;
-            } else if (cumpleRequisitos(m.paraCursar, m)) {
-                puedeCursar += puntos;
-            }
+        } else if (estado === "cursando") {
+            // Cursando counts as progress (silver segment)
+            cursando += puntos;
+        } else if (cumpleRequisitos(m.paraCursar, m)) {
+            puedeCursar += puntos;
         }
     });
     
@@ -763,16 +741,26 @@ infoText += materia.anio + "° Año";
             btnAprobada.innerText = "✅";
             btnAprobada.onclick = () => {
                 estados[codigo] = "aprobada";
-                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnAprobada);
+
+            if (estados[codigo] !== "cursando") {
+                const btnCursando = document.createElement("button");
+                btnCursando.innerText = "🟦";
+                btnCursando.title = "Cursando";
+                btnCursando.setAttribute("aria-label", "Cursando: " + codigo);
+                btnCursando.onclick = () => {
+                    estados[codigo] = "cursando";
+                    guardarLocalYRender();
+                };
+                rightGroup.appendChild(btnCursando);
+            }
 
             const btnReset = document.createElement("button");
             btnReset.innerText = "🔄";
             btnReset.onclick = () => {
                 delete estados[codigo];
-                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnReset);
@@ -884,14 +872,15 @@ infoText += materia.anio + "° Año";
         // decidir quais botões incluir segundo o id da lista
         const showAprobada = (id === "puedeCursar" || id.startsWith("puedeCursar-") || id === "optativasFavoritas" || id.startsWith("puedeFinal") || id.startsWith("noPuedeFinal"));
         const showRegularizada = (id === "aprobadas" || id === "puedeCursar" || id.startsWith("puedeCursar-") || id === "optativasFavoritas");
-        const showReset = (id === "aprobadas" || id.startsWith("puedeFinal") || id.startsWith("noPuedeFinal"));
-        
+        const showReset = (id === "aprobadas" || id.startsWith("puedeFinal") || id.startsWith("noPuedeFinal")) || !!estados[codigo];
+        // 🟦 Cursando: third state — shown everywhere the other state buttons appear (prevents mis-mark without reset)
+        const showCursando = (showAprobada || showRegularizada) && estados[codigo] !== "cursando";
+
         if (showAprobada) {
             const btnAprobada = document.createElement("button");
             btnAprobada.innerText = "✅";
             btnAprobada.onclick = () => {
                 estados[codigo] = "aprobada";
-                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnAprobada);
@@ -902,10 +891,21 @@ infoText += materia.anio + "° Año";
             btnRegularizada.innerText = "🟧";
             btnRegularizada.onclick = () => {
                 estados[codigo] = "regularizada";
-                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnRegularizada);
+        }
+
+        if (showCursando) {
+            const btnCursando = document.createElement("button");
+            btnCursando.innerText = "🟦";
+            btnCursando.title = "Cursando";
+            btnCursando.setAttribute("aria-label", "Cursando: " + codigo);
+            btnCursando.onclick = () => {
+                estados[codigo] = "cursando";
+                guardarLocalYRender();
+            };
+            rightGroup.appendChild(btnCursando);
         }
 
         if (showReset) {
@@ -913,40 +913,9 @@ infoText += materia.anio + "° Año";
             btnReset.innerText = "🔄";
             btnReset.onclick = () => {
                 delete estados[codigo];
-                clearCursandoForSubject(codigo);
                 guardarLocalYRender();
             };
             rightGroup.appendChild(btnReset);
-        }
-
-        // Cursando toggle for puede cursar items
-        if (id.startsWith("puedeCursar-") || id === "optativasFavoritas") {
-            var cursandoData = getCachedState('cursando');
-            var isCursandoOn = !!cursandoData[codigo];
-
-            var toggleWrap = document.createElement("span");
-            toggleWrap.className = "cursando-toggle-main";
-            toggleWrap.setAttribute("data-code", codigo);
-
-            var switchLabel = document.createElement("label");
-            switchLabel.className = "cursando-switch-main";
-
-            var switchInput = document.createElement("input");
-            switchInput.type = "checkbox";
-            switchInput.checked = isCursandoOn;
-            var cursandoMateria = codigo ? (materias.find(m => m.codigo === codigo) || {}).nombre || texto : texto;
-            switchInput.setAttribute("aria-label", "Cursando: " + cursandoMateria);
-            switchInput.onchange = function() { toggleCursandoMain(codigo, this.checked); };
-            switchLabel.appendChild(switchInput);
-
-            var switchSlider = document.createElement("span");
-            switchSlider.className = "cursando-slider-main";
-            switchLabel.appendChild(switchSlider);
-
-            toggleWrap.appendChild(switchLabel);
-            toggleWrap.appendChild(document.createTextNode(" Cursando"));
-
-            rightGroup.appendChild(toggleWrap);
         }
 
         // Star button for optativas in puedeCursar-optativas and optativasFavoritas
@@ -1107,10 +1076,9 @@ const esRegularizada = id === "puedeFinal" || id === "noPuedeFinal";
         }
     }
 
-    // Apply cursando-active class for puede cursar items
-    if (codigo && id && (id === "puedeCursar" || id.startsWith("puedeCursar-"))) {
-        var cursandoData = getCachedState('cursando');
-        if (cursandoData[codigo]) {
+    // Apply cursando-active class for puede cursar items / optativas favoritas
+    if (codigo && id && (id === "puedeCursar" || id.startsWith("puedeCursar-") || id === "optativasFavoritas")) {
+        if (estados[codigo] === "cursando") {
             li.classList.add("cursando-active");
         }
     }

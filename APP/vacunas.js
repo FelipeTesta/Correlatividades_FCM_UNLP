@@ -9,8 +9,7 @@ function requiereDtpa() {
     var pediatria = (typeof materias !== 'undefined') && materias.find(m => m.codigo === 'PD001');
     if (!pediatria) return false;
     estados = getCachedState('estados'); // refrescar (sincronización entre pestañas)
-    var cursando = getCachedState('cursando');
-    return !!(estados[pediatria.codigo] || cursando[pediatria.codigo] || cumpleRequisitos(pediatria.paraCursar));
+    return !!(estados[pediatria.codigo] || cumpleRequisitos(pediatria.paraCursar));
 }
 
 // Vacunas no obligatorias del Calendario Nacional 2026 — se muestran atenuadas, sin alerta
