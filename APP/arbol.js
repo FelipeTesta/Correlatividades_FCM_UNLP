@@ -589,7 +589,9 @@ function verificarRequisitoConCursando(req) {
         return false;
     }
     var estadoMateria = estados[req.materia];
-    if (req.condicion === 'aprobada') return estadoMateria === 'aprobada' || isCursando(req.materia);
+    // 'cursando' is a pre-regularizada: it can stand in for a CURSADA requirement,
+    // never for a FINAL (condicion 'aprobada' needs the final approved for real).
+    if (req.condicion === 'aprobada') return estadoMateria === 'aprobada';
     if (req.condicion === 'regularizada') return estadoMateria === 'regularizada' || estadoMateria === 'aprobada' || isCursando(req.materia);
     return false;
 }
@@ -1499,7 +1501,7 @@ function showTreeHelpModal() {
         '<b>⚡ Acciones:</b> ' + (isMobile
             ? 'Mantén pulsado 400ms (<i>long-press</i>) sobre una materia para Aprobar, Regularizar, Cursando o Resetear.'
             : 'Pasa el cursor sobre una materia para ver los botones de estado.'),
-        '<b>📌 Cursando:</b> Tercer estado (pre-regularizada). Marca 🟦 las materias que estás cursando — funciona sobre cualquier tarjeta, incluso si ya marcó aprobada/regularizada (sin necesidad de resetear). Muestra el borde animado de dependencias por liberar.',
+        '<b>📌 Cursando:</b> Tercer estado (pre-regularizada). Marca 🟦 las materias que estás cursando — funciona sobre cualquier tarjeta, incluso si ya marcó aprobada/regularizada (sin necesidad de resetear). Muestra el borde animado solo en dependencias que exigen <b>cursada</b> (las que exigen el final de esa materia no se animan).',
         '<b>📖 Leyenda y Ayuda:</b> Consulta la leyenda de colores e iconos, o revisa la cartelera de tus cátedras activas.'
     ];
 
