@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 + `arbol.js` — nó bloqueado com **2+ pendências em cursando** mostrava 🟡 "falta 1" (fallback único `+1` quando o ramo todo era cursando, mesmo com vários). Corrigido: contador agora soma `Math.max(1, recursão)` por ramo unmet, cursando inclusive (self=0 → contribui exatamente 1); 🟡 só com exatamente 1 (verificado: 1 cursando → 🟡; 2 cursando → sem 🟡).
++ `worker.js` — contador de visitas do dia usava a data **UTC**: zerava às **21:00 ART**, então o badge no PC mostrava `0` enquanto o celular (página aberta antes) seguia com o total do dia local. Novo helper `todayLocal()` (`America/Argentina/Buenos_Aires`) aplicado em `/heartbeat`, `getCounts` (badge e `/online`), `/reset-visits` e `daily_stats` do cron. Deploy `f0eb6993`; verificado `/online` → `visits:3` e badge `🟢 2/3` no desktop.
 
 ### Added
 + **`estados[CODE]='cursando'` virou 3º estado unificado** (árvore + página principal + Cartelera + progresso): legado da key `cursando` (`{CODE:true}`) → migrado no load (`state-cache.js`, ids sem estado migram; `estados` pré-existente vence; key removida). Cartelera mantém fallback read-only da key legada.

@@ -369,7 +369,7 @@ export default {
         }
         // Count unique visitors per DEVICE (IP), not per browser session.
         // Cross-browser dedup: same IP any browser = 1 count/day.
-        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const today = todayLocal(); // local day, not UTC
         const clientIp = request.headers.get('cf-connecting-ip') || '';
         const ip = clientIp || ('sess-' + sessionId);
         const ADMIN_IPS = ['192.168.0.27', '190.17.188.134'];
@@ -425,7 +425,7 @@ export default {
     // POST /reset-visits — reset today's visit counter (admin only)
     if (url.pathname === '/reset-visits' && request.method === 'POST') {
       try {
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayLocal();
         await env.CARTELERA_SUBS.delete('visits:' + today);
         const visitedList = await env.CARTELERA_SUBS.list({ prefix: 'visited:' });
         for (const key of visitedList.keys) {
@@ -962,7 +962,7 @@ export default {
     // 6. Persist daily stats to D1 (historical record)
     if (env.DB) {
       try {
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayLocal();
         // Current online sessions = live presence rows (D1)
         let maxOnline = 0;
         try {
@@ -1016,6 +1016,16 @@ function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// "Today" for the daily visit counter, in Argentina local time (UTC-3).
+// Using the UTC date made the counter roll over at 21:00 ART: evening visitors
+// saw 0 while pages opened earlier still showed the previous local day's total.
+function todayLocal() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric', month: '2-digit', day: '2-digit'
+  }).format(new Date()); // YYYY-MM-DD
+}
+
 // Shared counts for the online badge, memoized 60s in the Cache API (per colo).
 // Counts change slowly — this collapses reads across ALL open tabs into ~1/min globally.
 async function getCounts(env) {
@@ -1042,7 +1052,7 @@ async function getCounts(env) {
   }
   let visits = 0;
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayLocal();
     const visitRaw = await env.CARTELERA_SUBS.get('visits:' + today);
     visits = visitRaw ? parseInt(visitRaw, 10) : 0;
   } catch (e) { console.error('KV visits read error: ' + e.message); }
